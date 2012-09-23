@@ -1,0 +1,188 @@
+﻿using System;
+using System.Collections.Generic;
+
+using SFML.Graphics;
+using SFML.Window;
+using SFML.Audio;
+
+using FTLOverdrive.Client.UI;
+
+namespace FTLOverdrive.Client.Gamestate
+{
+    public class OptionsMenu : IState, IRenderable
+    {
+        private RenderWindow window;
+        private IntRect rctScreen;
+
+        private Panel pnObscure;
+        private ImagePanel pnWindow;
+
+        private sealed class ResolutionSetting
+        {
+            public int Width { get; set; }
+            public int Height { get; set; }
+            public override string ToString()
+            {
+                return Width.ToString() + " x " + Height.ToString();
+            }
+            public override bool Equals(object obj)
+            {
+                if (!(obj is ResolutionSetting)) return false;
+                var other = obj as ResolutionSetting;
+                return (other.Width == Width) && (other.Height == Height);
+            }
+
+            public override int GetHashCode()
+            {
+                return (int)(Width.GetHashCode() + Height.GetHashCode());
+            }
+        }
+
+        private static readonly List<ResolutionSetting> resolutions = new List<ResolutionSetting>()
+        {
+            new ResolutionSetting() { Width = 1024, Height = 600 },
+            new ResolutionSetting() { Width = 1024, Height = 768 }
+        };
+
+        private ResolutionSetting currentres;
+        private bool currentfs;
+
+        private bool windowresetneeded, finishnow;
+
+        public void OnActivate()
+        {
+            // Store window
+            window = Root.Singleton.Window;
+            rctScreen = Util.ScreenRect(window.Size.X, window.Size.Y, 1.7778f);
+            windowresetneeded = false;
+            finishnow = false;
+            window.KeyPressed += new EventHandler<KeyEventArgs>(window_KeyPressed);
+
+            // Load settings
+            currentres = new ResolutionSetting()
+            {
+                Width = Root.Singleton.Settings.ReadInt("Video", "ResX"),
+                Height = Root.Singleton.Settings.ReadInt("Video", "ResY")
+            };
+            currentfs = Root.Singleton.Settings.ReadInt("Video", "Fullscreen") == 1;
+
+            // Create UI
+            pnObscure = new Panel();
+            pnObscure.Colour = new Color(0, 0, 0, 192);
+            Util.LayoutControl(pnObscure, 0, 0, 1280, 720, rctScreen);
+            pnObscure.Parent = Root.Singleton.Canvas;
+            pnObscure.Init();
+
+            pnWindow = new ImagePanel();
+            pnWindow.Image = Root.Singleton.Material("img/box_text1.png");
+            Util.LayoutControl(pnWindow, (1280 / 2) - (616 / 2), (720 / 2) - (384 / 2), 616, 384, rctScreen);
+            pnWindow.Parent = Root.Singleton.Canvas;
+            pnWindow.Init();
+
+            var lblTitle = new Label();
+            lblTitle.Colour = Color.White;
+            lblTitle.Text = "Options:  (ESCAPE when done)";
+            lblTitle.Font = Root.Singleton.Font("fonts/JustinFont12Bold.ttf");
+            lblTitle.Scale = 0.475f;
+            lblTitle.X = 22;
+            lblTitle.Y = 35;
+            lblTitle.Parent = pnWindow;
+            lblTitle.Init();
+
+            var btnResolution = AddButton("1. Resolution: " + currentres.ToString(), 70);
+            btnResolution.OnClick += (sender) =>
+            {
+                int i = resolutions.IndexOf(currentres);
+                i++;
+                if (i >= resolutions.Count) i = 0;
+                currentres = resolutions[i];
+                btnResolution.Text = "1. Resolution: " + currentres.ToString();
+                windowresetneeded = true;
+            };
+
+            var btnFullscreen = AddButton("2. Fullscreen: " + (currentfs ? "On" : "Off"), 96);
+            btnFullscreen.OnClick += (sender) =>
+            {
+                currentfs = !currentfs;
+                btnFullscreen.Text = "2. Fullscreen: " + (currentfs ? "On" : "Off");
+                windowresetneeded = true;
+            };
+
+            var btnHotkeys = AddButton("3. Numerical hotkeys in dialog boxes: Enabled", 122);
+
+            var btnDynamicBackgrounds = AddButton("4. Dynamic Backgrounds: Enabled", 148);
+
+            var btnAchievePopups = AddButton("5. Achivement Popups: Enabled", 174);
+
+            var btnWindowFocusPause = AddButton("6. Window Focus Auto-Pause: On", 200);
+
+            // Modal screen
+            Root.Singleton.Canvas.ModalFocus = pnWindow;
+        }
+
+        private void window_KeyPressed(object sender, KeyEventArgs e)
+        {
+            // Finish if escape
+            if (e.Code == Keyboard.Key.Escape) finishnow = true;
+        }
+
+        private TextButton AddButton(string text, int y)
+        {
+            var btn = new TextButton();
+            btn.Colour = Color.White;
+            btn.HoveredColour = Color.Yellow;
+            btn.DisabledColour = new Color(128, 128, 128);
+            btn.DepressedColour = Color.Yellow;
+            btn.Text = text;
+            btn.Font = Root.Singleton.Font("fonts/JustinFont12Bold.ttf");
+            btn.Scale = 0.475f;
+            btn.X = 25;
+            btn.Y = y;
+            btn.Enabled = true;
+            btn.Parent = pnWindow;
+            btn.Init();
+            return btn;
+        }
+
+        public void OnDeactivate()
+        {
+            // Unmodal our window
+            Root.Singleton.Canvas.ModalFocus = null;
+
+            // Remove our controls
+            pnObscure.Remove();
+            pnWindow.Remove();
+        }
+
+        public void Think(float delta)
+        {
+            // Check for escape
+            if (finishnow)
+            {
+                // Store new settings
+                Root.Singleton.Settings.WriteInt("Video", "ResX", currentres.Width);
+                Root.Singleton.Settings.WriteInt("Video", "ResY", currentres.Height);
+                Root.Singleton.Settings.WriteInt("Video", "Fullscreen", currentfs ? 1 : 0);
+                Root.Singleton.Settings.Save();
+
+                // Reset window if needed
+                if (windowresetneeded)
+                {
+                    Root.Singleton.ResetWindow();
+                }
+
+                // Close state
+                Root.Singleton.mgrState.Deactivate<OptionsMenu>();
+
+                // Reopen main menu
+                Root.Singleton.mgrState.FSMTransist<MainMenu>();
+            }
+            
+        }
+
+        public void Render(RenderStage stage)
+        {
+            
+        }
+    }
+}
