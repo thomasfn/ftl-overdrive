@@ -31,6 +31,11 @@ namespace FTLOverdrive.Client.Gamestate
             luastate.NewTable("library");
             BindFunction("library.AddWeapon", "library_AddWeapon");
             BindFunction("library.AddSystem", "library_AddSystem");
+            BindFunction("library.AddRace", "library_AddRace");
+            BindFunction("library.AddShip", "library_AddShip");
+            BindFunction("library.CreateAnimation", "library_CreateAnimation");
+            BindFunction("library.CreateRoom", "library_CreateRoom");
+            BindFunction("library.CreateDoor", "library_CreateDoor");
 
             // Load lua files
             if (!Directory.Exists("lua")) Directory.CreateDirectory("lua");
@@ -116,6 +121,37 @@ namespace FTLOverdrive.Client.Gamestate
             var sys = new Library.System();
             Root.Singleton.mgrState.Get<Library>().AddSystem(name, sys);
             return sys;
+        }
+
+        private Library.Race library_AddRace(string name)
+        {
+            // Create race and return it
+            var race = new Library.Race();
+            Root.Singleton.mgrState.Get<Library>().AddRace(name, race);
+            return race;
+        }
+
+        private Library.Ship library_AddShip(string name)
+        {
+            // Create ship and return it
+            var ship = new Library.Ship();
+            Root.Singleton.mgrState.Get<Library>().AddShip(name, ship);
+            return ship;
+        }
+
+        private Library.Animation library_CreateAnimation(int tilestart, int tileend, int speed)
+        {
+            return new Library.Animation() { TileStart = tilestart, TileEnd = tileend, Speed = speed };
+        }
+
+        private Library.Room library_CreateRoom(int minX, int minY, int maxX, int maxY)
+        {
+            return new Library.Room() { MinX = minX, MinY = minY, MaxX = maxX, MaxY = maxY };
+        }
+
+        private Library.Door library_CreateDoor(float x, float y)
+        {
+            return new Library.Door() { X = x, Y = y };
         }
 
         #endregion

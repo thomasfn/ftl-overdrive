@@ -9,7 +9,6 @@ namespace FTLOverdrive.Client.UI
 
     public class ImageButton : Control
     {
-
         public delegate void Click(ImageButton sender);
 
         public event Click OnClick;
@@ -18,6 +17,8 @@ namespace FTLOverdrive.Client.UI
         public Texture HoveredImage { get; set; }
         public Texture DepressedImage { get; set; }
         public Texture DisabledImage { get; set; }
+
+        public bool FlipH { get; set; }
 
         private SoundBuffer snd;
         private Sound sndHover;
@@ -62,8 +63,16 @@ namespace FTLOverdrive.Client.UI
         protected override void UpdateLayout()
         {
             base.UpdateLayout();
-            sprButton.Position = new SFML.Window.Vector2f(AbsX, AbsY);
-            sprButton.Scale = Util.Scale(sprButton, new SFML.Window.Vector2f(Width, Height));
+            if (FlipH)
+            {
+                sprButton.Position = new SFML.Window.Vector2f(AbsX + Width, AbsY);
+                sprButton.Scale = Util.Scale(sprButton, new SFML.Window.Vector2f(-Width, Height));
+            }
+            else
+            {
+                sprButton.Position = new SFML.Window.Vector2f(AbsX, AbsY);
+                sprButton.Scale = Util.Scale(sprButton, new SFML.Window.Vector2f(Width, Height));
+            }
         }
 
         public override void SetHovered(bool hovered)
@@ -75,14 +84,14 @@ namespace FTLOverdrive.Client.UI
                     sprButton.Texture = DisabledImage;
                 else
                     sprButton.Texture = Image;
-                sprButton.Scale = Util.Scale(sprButton, new SFML.Window.Vector2f(Width, Height));
+                UpdateLayout();
                 return;
             }
             if (hovered && (HoveredImage != null))
                 sprButton.Texture = HoveredImage;
             else
                 sprButton.Texture = Image;
-            sprButton.Scale = Util.Scale(sprButton, new SFML.Window.Vector2f(Width, Height));
+            UpdateLayout();
             if (hovered && (sndHover != null))
             {
                 sndHover.Stop();
@@ -99,7 +108,7 @@ namespace FTLOverdrive.Client.UI
                     sprButton.Texture = DisabledImage;
                 else
                     sprButton.Texture = Image;
-                sprButton.Scale = Util.Scale(sprButton, new SFML.Window.Vector2f(Width, Height));
+                UpdateLayout();
                 return;
             }
             if (pressed && (DepressedImage != null))
@@ -108,7 +117,7 @@ namespace FTLOverdrive.Client.UI
                 sprButton.Texture = HoveredImage;
             else
                 sprButton.Texture = Image;
-            sprButton.Scale = Util.Scale(sprButton, new SFML.Window.Vector2f(Width, Height));
+            UpdateLayout();
             if ((!pressed) && (!mousemoveevent) && (OnClick != null)) OnClick(this);
         }
 

@@ -43,5 +43,12 @@ namespace FTLOverdrive.Client
             ctrl.Height = (int)((h / 720.0f) * screenrect.Height);
         }
 
+        public static void LayoutSprite(Sprite sprite, int x, int y, int w, int h, IntRect screenrect)
+        {
+            // x,y,w,h are relative to 1280x720
+            sprite.Position = new Vector2f((x / 1280.0f) * screenrect.Width, (y / 720.0f) * screenrect.Height);
+            sprite.Scale = new Vector2f(((w / 1280.0f) * screenrect.Width) / sprite.Texture.Size.X, ((h / 720.0f) * screenrect.Height) / sprite.Texture.Size.Y);
+        }
+
     }
 }

@@ -66,12 +66,13 @@ namespace FTLOverdrive.Client
             return archive[file];
         }
 
-        public Texture Material(string filename)
+        public Texture Material(string filename, bool smooth = true)
         {
             if (dctMaterials.ContainsKey(filename)) return dctMaterials[filename];
             var res = Resource(filename);
             if (res == null) return null;
             var tex = new Texture(res);
+            tex.Smooth = smooth;
             dctMaterials.Add(filename, tex);
             return tex;
         }
