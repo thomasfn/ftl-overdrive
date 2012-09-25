@@ -21,6 +21,8 @@ namespace FTLOverdrive.Client.Gamestate
 
         private Library.Ship currentship;
 
+        private bool easymode;
+
         public void OnActivate()
         {
             // Store window
@@ -92,6 +94,55 @@ namespace FTLOverdrive.Client.Gamestate
             Util.LayoutControl(btnShipRight, 128, 194, 32, 28, rctScreen);
             btnShipRight.Parent = Root.Singleton.Canvas;
             btnShipRight.Init();
+
+            var btnEasy = new ImageButton();
+            easymode = true;
+            ImageButton btnNormal = null;
+            btnEasy.Image = Root.Singleton.Material("img/customizeUI/button_easy_on.png");
+            btnEasy.HoveredImage = null;
+            btnEasy.DisabledImage = Root.Singleton.Material("img/customizeUI/button_easy_off.png");
+            btnEasy.Enabled = true;
+            btnEasy.OnClick += (sender) =>
+            {
+                btnNormal.Image = Root.Singleton.Material("img/customizeUI/button_normal_on.png");
+                btnNormal.UpdateImage();
+                btnEasy.Image = Root.Singleton.Material("img/customizeUI/button_easy_select2.png");
+                btnEasy.UpdateImage();
+                easymode = true;
+            };
+            Util.LayoutControl(btnEasy, 977, 16, 95, 24, rctScreen);
+            btnEasy.Parent = Root.Singleton.Canvas;
+            btnEasy.Init();
+
+            btnNormal = new ImageButton();
+            btnNormal.Image = Root.Singleton.Material("img/customizeUI/button_normal_select2.png");
+            btnNormal.HoveredImage = null;
+            btnNormal.DisabledImage = Root.Singleton.Material("img/customizeUI/button_normal_off.png");
+            btnNormal.Enabled = true;
+            btnNormal.OnClick += (sender) =>
+            {
+                btnNormal.Image = Root.Singleton.Material("img/customizeUI/button_normal_select2.png");
+                btnNormal.UpdateImage();
+                btnEasy.Image = Root.Singleton.Material("img/customizeUI/button_easy_on.png");
+                btnEasy.UpdateImage();
+                easymode = false;
+            };
+            Util.LayoutControl(btnNormal, 977, 41, 95, 24, rctScreen);
+            btnNormal.Parent = Root.Singleton.Canvas;
+            btnNormal.Init();
+
+            var btnStart = new ImageButton();
+            btnStart.Image = Root.Singleton.Material("img/customizeUI/button_start_on.png");
+            btnStart.HoveredImage = Root.Singleton.Material("img/customizeUI/button_start_select2.png");
+            btnStart.DisabledImage = Root.Singleton.Material("img/customizeUI/button_start_off.png");
+            btnStart.Enabled = true;
+            btnStart.OnClick += (sender) =>
+            {
+                
+            };
+            Util.LayoutControl(btnStart, 1082, 16, 152, 48, rctScreen);
+            btnStart.Parent = Root.Singleton.Canvas;
+            btnStart.Init();
 
             // Locate the default ship
             var lib = Root.Singleton.mgrState.Get<Library>();

@@ -54,8 +54,7 @@ namespace FTLOverdrive.Client.UI
         public override void Init()
         {
             sprButton = new Sprite(Image);
-            if ((!Enabled) && (DisabledImage != null)) sprButton.Texture = DisabledImage;
-
+            UpdateImage();
             base.Init();
             
         }
@@ -78,20 +77,7 @@ namespace FTLOverdrive.Client.UI
         public override void SetHovered(bool hovered)
         {
             base.SetHovered(hovered);
-            if (!Enabled)
-            {
-                if (DisabledImage != null)
-                    sprButton.Texture = DisabledImage;
-                else
-                    sprButton.Texture = Image;
-                UpdateLayout();
-                return;
-            }
-            if (hovered && (HoveredImage != null))
-                sprButton.Texture = HoveredImage;
-            else
-                sprButton.Texture = Image;
-            UpdateLayout();
+            UpdateImage();
             if (hovered && (sndHover != null))
             {
                 sndHover.Stop();
@@ -102,23 +88,29 @@ namespace FTLOverdrive.Client.UI
         public override void SetPressed(bool pressed, bool mousemoveevent)
         {
             base.SetPressed(pressed, mousemoveevent);
-            if (!Enabled)
+            UpdateImage();
+            if ((!pressed) && (!mousemoveevent) && (OnClick != null)) OnClick(this);
+        }
+
+        public void UpdateImage()
+        {
+            if (Enabled)
+            {
+                if (Pressed && (DepressedImage != null))
+                    sprButton.Texture = DepressedImage;
+                else if (Hovered && (HoveredImage != null))
+                    sprButton.Texture = HoveredImage;
+                else
+                    sprButton.Texture = Image;
+            }
+            else
             {
                 if (DisabledImage != null)
                     sprButton.Texture = DisabledImage;
                 else
                     sprButton.Texture = Image;
-                UpdateLayout();
-                return;
             }
-            if (pressed && (DepressedImage != null))
-                sprButton.Texture = DepressedImage;
-            else if (Hovered && (HoveredImage != null))
-                sprButton.Texture = HoveredImage;
-            else
-                sprButton.Texture = Image;
             UpdateLayout();
-            if ((!pressed) && (!mousemoveevent) && (OnClick != null)) OnClick(this);
         }
 
         protected override void Draw(RenderWindow window)
