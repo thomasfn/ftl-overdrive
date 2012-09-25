@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
 
 using SFML.Window;
 using SFML.Graphics;
@@ -48,6 +49,22 @@ namespace FTLOverdrive.Client
             // x,y,w,h are relative to 1280x720
             sprite.Position = new Vector2f((x / 1280.0f) * screenrect.Width, (y / 720.0f) * screenrect.Height);
             sprite.Scale = new Vector2f(((w / 1280.0f) * screenrect.Width) / sprite.Texture.Size.X, ((h / 720.0f) * screenrect.Height) / sprite.Texture.Size.Y);
+        }
+
+        public static string LocateFTLPath()
+        {
+            // First, locate program files
+            string progfiles = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86).Replace('\\', '/');
+            if (!Directory.Exists(progfiles + "/")) return null;
+
+            // Next, locate steam
+            if (!Directory.Exists(progfiles + "/Steam/")) return null;
+
+            // Next, locate FTL
+            if (!Directory.Exists(progfiles + "/Steam/steamapps/common/FTL Faster Than Light")) return null;
+
+            // Done
+            return progfiles + "/Steam/steamapps/common/FTL Faster Than Light/";
         }
 
     }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 
 using SFML.Window;
 using SFML.Graphics;
@@ -46,8 +47,6 @@ namespace FTLOverdrive.Client
 
         public UI.Canvas Canvas { get; private set; }
 
-        private const string DIRECTORY = "C:/Program Files (x86)/Steam/steamapps/common/FTL Faster Than Light/";
-
         #region Logging
 
         public void Log(string message)
@@ -61,9 +60,21 @@ namespace FTLOverdrive.Client
 
         public System.IO.Stream Resource(string filename)
         {
-            var file = archive[filename];
-            if (file == null) return null;
-            return archive[file];
+            // Check local file system first
+            if (File.Exists(filename))
+            {
+                // Copy into temporary buffer
+                var strm = File.OpenRead(filename);
+                var data = new byte[strm.Length];
+                strm.Read(data, 0, data.Length);
+                strm.Close();
+
+                // Return
+                return new MemoryStream(data);
+            }
+
+            // Get the file from the archive
+            return archive[filename];
         }
 
         public Texture Material(string filename, bool smooth = true)
@@ -126,9 +137,22 @@ namespace FTLOverdrive.Client
             Settings = new SettingsFile("settings.ini");
             Settings.SetPopulate(true);
 
+            // Lookup directory
+            if (Settings.ReadString("File", "FTLDirectory", "unknown") == "unknown")
+            {
+                string dir = Util.LocateFTLPath();
+                if (dir == null)
+                {
+                    Log("Unable to locate the FTL files!");
+                    Settings.Save();
+                    return;
+                }
+                Settings.WriteString("File", "FTLDirectory", dir);
+            }
+
             // Init file system
             Log("Mounting resources.dat...");
-            archive = new Archive(DIRECTORY + "resources/resource.dat");
+            archive = new Archive(Settings.ReadString("File", "FTLDirectory") + "resources/resource.dat");
 
             // Init window
             Log("Loading window...");
@@ -224,6 +248,9 @@ namespace FTLOverdrive.Client
 
         public void Run()
         {
+            // Error check
+            if (window == null) return;
+
             // Loop until done
             while (!Exiting)
             {
@@ -258,9 +285,12 @@ namespace FTLOverdrive.Client
         public void Shutdown()
         {
             // Close window
-            window.Close();
-            window.Dispose();
-            window = null;
+            if (window != null)
+            {
+                window.Close();
+                window.Dispose();
+                window = null;
+            }
         }
 
         #endregion

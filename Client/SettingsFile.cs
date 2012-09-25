@@ -56,7 +56,7 @@ namespace FTLOverdrive.Client
         private const string ptnCategoryEnd = "[\\]]";
         private const string ptnKey = "[a-zA-Z0-9:_]";
         private const string ptnValueIndicator = "[=]";
-        private const string ptnValue = "[a-zA-Z0-9./ _]";
+        private const string ptnValue = "[a-zA-Z0-9./ _:()]";
         private const string ptnValueStart = "[a-zA-Z0-9]";
         private const string ptnCommentStart = "[/]";
         private const string ptnNewLine = "[\\n]";
