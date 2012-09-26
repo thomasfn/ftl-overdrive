@@ -78,7 +78,7 @@ namespace FTLOverdrive.Client.UI
         {
             base.SetHovered(hovered);
             UpdateImage();
-            if (hovered && (sndHover != null))
+            if (hovered && (sndHover != null) && Enabled)
             {
                 sndHover.Stop();
                 sndHover.Play();

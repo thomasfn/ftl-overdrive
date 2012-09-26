@@ -46,6 +46,10 @@ namespace FTLOverdrive.Client.Gamestate
 
         private ResolutionSetting currentres;
         private bool currentfs;
+        private bool hotkeys;
+        private bool backgrounds;
+        private bool achievementPopups;
+        private bool autoPause;
 
         private bool windowresetneeded, finishnow;
 
@@ -65,6 +69,10 @@ namespace FTLOverdrive.Client.Gamestate
                 Height = Root.Singleton.Settings.ReadInt("Video", "ResY")
             };
             currentfs = Root.Singleton.Settings.ReadInt("Video", "Fullscreen") == 1;
+            hotkeys = Root.Singleton.Settings.ReadInt("Video", "Hotkeys") == 1;
+            backgrounds = Root.Singleton.Settings.ReadInt("Video", "Backgrounds") == 1;
+            achievementPopups = Root.Singleton.Settings.ReadInt("Video", "AchievementPopups") == 1;
+            autoPause = Root.Singleton.Settings.ReadInt("Video", "AutoPause") == 1;
 
             // Create UI
             pnObscure = new Panel();
@@ -108,13 +116,34 @@ namespace FTLOverdrive.Client.Gamestate
                 windowresetneeded = true;
             };
 
-            var btnHotkeys = AddButton("3. Numerical hotkeys in dialog boxes: Enabled", 122);
+            var btnHotkeys = AddButton("3. Numerical hotkeys in dialog boxes: " + (hotkeys ? "Enabled" : "Disabled"), 122);
+            btnHotkeys.OnClick += (sender) =>
+            {
+                hotkeys = !hotkeys;
+                btnHotkeys.Text = "3. Numerical hotkeys in dialog boxes: " + (hotkeys ? "Enabled" : "Disabled");
+                windowresetneeded = true;
+            };
 
-            var btnDynamicBackgrounds = AddButton("4. Dynamic Backgrounds: Enabled", 148);
+            var btnDynamicBackgrounds = AddButton("4. Dynamic Backgrounds: " + (backgrounds ? "Enabled" : "Disabled"), 148);
+            btnDynamicBackgrounds.OnClick += (sender) =>
+            {
+                backgrounds = !backgrounds;
+                btnDynamicBackgrounds.Text = "4. Dynamic Backgrounds: " + (backgrounds ? "Enabled" : "Disabled");
+            };
 
-            var btnAchievePopups = AddButton("5. Achivement Popups: Enabled", 174);
+            var btnAchievePopups = AddButton("5. Achievement Popups: " + (achievementPopups ? "Enabled" : "Disabled"), 174);
+            btnAchievePopups.OnClick += (sender) =>
+            {
+                achievementPopups = !achievementPopups;
+                btnAchievePopups.Text = "5. Achievement Popups: " + (achievementPopups ? "Enabled" : "Disabled");
+            };
 
-            var btnWindowFocusPause = AddButton("6. Window Focus Auto-Pause: On", 200);
+            var btnWindowFocusPause = AddButton("6. Window Focus Auto-Pause: " + (autoPause ? "On" : "Off"), 200);
+            btnWindowFocusPause.OnClick += (sender) =>
+            {
+                autoPause = !autoPause;
+                btnWindowFocusPause.Text = "6. Window Focus Auto-Pause: " + (autoPause ? "On" : "Off");
+            };
 
             // Modal screen
             Root.Singleton.Canvas.ModalFocus = pnWindow;
@@ -163,6 +192,10 @@ namespace FTLOverdrive.Client.Gamestate
                 Root.Singleton.Settings.WriteInt("Video", "ResX", currentres.Width);
                 Root.Singleton.Settings.WriteInt("Video", "ResY", currentres.Height);
                 Root.Singleton.Settings.WriteInt("Video", "Fullscreen", currentfs ? 1 : 0);
+                Root.Singleton.Settings.WriteInt("Video", "Hotkeys", hotkeys ? 1 : 0);
+                Root.Singleton.Settings.WriteInt("Video", "Backgrounds", backgrounds ? 1 : 0);
+                Root.Singleton.Settings.WriteInt("Video", "AchievementPopups", achievementPopups ? 1 : 0);
+                Root.Singleton.Settings.WriteInt("Video", "AutoPause", autoPause ? 1 : 0);
                 Root.Singleton.Settings.Save();
 
                 // Reset window if needed

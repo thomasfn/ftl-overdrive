@@ -103,7 +103,7 @@ namespace FTLOverdrive.Client.UI
             base.SetHovered(hovered);
             if (label != null)
                 UpdateColour();
-            if (hovered && (sndHover != null))
+            if (hovered && (sndHover != null) && Enabled)
             {
                 sndHover.Stop();
                 sndHover.Play();
