@@ -33,6 +33,10 @@ namespace FTLOverdrive.Client.Gamestate
             BindFunction("library.AddSystem", "library_AddSystem");
             BindFunction("library.AddRace", "library_AddRace");
             BindFunction("library.AddShip", "library_AddShip");
+            BindFunction("library.GetWeapon", "library_GetWeapon");
+            BindFunction("library.GetSystem", "library_GetSystem");
+            BindFunction("library.GetRace", "library_GetRace");
+            BindFunction("library.GetShip", "library_GetShip");
             BindFunction("library.CreateAnimation", "library_CreateAnimation");
             BindFunction("library.CreateRoom", "library_CreateRoom");
             BindFunction("library.CreateDoor", "library_CreateDoor");
@@ -137,6 +141,26 @@ namespace FTLOverdrive.Client.Gamestate
             var ship = new Library.Ship();
             Root.Singleton.mgrState.Get<Library>().AddShip(name, ship);
             return ship;
+        }
+
+        private Library.Weapon library_GetWeapon(string name)
+        {
+            return Root.Singleton.mgrState.Get<Library>().GetWeapon(name);
+        }
+
+        private Library.System library_GetSystem(string name)
+        {
+            return Root.Singleton.mgrState.Get<Library>().GetSystem(name);
+        }
+
+        private Library.Race library_GetRace(string name)
+        {
+            return Root.Singleton.mgrState.Get<Library>().GetRace(name);
+        }
+
+        private Library.Ship library_GetShip(string name)
+        {
+            return Root.Singleton.mgrState.Get<Library>().GetShip(name);
         }
 
         private Library.Animation library_CreateAnimation(int tilestart, int tileend, int speed)
