@@ -22,12 +22,16 @@ namespace FTLOverdrive.Client.Gamestate
         private Library.Ship currentship;
 
         private bool easymode;
+        private bool finishnow;
+        private bool firstActivation = true;
 
         public void OnActivate()
         {
             // Store window
             window = Root.Singleton.Window;
             rctScreen = Util.ScreenRect(window.Size.X, window.Size.Y, 1.7778f);
+            finishnow = false;
+            window.KeyPressed += new EventHandler<KeyEventArgs>(window_KeyPressed);
 
             // Load sprites
             var texBackground = Root.Singleton.Material("img/customizeUI/custom_main.png");
@@ -59,6 +63,10 @@ namespace FTLOverdrive.Client.Gamestate
             Util.LayoutControl(btnListShips, 64, 194, 62, 28, rctScreen);
             btnListShips.Parent = Root.Singleton.Canvas;
             btnListShips.Init();
+            btnListShips.OnClick += (sender) =>
+            {
+                Root.Singleton.mgrState.Activate<ShipSelection>();
+            };
 
             var btnShipLeft = new ImageButton();
             btnShipLeft.Image = Root.Singleton.Material("img/customizeUI/button_arrow_on.png");
@@ -67,11 +75,16 @@ namespace FTLOverdrive.Client.Gamestate
             btnShipLeft.Enabled = true;
             btnShipLeft.OnClick += (sender) =>
             {
+                Library.Ship ship;
                 var shiplist = Root.Singleton.mgrState.Get<Library>().GetShips();
                 int idx = shiplist.IndexOf(currentship.Name);
-                idx--;
-                if (idx < 0) idx = shiplist.Count - 1;
-                SetShip(Root.Singleton.mgrState.Get<Library>().GetShip(shiplist[idx]));
+                do
+                {
+                    idx--;
+                    if (idx < 0) idx = shiplist.Count - 1;
+                    ship = Root.Singleton.mgrState.Get<Library>().GetShip(shiplist[idx]);
+                } while (!ship.Unlocked);
+                SetShip(ship);
             };
             Util.LayoutControl(btnShipLeft, 30, 194, 32, 28, rctScreen);
             btnShipLeft.Parent = Root.Singleton.Canvas;
@@ -85,11 +98,16 @@ namespace FTLOverdrive.Client.Gamestate
             btnShipRight.FlipH = true;
             btnShipRight.OnClick += (sender) =>
             {
+                Library.Ship ship;
                 var shiplist = Root.Singleton.mgrState.Get<Library>().GetShips();
                 int idx = shiplist.IndexOf(currentship.Name);
-                idx++;
-                if (idx >= shiplist.Count) idx = 0;
-                SetShip(Root.Singleton.mgrState.Get<Library>().GetShip(shiplist[idx]));
+                do
+                {
+                    idx++;
+                    if (idx >= shiplist.Count) idx = 0;
+                    ship = Root.Singleton.mgrState.Get<Library>().GetShip(shiplist[idx]);
+                } while (!ship.Unlocked);
+                SetShip(ship);
             };
             Util.LayoutControl(btnShipRight, 128, 194, 32, 28, rctScreen);
             btnShipRight.Parent = Root.Singleton.Canvas;
@@ -145,6 +163,15 @@ namespace FTLOverdrive.Client.Gamestate
             btnStart.Init();
 
             // Locate the default ship
+            if (firstActivation)
+            {
+                SetShip(GetDefaultShip());
+            }
+            firstActivation = false;
+        }
+
+        private Library.Ship GetDefaultShip()
+        {
             var lib = Root.Singleton.mgrState.Get<Library>();
             var ships = lib.GetShips();
             foreach (var shipname in ships)
@@ -152,13 +179,13 @@ namespace FTLOverdrive.Client.Gamestate
                 var ship = lib.GetShip(shipname);
                 if (ship.Default)
                 {
-                    SetShip(ship);
-                    break;
+                    return ship;
                 }
             }
+            throw new Exception("No default ship!");
         }
 
-        private void SetShip(Library.Ship ship)
+        public void SetShip(Library.Ship ship)
         {
             // Set current ship
             currentship = ship;
@@ -172,14 +199,27 @@ namespace FTLOverdrive.Client.Gamestate
             Util.LayoutSprite(sprShip, 310, 0, 660, 450, rctScreen);
         }
 
+        private void window_KeyPressed(object sender, KeyEventArgs e)
+        {
+            // Finish if escape
+            if (e.Code == Keyboard.Key.Escape && Root.Singleton.Canvas.ModalFocus == null) finishnow = true;
+        }
+
         public void OnDeactivate()
         {
-            
+            Root.Singleton.Canvas.Clear();
         }
 
         public void Think(float delta)
         {
-            
+            if (finishnow)
+            {
+                // Close state
+                Root.Singleton.mgrState.Deactivate<NewGame>();
+
+                // Reopen main menu
+                Root.Singleton.mgrState.FSMTransist<MainMenu>();
+            }
         }
 
         public void Render(RenderStage stage)

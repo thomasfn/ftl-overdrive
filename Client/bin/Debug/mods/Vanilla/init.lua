@@ -55,6 +55,8 @@ local function LoadLibrary()
 	s.BaseGraphic = "img/ship/kestral_base.png"
 	s.CloakedGraphic = "img/ship/kestral_cloak.png"
 	s.ShieldGraphic = "img/ship/kestral_shields.png"
+	s.FloorGraphic = "img/ship/kestral_floor.png"
+	s.MiniGraphic = "img/customizeUI/miniship_kestral.png"
 	s.GibGraphics:Add( "img/ship/kestral_gib1.png" )
 	s.GibGraphics:Add( "img/ship/kestral_gib2.png" )
 	s.GibGraphics:Add( "img/ship/kestral_gib3.png" )
@@ -76,5 +78,27 @@ local function LoadLibrary()
 	s.BaseGraphic = "img/ship/circle_cruiser_base.png"
 	s.CloakedGraphic = "img/ship/circle_cruiser_cloak.png"
 	s.ShieldGraphic = "img/ship/circle_cruiser_shields.png"
+	s.FloorGraphic = "img/ship/circle_cruiser_floor.png"
+	s.MiniGraphic = "img/customizeUI/miniship_circle_cruiser.png"
+	
+	s = library.AddShip( "rock" )
+	s.DisplayName = "Rock Cruiser"
+	s.Unlocked = true
+	s.Default = false
+	s.BaseGraphic = "img/ship/rock_cruiser_base.png"
+	s.CloakedGraphic = "img/ship/rock_cruiser_cloak.png"
+	s.ShieldGraphic = "img/ship/rock_cruiser_shields.png"
+	s.FloorGraphic = "img/ship/rock_cruiser_floor.png"
+	s.MiniGraphic = "img/customizeUI/miniship_rock_cruiser.png"
+	
+	s = library.AddShip( "fed" )
+	s.DisplayName = "Federation Cruiser"
+	s.Unlocked = false
+	s.Default = false
+	s.BaseGraphic = "img/ship/fed_cruiser_base.png"
+	s.CloakedGraphic = "img/ship/fed_cruiser_cloak.png"
+	s.ShieldGraphic = "img/ship/fed_cruiser_shields.png"
+	s.FloorGraphic = "img/ship/fed_cruiser_floor.png"
+	s.MiniGraphic = "img/customizeUI/miniship_fed_cruiser.png"
 end
 hook.Add( "Game.LoadLibrary", LoadLibrary )
