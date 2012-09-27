@@ -92,7 +92,7 @@ namespace FTLOverdrive.Client.UI
             if ((!pressed) && (!mousemoveevent) && (OnClick != null)) OnClick(this);
         }
 
-        public void UpdateImage()
+        public virtual void UpdateImage()
         {
             if (Enabled)
             {

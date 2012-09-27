@@ -80,6 +80,8 @@ namespace FTLOverdrive.Client.Gamestate
             public string BaseGraphic { get; set; }
             public string CloakedGraphic { get; set; }
             public string ShieldGraphic { get; set; }
+            public string FloorGraphic { get; set; }
+            public string MiniGraphic { get; set; }
             public List<string> GibGraphics { get; set; }
 
             public List<string> Weapons { get; set; }

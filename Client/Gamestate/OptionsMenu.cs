@@ -50,6 +50,12 @@ namespace FTLOverdrive.Client.Gamestate
         private bool backgrounds;
         private bool achievementPopups;
         private bool autoPause;
+        private TextButton btnResolution;
+        private TextButton btnFullscreen;
+        private TextButton btnHotkeys;
+        private TextButton btnDynamicBackgrounds;
+        private TextButton btnAchievePopups;
+        private TextButton btnWindowFocusPause;
 
         private bool windowresetneeded, finishnow;
 
@@ -97,53 +103,53 @@ namespace FTLOverdrive.Client.Gamestate
             lblTitle.Parent = pnWindow;
             lblTitle.Init();
 
-            var btnResolution = AddButton("1. Resolution: " + currentres.ToString(), 70);
+            btnResolution = AddButton(70);
             btnResolution.OnClick += (sender) =>
             {
                 int i = resolutions.IndexOf(currentres);
                 i++;
                 if (i >= resolutions.Count) i = 0;
                 currentres = resolutions[i];
-                btnResolution.Text = "1. Resolution: " + currentres.ToString();
+                updateButtons();
                 windowresetneeded = true;
             };
 
-            var btnFullscreen = AddButton("2. Fullscreen: " + (currentfs ? "On" : "Off"), 96);
+            btnFullscreen = AddButton(96);
             btnFullscreen.OnClick += (sender) =>
             {
                 currentfs = !currentfs;
-                btnFullscreen.Text = "2. Fullscreen: " + (currentfs ? "On" : "Off");
+                updateButtons();
                 windowresetneeded = true;
             };
 
-            var btnHotkeys = AddButton("3. Numerical hotkeys in dialog boxes: " + (hotkeys ? "Enabled" : "Disabled"), 122);
+            btnHotkeys = AddButton(122);
             btnHotkeys.OnClick += (sender) =>
             {
                 hotkeys = !hotkeys;
-                btnHotkeys.Text = "3. Numerical hotkeys in dialog boxes: " + (hotkeys ? "Enabled" : "Disabled");
-                windowresetneeded = true;
+                updateButtons();
             };
 
-            var btnDynamicBackgrounds = AddButton("4. Dynamic Backgrounds: " + (backgrounds ? "Enabled" : "Disabled"), 148);
+            btnDynamicBackgrounds = AddButton(148);
             btnDynamicBackgrounds.OnClick += (sender) =>
             {
                 backgrounds = !backgrounds;
-                btnDynamicBackgrounds.Text = "4. Dynamic Backgrounds: " + (backgrounds ? "Enabled" : "Disabled");
+                updateButtons();
             };
 
-            var btnAchievePopups = AddButton("5. Achievement Popups: " + (achievementPopups ? "Enabled" : "Disabled"), 174);
+            btnAchievePopups = AddButton(174);
             btnAchievePopups.OnClick += (sender) =>
             {
                 achievementPopups = !achievementPopups;
-                btnAchievePopups.Text = "5. Achievement Popups: " + (achievementPopups ? "Enabled" : "Disabled");
+                updateButtons();
             };
 
-            var btnWindowFocusPause = AddButton("6. Window Focus Auto-Pause: " + (autoPause ? "On" : "Off"), 200);
+            btnWindowFocusPause = AddButton(200);
             btnWindowFocusPause.OnClick += (sender) =>
             {
                 autoPause = !autoPause;
-                btnWindowFocusPause.Text = "6. Window Focus Auto-Pause: " + (autoPause ? "On" : "Off");
+                updateButtons();
             };
+            updateButtons();
 
             // Modal screen
             Root.Singleton.Canvas.ModalFocus = pnWindow;
@@ -155,14 +161,14 @@ namespace FTLOverdrive.Client.Gamestate
             if (e.Code == Keyboard.Key.Escape) finishnow = true;
         }
 
-        private TextButton AddButton(string text, int y)
+        private TextButton AddButton(int y)
         {
             var btn = new TextButton();
             btn.Colour = Color.White;
             btn.HoveredColour = Color.Yellow;
             btn.DisabledColour = new Color(128, 128, 128);
             btn.DepressedColour = Color.Yellow;
-            btn.Text = text;
+            btn.Text = "";
             btn.Font = Root.Singleton.Font("fonts/JustinFont12Bold.ttf");
             btn.Scale = 0.475f;
             btn.X = 25;
@@ -171,6 +177,16 @@ namespace FTLOverdrive.Client.Gamestate
             btn.Parent = pnWindow;
             btn.Init();
             return btn;
+        }
+
+        private void updateButtons()
+        {
+            btnResolution.Text = "1. Resolution: " + currentres.ToString();
+            btnFullscreen.Text = "2. Fullscreen: " + (currentfs ? "On" : "Off");
+            btnHotkeys.Text = "3. Numerical hotkeys in dialog boxes: " + (hotkeys ? "Enabled" : "Disabled");
+            btnDynamicBackgrounds.Text = "4. Dynamic Backgrounds: " + (backgrounds ? "Enabled" : "Disabled");
+            btnAchievePopups.Text = "5. Achievement Popups: " + (achievementPopups ? "Enabled" : "Disabled");
+            btnWindowFocusPause.Text = "6. Window Focus Auto-Pause: " + (autoPause ? "On" : "Off");
         }
 
         public void OnDeactivate()
