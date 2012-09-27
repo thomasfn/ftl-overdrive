@@ -76,7 +76,9 @@
     <Compile Include="UI\ImagePanel.cs" />
     <Compile Include="UI\Label.cs" />
     <Compile Include="UI\Panel.cs" />
+    <Compile Include="UI\SystemBox.cs" />
     <Compile Include="UI\TextButton.cs" />
+    <Compile Include="UI\ImageToggleButton.cs" />
     <Compile Include="Util.cs" />
   </ItemGroup>
   <ItemGroup>

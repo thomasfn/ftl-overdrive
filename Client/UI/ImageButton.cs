@@ -18,6 +18,8 @@ namespace FTLOverdrive.Client.UI
         public Texture DepressedImage { get; set; }
         public Texture DisabledImage { get; set; }
 
+        public float ImageScale { get; set; }
+
         public bool FlipH { get; set; }
 
         private SoundBuffer snd;
@@ -51,6 +53,12 @@ namespace FTLOverdrive.Client.UI
             }
         }
 
+        public ImageButton()
+        {
+            ImageScale = 1.0f;
+            Enabled = true;
+        }
+
         public override void Init()
         {
             sprButton = new Sprite(Image);
@@ -62,16 +70,11 @@ namespace FTLOverdrive.Client.UI
         protected override void UpdateLayout()
         {
             base.UpdateLayout();
-            if (FlipH)
-            {
-                sprButton.Position = new SFML.Window.Vector2f(AbsX + Width, AbsY);
-                sprButton.Scale = Util.Scale(sprButton, new SFML.Window.Vector2f(-Width, Height));
-            }
+            sprButton.Position = new SFML.Window.Vector2f(AbsX + (Width / 2), AbsY + (Height / 2));
+            if (FlipH)   
+                sprButton.Scale = Util.Scale(sprButton, new SFML.Window.Vector2f(-Width, Height), ImageScale);
             else
-            {
-                sprButton.Position = new SFML.Window.Vector2f(AbsX, AbsY);
-                sprButton.Scale = Util.Scale(sprButton, new SFML.Window.Vector2f(Width, Height));
-            }
+                sprButton.Scale = Util.Scale(sprButton, new SFML.Window.Vector2f(Width, Height), ImageScale);
         }
 
         public override void SetHovered(bool hovered)
@@ -89,7 +92,13 @@ namespace FTLOverdrive.Client.UI
         {
             base.SetPressed(pressed, mousemoveevent);
             UpdateImage();
-            if ((!pressed) && (!mousemoveevent) && (OnClick != null)) OnClick(this);
+            if ((!pressed) && (!mousemoveevent))
+                DoClick();
+        }
+
+        protected virtual void DoClick()
+        {
+            if (OnClick != null) OnClick(this);
         }
 
         public virtual void UpdateImage()
@@ -110,6 +119,7 @@ namespace FTLOverdrive.Client.UI
                 else
                     sprButton.Texture = Image;
             }
+            sprButton.Origin = new SFML.Window.Vector2f(sprButton.Texture.Size.X * 0.5f, sprButton.Texture.Size.Y * 0.5f);
             UpdateLayout();
         }
 

@@ -34,6 +34,8 @@ namespace FTLOverdrive.Client.Gamestate
             public string OverlayGraphic { get; set; }
             public List<string> IconGraphics { get; set; }
 
+            public int Order { get; set; }
+
             public int MinPower { get; set; }
             public int MaxPower { get; set; }
 
@@ -127,10 +129,13 @@ namespace FTLOverdrive.Client.Gamestate
             public Room() { Doors = new List<Door>(); }
         }
 
+        public enum DoorDirection { Left, Up, Right, Down };
+
         public class Door
         {
-            public float X { get; set; }
-            public float Y { get; set; }
+            public int X { get; set; }
+            public int Y { get; set; }
+            public DoorDirection Direction { get; set; }
         }
 
         private Dictionary<string, Weapon> dctWeapons;

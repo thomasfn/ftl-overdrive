@@ -62,7 +62,14 @@ namespace FTLOverdrive.Client.Gamestate
                 else
                     try
                     {
-                        luastate.DoFile(initfile);
+                        LuaFunction func = luastate.LoadFile(initfile);
+                        luastate.NewTable("tmp");
+                        luastate.LoadString("setmetatable( _G.tmp, { __index = _G } )", "hackyhacks").Call();
+                        LuaTable env = luastate["tmp"] as LuaTable;
+                        env["FOLDERNAME"] = folder;
+                        luastate["tmp2"] = func;
+                        luastate.LoadString("setfenv( _G.tmp2, _G.tmp )", "hackyhacks").Call();
+                        func.Call();
                     }
                     catch (LuaException ex)
                     {
@@ -173,9 +180,15 @@ namespace FTLOverdrive.Client.Gamestate
             return new Library.Room() { MinX = minX, MinY = minY, MaxX = maxX, MaxY = maxY };
         }
 
-        private Library.Door library_CreateDoor(float x, float y)
+        private Library.Door library_CreateDoor(int x, int y, string dir)
         {
-            return new Library.Door() { X = x, Y = y };
+            var doordir =
+                dir == "up" ? Library.DoorDirection.Up :
+                dir == "down" ? Library.DoorDirection.Down :
+                dir == "left" ? Library.DoorDirection.Left :
+                    Library.DoorDirection.Right;
+
+            return new Library.Door() { X = x, Y = y, Direction = doordir };
         }
 
         #endregion

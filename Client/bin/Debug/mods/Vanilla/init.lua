@@ -5,6 +5,8 @@
 	Loads the vanilla content into the game
 --]]
 
+dofile( FOLDERNAME .. "/kestral.lua" )
+
 local function LoadLibrary()
 	-- Notify console
 	print( "[Vanilla] Loading content..." )
@@ -29,6 +31,25 @@ local function LoadLibrary()
 	--s.SubSystem = true -- This crashes for some reason?
 	s.MinPower = 1
 	s.MaxPower = 3
+	s.Order = 0
+	
+	s = library.AddSystem( "o2" )
+	s.DisplayName = "Oxygen Generator"
+	s.OverlayGraphic = "img/icons/s_oxygen_overlay.png"
+	s.IconGraphics:Add( "img/icons/s_oxygen_red1.png" )
+	s.IconGraphics:Add( "img/icons/s_oxygen_green1.png" )
+	s.MinPower = 1
+	s.MaxPower = 3
+	s.Order = 4
+	
+	s = library.AddSystem( "engines" )
+	s.DisplayName = "Engines"
+	s.OverlayGraphic = "img/icons/s_engines_overlay.png"
+	s.IconGraphics:Add( "img/icons/s_engines_red1.png" )
+	s.IconGraphics:Add( "img/icons/s_engines_green1.png" )
+	s.MinPower = 2
+	s.MaxPower = 6
+	s.Order = 6
 	
 	-- Add races
 	local r = library.AddRace( "human_male" )
@@ -48,29 +69,7 @@ local function LoadLibrary()
 	-- todo: the rest of the animations
 	
 	-- Add ships
-	local s = library.AddShip( "kestral" )
-	s.DisplayName = "The Kestral"
-	s.Unlocked = true
-	s.Default = true
-	s.BaseGraphic = "img/ship/kestral_base.png"
-	s.CloakedGraphic = "img/ship/kestral_cloak.png"
-	s.ShieldGraphic = "img/ship/kestral_shields.png"
-	s.FloorGraphic = "img/ship/kestral_floor.png"
-	s.MiniGraphic = "img/customizeUI/miniship_kestral.png"
-	s.GibGraphics:Add( "img/ship/kestral_gib1.png" )
-	s.GibGraphics:Add( "img/ship/kestral_gib2.png" )
-	s.GibGraphics:Add( "img/ship/kestral_gib3.png" )
-	s.GibGraphics:Add( "img/ship/kestral_gib4.png" )
-	s.GibGraphics:Add( "img/ship/kestral_gib5.png" )
-	s.GibGraphics:Add( "img/ship/kestral_gib6.png" )
-	s.Weapons:Add( "artemis" )
-	s.Crew:Add( "human_male" )
-	local r = library.CreateRoom( 1, 1, 2, 1 )
-	r.BackgroundGraphic = "img/ship/interior/room_oxygen_2.png"
-	r.Doors:Add( library.CreateDoor( 0.5, 1 ) )
-	r.Doors:Add( library.CreateDoor( 1.5, 1 ) )
-	s.Rooms:Add( r )
-	
+	-- todo: move these to seperate files
 	s = library.AddShip( "engi" )
 	s.DisplayName = "Engi Cruiser"
 	s.Unlocked = true
