@@ -21,6 +21,8 @@ namespace FTLOverdrive.Client.Gamestate
 
         private Library.Ship currentship;
 
+        private TextEntry tbShipName;
+
         private List<ImageButton> lstSystems;
 
         private bool easymode;
@@ -54,10 +56,24 @@ namespace FTLOverdrive.Client.Gamestate
             btnRenameShip.HoveredImage = Root.Singleton.Material("img/customizeUI/button_name_select2.png");
             btnRenameShip.DisabledImage = Root.Singleton.Material("img/customizeUI/button_name_off.png");
             btnRenameShip.Enabled = true;
+            btnRenameShip.OnClick += (sender) =>
+            {
+                tbShipName.EditMode = true;
+                Root.Singleton.Canvas.Focus = tbShipName;
+            };
             btnRenameShip.HoverSound = Root.Singleton.Sound("audio/waves/ui/select_light1.wav");
             Util.LayoutControl(btnRenameShip, 8, 8, 95, 33, rctScreen);
             btnRenameShip.Parent = pnRename;
             btnRenameShip.Init();
+
+            tbShipName = new TextEntry();
+            tbShipName.Centered = true;
+            tbShipName.AutoScale = false;
+            tbShipName.Font = Root.Singleton.Font("fonts/num_font.ttf");
+            tbShipName.Text = "test";
+            Util.LayoutControl(tbShipName, 115, 4, 320, 33, rctScreen);
+            tbShipName.Parent = pnRename;
+            tbShipName.Init();
 
             var btnListShips = new ImageButton();
             btnListShips.Image = Root.Singleton.Material("img/customizeUI/button_list_on.png");
@@ -285,6 +301,8 @@ namespace FTLOverdrive.Client.Gamestate
             sprShip = new Sprite(Root.Singleton.Material(ship.BaseGraphic));
             sprShip.Texture.Smooth = true;
             Util.LayoutSprite(sprShip, 310, 0, 660, 450, rctScreen);
+
+            tbShipName.Text = ship.DisplayName;
 
             lstSystems = new List<ImageButton>();
             var systems = currentship.Systems;
