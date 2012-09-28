@@ -25,6 +25,11 @@ local function Kestral()
 	s.GibGraphics:Add( "img/ship/kestral_gib5.png" )
 	s.GibGraphics:Add( "img/ship/kestral_gib6.png" )
 	
+	-- Floor settings
+	s.FloorOffsetX = 69
+	s.FloorOffsetY = 120
+	s.TileSize = 34
+	
 	-- Starter weapons
 	s.Weapons:Add( "artemis" )
 	
@@ -58,5 +63,51 @@ local function Kestral()
 	r.Doors:Add( library.CreateDoor( 1, 3, "right" ) )
 	r.Doors:Add( library.CreateDoor( 1, 4, "right" ) )
 	s.Rooms:Add( r )
+	
+	r = library.CreateRoom( 2, 5, 3, 5 )
+	s.Rooms:Add( r )
+	
+	r = library.CreateRoom( 4, 5, 5, 5 )
+	s.Rooms:Add( r )
+	
+	r = library.CreateRoom( 5, 3, 6, 4 )
+	r.System = "weapons"
+	s.Rooms:Add( r )
+	
+	r = library.CreateRoom( 7, 1, 8, 1 )
+	s.Rooms:Add( r )
+	
+	r = library.CreateRoom( 7, 2, 8, 3 )
+	s.Rooms:Add( r )
+	
+	r = library.CreateRoom( 7, 4, 8, 5 )
+	s.Rooms:Add( r )
+	
+	r = library.CreateRoom( 7, 6, 8, 6 )
+	s.Rooms:Add( r )
+	
+	r = library.CreateRoom( 9, 2, 10, 3 )
+	r.System = "medbay"
+	s.Rooms:Add( r )
+	
+	r = library.CreateRoom( 9, 4, 10, 5 )
+	r.System = "shields"
+	s.Rooms:Add( r )
+	
+	r = library.CreateRoom( 11, 3, 12, 3 )
+	r.System = "doorcontrol"
+	s.Rooms:Add( r )
+	
+	r = library.CreateRoom( 11, 4, 12, 4 )
+	r.System = "sensors"
+	s.Rooms:Add( r )
+	
+	r = library.CreateRoom( 13, 3, 14, 4 )
+	s.Rooms:Add( r )
+	
+	r = library.CreateRoom( 15, 3, 15, 4 )
+	r.System = "bridge"
+	s.Rooms:Add( r )
+
 end
 hook.Add( "Game.LoadLibrary", Kestral )

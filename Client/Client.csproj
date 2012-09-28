@@ -70,6 +70,7 @@
     <Compile Include="Gamestate\StateController.cs" />
     <Compile Include="Gamestate\ThreadedBase.cs" />
     <Compile Include="SettingsFile.cs" />
+    <Compile Include="Ship\Interior.cs" />
     <Compile Include="UI\Canvas.cs" />
     <Compile Include="UI\Control.cs" />
     <Compile Include="UI\ImageButton.cs" />

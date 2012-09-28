@@ -79,6 +79,10 @@ namespace FTLOverdrive.Client.Gamestate
             public bool Unlocked { get; set; }
             public bool Default { get; set; }
 
+            public int FloorOffsetX { get; set; }
+            public int FloorOffsetY { get; set; }
+            public int TileSize { get; set; }
+
             public string BaseGraphic { get; set; }
             public string CloakedGraphic { get; set; }
             public string ShieldGraphic { get; set; }

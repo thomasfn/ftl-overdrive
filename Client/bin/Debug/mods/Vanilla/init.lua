@@ -33,6 +33,33 @@ local function LoadLibrary()
 	s.MaxPower = 3
 	s.Order = 0
 	
+	s = library.AddSystem( "doorcontrol" )
+	s.DisplayName = "Door Control"
+	s.OverlayGraphic = "img/icons/s_doors_overlay.png"
+	s.IconGraphics:Add( "img/icons/s_doors_red1.png" )
+	s.IconGraphics:Add( "img/icons/s_doors_green1.png" )
+	s.MinPower = 1
+	s.MaxPower = 3
+	s.Order = 1
+	
+	s = library.AddSystem( "sensors" )
+	s.DisplayName = "Sensors"
+	s.OverlayGraphic = "img/icons/s_sensors_overlay.png"
+	s.IconGraphics:Add( "img/icons/s_sensors_red1.png" )
+	s.IconGraphics:Add( "img/icons/s_sensors_green1.png" )
+	s.MinPower = 1
+	s.MaxPower = 3
+	s.Order = 2
+	
+	s = library.AddSystem( "medbay" )
+	s.DisplayName = "Medical Bay"
+	s.OverlayGraphic = "img/icons/s_medbay_overlay.png"
+	s.IconGraphics:Add( "img/icons/s_medbay_red1.png" )
+	s.IconGraphics:Add( "img/icons/s_medbay_green1.png" )
+	s.MinPower = 1
+	s.MaxPower = 3
+	s.Order = 3
+	
 	s = library.AddSystem( "o2" )
 	s.DisplayName = "Oxygen Generator"
 	s.OverlayGraphic = "img/icons/s_oxygen_overlay.png"
@@ -42,6 +69,15 @@ local function LoadLibrary()
 	s.MaxPower = 3
 	s.Order = 4
 	
+	s = library.AddSystem( "shields" )
+	s.DisplayName = "Shields"
+	s.OverlayGraphic = "img/icons/s_shields_overlay.png"
+	s.IconGraphics:Add( "img/icons/s_shields_red1.png" )
+	s.IconGraphics:Add( "img/icons/s_shields_green1.png" )
+	s.MinPower = 2
+	s.MaxPower = 8
+	s.Order = 5
+	
 	s = library.AddSystem( "engines" )
 	s.DisplayName = "Engines"
 	s.OverlayGraphic = "img/icons/s_engines_overlay.png"
@@ -50,6 +86,15 @@ local function LoadLibrary()
 	s.MinPower = 2
 	s.MaxPower = 6
 	s.Order = 6
+	
+	s = library.AddSystem( "weapons" )
+	s.DisplayName = "Weapons"
+	s.OverlayGraphic = "img/icons/s_weapons_overlay.png"
+	s.IconGraphics:Add( "img/icons/s_weapons_red1.png" )
+	s.IconGraphics:Add( "img/icons/s_weapons_green1.png" )
+	s.MinPower = 3
+	s.MaxPower = 8
+	s.Order = 7
 	
 	-- Add races
 	local r = library.AddRace( "human_male" )

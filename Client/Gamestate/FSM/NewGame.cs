@@ -16,6 +16,7 @@ namespace FTLOverdrive.Client.Gamestate
 
         private Sprite sprBackground;
         private Sprite sprShip;
+        private Sprite sprInterior;
 
         private ImagePanel pnRename;
 
@@ -24,6 +25,9 @@ namespace FTLOverdrive.Client.Gamestate
         private TextEntry tbShipName;
 
         private List<ImageButton> lstSystems;
+
+        private Ship.Interior interior;
+        private RenderTexture rtInterior;
 
         private bool easymode;
         private bool hiderooms;
@@ -289,6 +293,8 @@ namespace FTLOverdrive.Client.Gamestate
 
             // Remove old UI
             if (sprShip != null) sprShip.Dispose();
+            if (sprInterior != null) sprInterior.Dispose();
+            if (rtInterior != null) rtInterior.Dispose();
             if (lstSystems != null)
             {
                 foreach (var system in lstSystems)
@@ -301,6 +307,12 @@ namespace FTLOverdrive.Client.Gamestate
             sprShip = new Sprite(Root.Singleton.Material(ship.BaseGraphic));
             sprShip.Texture.Smooth = true;
             Util.LayoutSprite(sprShip, 310, 0, 660, 450, rctScreen);
+
+            interior = new Ship.Interior(ship);
+            rtInterior = interior.CreateRender(660, 450);
+            sprInterior = new Sprite(rtInterior.Texture);
+            sprInterior.Texture.Smooth = true;
+            Util.LayoutSprite(sprInterior, 310, 0, 660, 450, rctScreen);
 
             tbShipName.Text = ship.DisplayName;
 
@@ -375,6 +387,7 @@ namespace FTLOverdrive.Client.Gamestate
             {
                 window.Draw(sprBackground);
                 window.Draw(sprShip);
+                window.Draw(sprInterior);
             }
         }
     }
