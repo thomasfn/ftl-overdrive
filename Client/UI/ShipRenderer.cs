@@ -158,7 +158,7 @@ namespace FTLOverdrive.Client.UI
             // Textures
             Texture baseGraphic = Root.Singleton.Material(Ship.BaseGraphic, true);
             Texture floorGraphic = Root.Singleton.Material(Ship.FloorGraphic, true);
-            Texture doorGraphic = Root.Singleton.Material("img/door_placeholder.png");
+            Texture doorGraphic = Root.Singleton.Material("img/door_placeholder.png", false);
             // TODO use proper door textures (animations, different types, etc.)
 
             var rtWidth = baseGraphic.Size.X;
