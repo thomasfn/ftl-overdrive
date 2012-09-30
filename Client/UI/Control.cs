@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 using SFML.Graphics;
+using SFML.Window;
 
 namespace FTLOverdrive.Client.UI
 {
@@ -183,12 +182,29 @@ namespace FTLOverdrive.Client.UI
                 c.Remove();
             children.Clear();
         }
-
         public virtual void Remove()
         {
             Removed = true;
             Parent = null;
             Clear();
+        }
+
+        public virtual void FocusGained()
+        {
+
+        }
+        public virtual void FocusLost()
+        {
+
+        }
+
+        public virtual void KeyPress(Keyboard.Key key, bool pressed)
+        {
+
+        }
+        public virtual void TextEntered(string txt)
+        {
+
         }
         
     }

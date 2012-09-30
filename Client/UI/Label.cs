@@ -15,7 +15,8 @@ namespace FTLOverdrive.Client.UI
 
         private Text label;
 
-        
+        public bool Centered { get; set; }
+        public bool AutoScale { get; set; }
 
         private string _text;
         public string Text
@@ -27,21 +28,32 @@ namespace FTLOverdrive.Client.UI
                 if (label != null)
                 {
                     label.DisplayedString = value;
-                    var bounds = label.GetLocalBounds();
-                    Height = (int)bounds.Height;
-                    Width = (int)bounds.Width;
+                    UpdateScale();
+                    UpdateLayout();
                 }
             }
+        }
+
+        public Label()
+        {
+            AutoScale = true;
+            Scale = 1.0f;
         }
 
         public override void Init()
         {
             label = new Text(Text, Font);
             label.Scale = new SFML.Window.Vector2f(Scale, Scale);
+            UpdateScale();
+            base.Init();
+        }
+
+        private void UpdateScale()
+        {
+            if (!AutoScale) return;
             var bounds = label.GetLocalBounds();
             Height = (int)bounds.Height;
             Width = (int)bounds.Width;
-            base.Init();
         }
 
         protected override void UpdateLayout()
@@ -49,7 +61,13 @@ namespace FTLOverdrive.Client.UI
             base.UpdateLayout();
             if (label != null)
             {
-                label.Position = new SFML.Window.Vector2f(AbsX, AbsY);
+                if (Centered)
+                {
+                    var bounds = label.GetLocalBounds();
+                    label.Position = new SFML.Window.Vector2f(AbsX + (Width * 0.5f) - (bounds.Width * 0.5f), AbsY + (Height * 0.5f) - (bounds.Height * 0.5f));
+                }
+                else
+                    label.Position = new SFML.Window.Vector2f(AbsX, AbsY);
             }
         }
 

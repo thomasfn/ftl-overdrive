@@ -64,7 +64,14 @@ namespace FTLOverdrive.Client.Gamestate
                 else
                     try
                     {
-                        luastate.DoFile(initfile);
+                        LuaFunction func = luastate.LoadFile(initfile);
+                        luastate.NewTable("tmp");
+                        luastate.LoadString("setmetatable( _G.tmp, { __index = _G } )", "hackyhacks").Call();
+                        LuaTable env = luastate["tmp"] as LuaTable;
+                        env["FOLDERNAME"] = folder;
+                        luastate["tmp2"] = func;
+                        luastate.LoadString("setfenv( _G.tmp2, _G.tmp )", "hackyhacks").Call();
+                        func.Call();
                     }
                     catch (LuaException ex)
                     {
@@ -195,6 +202,7 @@ namespace FTLOverdrive.Client.Gamestate
         }
 
         #endregion
+
 
         private Ship NewShip()
         {

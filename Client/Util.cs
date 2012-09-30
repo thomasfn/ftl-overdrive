@@ -11,9 +11,9 @@ namespace FTLOverdrive.Client
 {
     public static class Util
     {
-        public static Vector2f Scale(Sprite spr, Vector2f pixelsize)
+        public static Vector2f Scale(Sprite spr, Vector2f pixelsize, float mult = 1.0f)
         {
-            return new Vector2f(pixelsize.X / (float)spr.Texture.Size.X, pixelsize.Y / (float)spr.Texture.Size.Y);
+            return new Vector2f(pixelsize.X / (float)spr.Texture.Size.X, pixelsize.Y / (float)spr.Texture.Size.Y) * mult;
         }
 
         public static IntRect ScreenRect(uint w, uint h, float aspect)
@@ -59,7 +59,7 @@ namespace FTLOverdrive.Client
 
             if (Directory.Exists(progfiles + "/FTL"))
             {
-                return progfiles + "/FTL";
+                return progfiles + "/FTL/";
             }
 
             // Next, locate steam

@@ -21,6 +21,7 @@ namespace FTLOverdrive.Client.Gamestate
         {
             public int Width { get; set; }
             public int Height { get; set; }
+            public ResolutionSetting(int w, int h) { Width = w; Height = h; }
             public override string ToString()
             {
                 return Width.ToString() + " x " + Height.ToString();
@@ -40,8 +41,16 @@ namespace FTLOverdrive.Client.Gamestate
 
         private static readonly List<ResolutionSetting> resolutions = new List<ResolutionSetting>()
         {
-            new ResolutionSetting() { Width = 1024, Height = 600 },
-            new ResolutionSetting() { Width = 1024, Height = 768 }
+            new ResolutionSetting(800, 600),
+            new ResolutionSetting(1024, 600),
+            new ResolutionSetting(1024, 720),
+            new ResolutionSetting(1024, 768),
+            new ResolutionSetting(1280, 720),
+            new ResolutionSetting(1280, 768),
+            new ResolutionSetting(1360, 720),
+            new ResolutionSetting(1360, 768),
+            new ResolutionSetting(1366, 720),
+            new ResolutionSetting(1366, 768)
         };
 
         private ResolutionSetting currentres;
@@ -69,11 +78,10 @@ namespace FTLOverdrive.Client.Gamestate
             window.KeyPressed += new EventHandler<KeyEventArgs>(window_KeyPressed);
 
             // Load settings
-            currentres = new ResolutionSetting()
-            {
-                Width = Root.Singleton.Settings.ReadInt("Video", "ResX"),
-                Height = Root.Singleton.Settings.ReadInt("Video", "ResY")
-            };
+            currentres = new ResolutionSetting(
+                Root.Singleton.Settings.ReadInt("Video", "ResX"),
+                Root.Singleton.Settings.ReadInt("Video", "ResY")
+            );
             currentfs = Root.Singleton.Settings.ReadInt("Video", "Fullscreen") == 1;
             hotkeys = Root.Singleton.Settings.ReadInt("Video", "Hotkeys") == 1;
             backgrounds = Root.Singleton.Settings.ReadInt("Video", "Backgrounds") == 1;

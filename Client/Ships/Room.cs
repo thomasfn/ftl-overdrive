@@ -18,6 +18,26 @@ namespace FTLOverdrive.Client.Ships
         public abstract IEnumerable<Tile> GetTiles();
         public abstract IntRect GetBoundingBox();
 
+        private string system = "";
+        public string System
+        {
+            get
+            {
+                return system;
+            }
+            set
+            {
+                system = value;
+                Ship.DoShipModified();
+            }
+        }
+
+        public Room SetSystem(string sys)
+        {
+            System = sys;
+            return this;
+        }
+
         private string backgroundGraphic;
         public string BackgroundGraphic
         {
@@ -28,8 +48,14 @@ namespace FTLOverdrive.Client.Ships
             set
             {
                 backgroundGraphic = value;
-                Ship.OnShipModified();
+                Ship.DoShipModified();
             }
+        }
+
+        public Room SetBackgroundGraphic(string bgGraphic)
+        {
+            BackgroundGraphic = bgGraphic;
+            return this;
         }
 
         public Room(Ship ship, int id, float x = 0, float y = 0)
@@ -76,7 +102,7 @@ namespace FTLOverdrive.Client.Ships
                 set
                 {
                     oxygen = value;
-                    Room.Ship.OnShipModified();
+                    Room.Ship.DoShipModified();
                 }
             }
 
@@ -91,7 +117,7 @@ namespace FTLOverdrive.Client.Ships
                 set
                 {
                     breach = value;
-                    Room.Ship.OnShipModified();
+                    Room.Ship.DoShipModified();
                 }
             }
 
@@ -105,7 +131,7 @@ namespace FTLOverdrive.Client.Ships
                 set
                 {
                     fire = value;
-                    Room.Ship.OnShipModified();
+                    Room.Ship.DoShipModified();
                 }
             }
 

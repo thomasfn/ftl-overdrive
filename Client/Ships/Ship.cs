@@ -4,13 +4,14 @@ using System.Linq;
 using System.Text;
 
 using SFML.Graphics;
+using FTLOverdrive.Client.Gamestate;
 
 namespace FTLOverdrive.Client.Ships
 {
     public class Ship
     {
-        public delegate void ShipMidifiedHandler(Ship sender);
-        public event ShipMidifiedHandler ShipMidified;
+        public delegate void ShipModifiedHandler(Ship sender);
+        public event ShipModifiedHandler ShipModified;
 
         public string Name { get; set; }
 
@@ -26,7 +27,7 @@ namespace FTLOverdrive.Client.Ships
             set
             {
                 baseGraphic = value;
-                OnShipModified();
+                DoShipModified();
             }
         }
         private string cloackedGraphic;
@@ -39,7 +40,7 @@ namespace FTLOverdrive.Client.Ships
             set
             {
                 cloackedGraphic = value;
-                OnShipModified();
+                DoShipModified();
             }
         }
         private string shildGraphic;
@@ -52,7 +53,7 @@ namespace FTLOverdrive.Client.Ships
             set
             {
                 shildGraphic = value;
-                OnShipModified();
+                DoShipModified();
             }
         }
         private string floorGraphic;
@@ -65,7 +66,7 @@ namespace FTLOverdrive.Client.Ships
             set
             {
                 floorGraphic = value;
-                OnShipModified();
+                DoShipModified();
             }
         }
         private List<string> gibGraphics;
@@ -78,15 +79,15 @@ namespace FTLOverdrive.Client.Ships
             set
             {
                 gibGraphics = value;
-                OnShipModified();
+                DoShipModified();
             }
         }
 
         #endregion
 
-        public void OnShipModified()
+        public void DoShipModified()
         {
-            if (ShipMidified != null) { ShipMidified(this); }
+            if (ShipModified != null) { ShipModified(this); }
         }
 
         public Dictionary<int, Room> Rooms { get; set; }
@@ -101,6 +102,38 @@ namespace FTLOverdrive.Client.Ships
 
         public float FloorOffsetX { get; set; }
         public float FloorOffsetY { get; set; }
+
+        public List<Library.System> Systems
+        {
+            get
+            {
+                var res = new List<Library.System>();
+                foreach (var room in Rooms.Values)
+                {
+                    if (room.System == "") continue;
+
+                    var system = Root.Singleton.mgrState.Get<Library>().GetSystem(room.System);
+                    if (system != null)
+                    {
+                        res.Add(system);
+                    }
+                    else
+                    {
+                        Root.Singleton.Log("Invalid system '" + room.System + "'");
+                    }
+                }
+                res.Sort((a, b) =>
+                {
+                    if (a.Order < b.Order)
+                        return -1;
+                    else if (a.Order == b.Order)
+                        return 0;
+                    else
+                        return 1;
+                });
+                return res;
+            }
+        }
 
         public Ship()
         {

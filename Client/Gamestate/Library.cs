@@ -36,6 +36,8 @@ namespace FTLOverdrive.Client.Gamestate
             public string OverlayGraphic { get; set; }
             public List<string> IconGraphics { get; set; }
 
+            public int Order { get; set; }
+
             public int MinPower { get; set; }
             public int MaxPower { get; set; }
 

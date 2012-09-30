@@ -12,7 +12,19 @@ namespace FTLOverdrive.Client.UI
 {
     public class ShipRenderer : Control
     {
-        public bool ShowRooms { get; set; }
+        private bool showRooms;
+        public bool ShowRooms
+        {
+            get
+            {
+                return showRooms;
+            }
+            set
+            {
+                showRooms = value;
+                UpdateLayout();
+            }
+        }
 
         private Ship ship;
         public Ship Ship
@@ -25,10 +37,13 @@ namespace FTLOverdrive.Client.UI
             {
                 if (ship != null)
                 {
-                    ship.ShipMidified -= onShipModified;
+                    ship.ShipModified -= onShipModified;
                 }
                 ship = value;
-                ship.ShipMidified += onShipModified;
+                if (ship != null)
+                {
+                    ship.ShipModified += onShipModified;
+                }
                 UpdateLayout();
             }
         }
@@ -150,6 +165,7 @@ namespace FTLOverdrive.Client.UI
 
             // Draw the ship and floor
             DrawTexture(rt, new Vector2f(0.0f, 0.0f), new Vector2f(rtWidth, rtHeight), baseGraphic);
+            if (!ShowRooms) return rt;
             DrawTexture(rt, new Vector2f(0.0f, 0.0f), new Vector2f(rtWidth, rtHeight), floorGraphic);
 
             // Draw rooms

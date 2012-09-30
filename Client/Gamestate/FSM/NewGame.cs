@@ -16,16 +16,19 @@ namespace FTLOverdrive.Client.Gamestate
         private IntRect rctScreen;
 
         private Sprite sprBackground;
-        private ShipRenderer shipRenderer;
+        private ShipRenderer shipRenderer = new ShipRenderer();
 
         private ImagePanel pnRename;
 
         private Library.ShipGenerator currentShipGen;
         private Ship currentShip;
 
+        private TextEntry tbShipName;
+
+        private List<ImageButton> lstSystems;
+
         private bool easymode;
         private bool finishnow;
-        private bool firstActivation = true;
 
         public void OnActivate()
         {
@@ -53,15 +56,31 @@ namespace FTLOverdrive.Client.Gamestate
             btnRenameShip.HoveredImage = Root.Singleton.Material("img/customizeUI/button_name_select2.png");
             btnRenameShip.DisabledImage = Root.Singleton.Material("img/customizeUI/button_name_off.png");
             btnRenameShip.Enabled = true;
+            btnRenameShip.OnClick += (sender) =>
+            {
+                tbShipName.EditMode = true;
+                Root.Singleton.Canvas.Focus = tbShipName;
+            };
+            btnRenameShip.HoverSound = Root.Singleton.Sound("audio/waves/ui/select_light1.wav");
             Util.LayoutControl(btnRenameShip, 8, 8, 95, 33, rctScreen);
             btnRenameShip.Parent = pnRename;
             btnRenameShip.Init();
+
+            tbShipName = new TextEntry();
+            tbShipName.Centered = true;
+            tbShipName.AutoScale = false;
+            tbShipName.Font = Root.Singleton.Font("fonts/num_font.ttf");
+            tbShipName.Text = "test";
+            Util.LayoutControl(tbShipName, 115, 4, 320, 33, rctScreen);
+            tbShipName.Parent = pnRename;
+            tbShipName.Init();
 
             var btnListShips = new ImageButton();
             btnListShips.Image = Root.Singleton.Material("img/customizeUI/button_list_on.png");
             btnListShips.HoveredImage = Root.Singleton.Material("img/customizeUI/button_list_select2.png");
             btnListShips.DisabledImage = Root.Singleton.Material("img/customizeUI/button_list_off.png");
             btnListShips.Enabled = true;
+            btnListShips.HoverSound = Root.Singleton.Sound("audio/waves/ui/select_light1.wav");
             Util.LayoutControl(btnListShips, 64, 194, 62, 28, rctScreen);
             btnListShips.Parent = Root.Singleton.Canvas;
             btnListShips.Init();
@@ -75,6 +94,7 @@ namespace FTLOverdrive.Client.Gamestate
             btnShipLeft.HoveredImage = Root.Singleton.Material("img/customizeUI/button_arrow_select2.png");
             btnShipLeft.DisabledImage = Root.Singleton.Material("img/customizeUI/button_arrow_off.png");
             btnShipLeft.Enabled = true;
+            btnShipLeft.HoverSound = Root.Singleton.Sound("audio/waves/ui/select_light1.wav");
             btnShipLeft.OnClick += (sender) =>
             {
                 var shiplist = Root.Singleton.mgrState.Get<Library>().GetPlayerShipGenerators();
@@ -96,6 +116,7 @@ namespace FTLOverdrive.Client.Gamestate
             btnShipRight.DisabledImage = Root.Singleton.Material("img/customizeUI/button_arrow_off.png");
             btnShipRight.Enabled = true;
             btnShipRight.FlipH = true;
+            btnShipRight.HoverSound = Root.Singleton.Sound("audio/waves/ui/select_light1.wav");
             btnShipRight.OnClick += (sender) =>
             {
                 var shiplist = Root.Singleton.mgrState.Get<Library>().GetPlayerShipGenerators();
@@ -111,36 +132,42 @@ namespace FTLOverdrive.Client.Gamestate
             btnShipRight.Parent = Root.Singleton.Canvas;
             btnShipRight.Init();
 
-            var btnEasy = new ImageButton();
-            easymode = true;
-            ImageButton btnNormal = null;
+            ImageToggleButton btnNormal = null, btnEasy = null;
+            easymode = false;
+
+            btnEasy = new ImageToggleButton();
             btnEasy.Image = Root.Singleton.Material("img/customizeUI/button_easy_on.png");
-            btnEasy.HoveredImage = null;
+            btnEasy.HoveredImage = Root.Singleton.Material("img/customizeUI/button_easy_select2.png");
+            btnEasy.ToggledImage = Root.Singleton.Material("img/customizeUI/button_easy_select2.png");
             btnEasy.DisabledImage = Root.Singleton.Material("img/customizeUI/button_easy_off.png");
             btnEasy.Enabled = true;
+            btnEasy.Toggled = true;
+            btnEasy.HoverSound = Root.Singleton.Sound("audio/waves/ui/select_light1.wav");
             btnEasy.OnClick += (sender) =>
             {
-                btnNormal.Image = Root.Singleton.Material("img/customizeUI/button_normal_on.png");
-                btnNormal.UpdateImage();
-                btnEasy.Image = Root.Singleton.Material("img/customizeUI/button_easy_select2.png");
+                btnEasy.Toggled = true;
                 btnEasy.UpdateImage();
+                btnNormal.Toggled = false;
+                btnNormal.UpdateImage();
                 easymode = true;
             };
             Util.LayoutControl(btnEasy, 977, 16, 95, 24, rctScreen);
             btnEasy.Parent = Root.Singleton.Canvas;
             btnEasy.Init();
 
-            btnNormal = new ImageButton();
-            btnNormal.Image = Root.Singleton.Material("img/customizeUI/button_normal_select2.png");
-            btnNormal.HoveredImage = null;
+            btnNormal = new ImageToggleButton();
+            btnNormal.Image = Root.Singleton.Material("img/customizeUI/button_normal_on.png");
+            btnNormal.HoveredImage = Root.Singleton.Material("img/customizeUI/button_normal_select2.png");
+            btnNormal.ToggledImage = Root.Singleton.Material("img/customizeUI/button_normal_select2.png");
             btnNormal.DisabledImage = Root.Singleton.Material("img/customizeUI/button_normal_off.png");
             btnNormal.Enabled = true;
+            btnNormal.HoverSound = Root.Singleton.Sound("audio/waves/ui/select_light1.wav");
             btnNormal.OnClick += (sender) =>
             {
-                btnNormal.Image = Root.Singleton.Material("img/customizeUI/button_normal_select2.png");
-                btnNormal.UpdateImage();
-                btnEasy.Image = Root.Singleton.Material("img/customizeUI/button_easy_on.png");
+                btnEasy.Toggled = false;
                 btnEasy.UpdateImage();
+                btnNormal.Toggled = true;
+                btnNormal.UpdateImage();
                 easymode = false;
             };
             Util.LayoutControl(btnNormal, 977, 41, 95, 24, rctScreen);
@@ -152,6 +179,7 @@ namespace FTLOverdrive.Client.Gamestate
             btnStart.HoveredImage = Root.Singleton.Material("img/customizeUI/button_start_select2.png");
             btnStart.DisabledImage = Root.Singleton.Material("img/customizeUI/button_start_off.png");
             btnStart.Enabled = true;
+            btnStart.HoverSound = Root.Singleton.Sound("audio/waves/ui/select_light1.wav");
             btnStart.OnClick += (sender) =>
             {
                 
@@ -160,18 +188,87 @@ namespace FTLOverdrive.Client.Gamestate
             btnStart.Parent = Root.Singleton.Canvas;
             btnStart.Init();
 
-            // Locate the default ship
-            if (firstActivation)
-            {
-                shipRenderer = new ShipRenderer();
-                shipRenderer.ShowRooms = true;
-                Util.LayoutControl(shipRenderer, 310, 0, 660, 450, rctScreen);
-                shipRenderer.Parent = Root.Singleton.Canvas;
-                shipRenderer.Init();
+            ImageToggleButton btnTypeA = null, btnTypeB = null;
 
+            btnTypeA = new ImageToggleButton();
+            btnTypeA.Image = Root.Singleton.Material("img/customizeUI/button_typea_on.png");
+            btnTypeA.HoveredImage = Root.Singleton.Material("img/customizeUI/button_typea_select2.png");
+            btnTypeA.ToggledImage = Root.Singleton.Material("img/customizeUI/button_typea_select2.png");
+            btnTypeA.DisabledImage = Root.Singleton.Material("img/customizeUI/button_typea_off.png");            
+            btnTypeA.Enabled = true;
+            btnTypeA.Toggled = true;
+            btnTypeA.HoverSound = Root.Singleton.Sound("audio/waves/ui/select_light1.wav");
+            btnTypeA.OnClick += (sender) =>
+            {
+                btnTypeA.Toggled = true;
+                btnTypeA.UpdateImage();
+                btnTypeB.Toggled = false;
+                btnTypeB.UpdateImage();
+            };
+            Util.LayoutControl(btnTypeA, 18, 260, 80, 22, rctScreen);
+            btnTypeA.Parent = Root.Singleton.Canvas;
+            btnTypeA.Init();
+
+            btnTypeB = new ImageToggleButton();
+            btnTypeB.Image = Root.Singleton.Material("img/customizeUI/button_typeb_on.png");
+            btnTypeB.HoveredImage = Root.Singleton.Material("img/customizeUI/button_typeb_select2.png");
+            btnTypeB.ToggledImage = Root.Singleton.Material("img/customizeUI/button_typeb_select2.png");
+            btnTypeB.DisabledImage = Root.Singleton.Material("img/customizeUI/button_typeb_off.png");
+            btnTypeB.Enabled = false;
+            btnTypeB.HoverSound = Root.Singleton.Sound("audio/waves/ui/select_light1.wav");
+            btnTypeB.OnClick += (sender) =>
+            {
+                btnTypeA.Toggled = false;
+                btnTypeA.UpdateImage();
+                btnTypeB.Toggled = true;
+                btnTypeB.UpdateImage();
+            };
+            Util.LayoutControl(btnTypeB, 100, 260, 80, 22, rctScreen);
+            btnTypeB.Parent = Root.Singleton.Canvas;
+            btnTypeB.Init();
+
+            var btnHideRooms = new ImageButton();
+            btnHideRooms.Image = Root.Singleton.Material("img/customizeUI/button_hide_on.png");
+            btnHideRooms.HoveredImage = Root.Singleton.Material("img/customizeUI/button_hide_select2.png");
+            btnHideRooms.DisabledImage = Root.Singleton.Material("img/customizeUI/button_hide_off.png");
+            btnHideRooms.Enabled = true;
+            btnHideRooms.HoverSound = Root.Singleton.Sound("audio/waves/ui/select_light1.wav");
+            btnHideRooms.OnClick += (sender) =>
+            {
+                if (!shipRenderer.ShowRooms)
+                {
+                    btnHideRooms.Image = Root.Singleton.Material("img/customizeUI/button_hide_on.png");
+                    btnHideRooms.HoveredImage = Root.Singleton.Material("img/customizeUI/button_hide_select2.png");
+                    btnHideRooms.DisabledImage = Root.Singleton.Material("img/customizeUI/button_hide_off.png");
+                    shipRenderer.ShowRooms = true;
+                }
+                else
+                {
+                    btnHideRooms.Image = Root.Singleton.Material("img/customizeUI/button_show_on.png");
+                    btnHideRooms.HoveredImage = Root.Singleton.Material("img/customizeUI/button_show_select2.png");
+                    btnHideRooms.DisabledImage = Root.Singleton.Material("img/customizeUI/button_show_off.png");
+                    shipRenderer.ShowRooms = false;
+                }
+                btnHideRooms.UpdateImage();
+            };
+            Util.LayoutControl(btnHideRooms, 23, 301, 150, 28, rctScreen);
+            btnHideRooms.Parent = Root.Singleton.Canvas;
+            btnHideRooms.Init();
+            
+            shipRenderer.ShowRooms = true;
+            Util.LayoutControl(shipRenderer, 310, 0, 660, 450, rctScreen);
+            shipRenderer.Parent = Root.Singleton.Canvas;
+            shipRenderer.Init();
+
+            if (currentShipGen == null)
+            {
+                // Locate the default ship
                 SetShipGenerator(GetDefaultShipGenerator());
             }
-            firstActivation = false;
+            else
+            {
+                SetShipGenerator(currentShipGen);
+            }
         }
 
         private Library.ShipGenerator GetDefaultShipGenerator()
@@ -190,12 +287,49 @@ namespace FTLOverdrive.Client.Gamestate
 
         public void SetShipGenerator(Library.ShipGenerator gen)
         {
+            if (lstSystems != null)
+            {
+                foreach (var system in lstSystems)
+                    system.Remove();
+                lstSystems.Clear();
+                lstSystems = null;
+            }
+
             // Set current ship
             currentShipGen = gen;
             currentShip = gen.Generate();
 
             // Update ship renderer
             shipRenderer.Ship = currentShip;
+
+            // Create new UI
+            tbShipName.Text = currentShip.Name;
+
+            lstSystems = new List<ImageButton>();
+            var systems = currentShip.Systems;
+            for (int i = 0; i < systems.Count; i++)
+            {
+                var system = systems[i];
+                var btnSystem = new ImageButton();
+                btnSystem.Image = Root.Singleton.Material("img/customizeUI/box_system_on.png");
+                btnSystem.HoveredImage = Root.Singleton.Material("img/customizeUI/box_system_select2.png");
+                btnSystem.DisabledImage = Root.Singleton.Material("img/customizeUI/box_system_off.png");
+                btnSystem.Enabled = true;
+                //btnSystem.HoverSound = Root.Singleton.Sound("audio/waves/ui/select_light1.wav");
+                Util.LayoutControl(btnSystem, 370 + (i * 38), 380, 38, 96, rctScreen);
+                btnSystem.Parent = Root.Singleton.Canvas;
+                btnSystem.Init();
+
+                var systembox = new SystemBox();
+                systembox.SystemIcon = Root.Singleton.Material(system.IconGraphics[system.IconGraphics.Count - 1]);
+                systembox.PowerLevel = system.MinPower;
+                systembox.Width = btnSystem.Width - 2;
+                systembox.Height = btnSystem.Height - 2;
+                systembox.Parent = btnSystem;
+                systembox.Init();
+
+                lstSystems.Add(btnSystem);
+            }
         }
 
         private void window_KeyPressed(object sender, KeyEventArgs e)

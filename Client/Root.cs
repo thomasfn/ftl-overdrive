@@ -150,6 +150,7 @@ namespace FTLOverdrive.Client
                 }
                 Settings.WriteString("File", "FTLDirectory", dir);
             }
+            Settings.Save();
 
             // Init file system
             Log("Mounting resources.dat...");
@@ -220,6 +221,9 @@ namespace FTLOverdrive.Client
             window.Closed += new EventHandler(window_Closed);
             window.MouseButtonPressed += new EventHandler<MouseButtonEventArgs>(window_MouseButtonPressed);
             window.MouseButtonReleased += new EventHandler<MouseButtonEventArgs>(window_MouseButtonReleased);
+            window.KeyPressed += new EventHandler<KeyEventArgs>(window_KeyPressed);
+            window.KeyReleased += new EventHandler<KeyEventArgs>(window_KeyReleased);
+            window.TextEntered += new EventHandler<TextEventArgs>(window_TextEntered);
 
             // Init UI
             Canvas = new UI.Canvas();
@@ -298,6 +302,11 @@ namespace FTLOverdrive.Client
 
         #region Window Events
 
+        private void window_TextEntered(object sender, TextEventArgs e)
+        {
+            Canvas.TextEntered(e.Unicode);
+        }
+
         private void window_MouseButtonReleased(object sender, MouseButtonEventArgs e)
         {
             if (e.Button == Mouse.Button.Left) Canvas.MouseClickLeft(false);
@@ -316,6 +325,16 @@ namespace FTLOverdrive.Client
         private void window_MouseMoved(object sender, MouseMoveEventArgs e)
         {
             Canvas.MouseMove(e.X, e.Y);
+        }
+
+        private void window_KeyReleased(object sender, KeyEventArgs e)
+        {
+            Canvas.KeyPress(e.Code, false);
+        }
+
+        private void window_KeyPressed(object sender, KeyEventArgs e)
+        {
+            Canvas.KeyPress(e.Code, true);
         }
 
         #endregion
