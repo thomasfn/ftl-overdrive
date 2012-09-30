@@ -7,8 +7,8 @@
 
 function Kestral()
 	-- Basic settings
-	local s = NewShip()
-	s.Name = "The Kestral"
+	local s = ships.NewShip()
+	s.Name = "The Kestrel"
 	
 	-- Graphics
 	s.BaseGraphic = "img/ship/kestral_base.png"
@@ -52,5 +52,69 @@ function Kestral()
 	s:AddRectRoom(14, 1, 2, 2, 2)
 	s:AddRectRoom(15, 1, 4, 2, 1)
 	s:AddRectRoom(16, 0, 2, 1, 2)
+	
+	-- Doors
+	s.Doors:Add(ships.NewDoor(s, {{Room = 1, X = 1, Y = 1, Dir = "Right"}, {Room = 0, X = 0, Y = 1, Dir = "Left"}}));
+	
+	s.Doors:Add(ships.NewDoor(s, {{Room = 2, X = 1, Y = 0, Dir = "Right"}, {Room = 1, X = 0, Y = 0, Dir = "Left"}}));
+	
+	s.Doors:Add(ships.NewDoor(s, {{Room = 3, X = 1, Y = 0, Dir = "Right"}, {Room = 1, X = 0, Y = 1, Dir = "Left"}}));
+	
+	s.Doors:Add(ships.NewDoor(s, {{Room = 4, X = 1, Y = 1, Dir = "Right"}, {Room = 2, X = 0, Y = 0, Dir = "Left"}}));
+	
+	s.Doors:Add(ships.NewDoor(s, {{Room = 5, X = 1, Y = 0, Dir = "Right"}, {Room = 3, X = 0, Y = 0, Dir = "Left"}}));
+	
+	s.Doors:Add(ships.NewDoor(s, {{Room = 4, X = 0, Y = 1, Dir = "Down"},
+	                              {Room = 5, X = 0, Y = 0, Dir = "Up"}}));
+	
+	s.Doors:Add(ships.NewDoor(s, {{Room = 7, X = 1, Y = 0, Dir = "Right"}, {Room = 4, X = 0, Y = 0, Dir = "Left"}}));
+	
+	s.Doors:Add(ships.NewDoor(s, {{Room = 8, X = 1, Y = 1, Dir = "Right"}, {Room = 5, X = 0, Y = 1, Dir = "Left"}}));
+	
+	s.Doors:Add(ships.NewDoor(s, {{Room = -1, X = 0, Y = 0, Dir = "Down"}, -- outside
+	                              {Room = 6, X = 1, Y = 0, Dir = "Up"}}));
+	
+	s.Doors:Add(ships.NewDoor(s, {{Room = -1, X = 0, Y = 0, Dir = "Down"}, -- outside
+	                              {Room = 6, X = 0, Y = 0, Dir = "Up"}}));
+	
+	s.Doors:Add(ships.NewDoor(s, {{Room = 6, X = 1, Y = 0, Dir = "Down"},
+	                              {Room = 7, X = 1, Y = 0, Dir = "Up"}}));
+	
+	s.Doors:Add(ships.NewDoor(s, {{Room = 8, X = 1, Y = 1, Dir = "Down"},
+	                              {Room = 9, X = 1, Y = 0, Dir = "Up"}}));
+	
+	s.Doors:Add(ships.NewDoor(s, {{Room = 9, X = 1, Y = 0, Dir = "Down"},
+	                              {Room = -1, X = 0, Y = 0, Dir = "Up"}})); -- outside
+	
+	s.Doors:Add(ships.NewDoor(s, {{Room = 9, X = 0, Y = 0, Dir = "Down"},
+	                              {Room = -1, X = 0, Y = 0, Dir = "Up"}})); -- outside
+	
+	s.Doors:Add(ships.NewDoor(s, {{Room = 10, X = 1, Y = 0, Dir = "Right"}, {Room = 7, X = 0, Y = 1, Dir = "Left"}}));
+	
+	s.Doors:Add(ships.NewDoor(s, {{Room = 10, X = 1, Y = 1, Dir = "Right"}, {Room = 8, X = 0, Y = 0, Dir = "Left"}}));
+	
+	s.Doors:Add(ships.NewDoor(s, {{Room = 11, X = 1, Y = 0, Dir = "Down"},
+	                              {Room = 10, X = 0, Y = 0, Dir = "Up"}}));
+	
+	s.Doors:Add(ships.NewDoor(s, {{Room = 10, X = 0, Y = 1, Dir = "Down"},
+	                              {Room = 12, X = 1, Y = 0, Dir = "Up"}}));
+	
+	s.Doors:Add(ships.NewDoor(s, {{Room = 13, X = 1, Y = 0, Dir = "Right"}, {Room = 11, X = 0, Y = 0, Dir = "Left"}}));
+	
+	s.Doors:Add(ships.NewDoor(s, {{Room = 15, X = 1, Y = 0, Dir = "Right"}, {Room = 12, X = 0, Y = 0, Dir = "Left"}}));
+	
+	s.Doors:Add(ships.NewDoor(s, {{Room = 13, X = 1, Y = 0, Dir = "Down"},
+	                              {Room = 14, X = 1, Y = 0, Dir = "Up"}}));
+	
+	s.Doors:Add(ships.NewDoor(s, {{Room = 14, X = 1, Y = 1, Dir = "Down"},
+	                              {Room = 15, X = 1, Y = 0, Dir = "Up"}}));
+	
+	s.Doors:Add(ships.NewDoor(s, {{Room = 16, X = 0, Y = 0, Dir = "Right"}, {Room = 14, X = 0, Y = 0, Dir = "Left"}}));
+	
+	s.Doors:Add(ships.NewDoor(s, {{Room = 16, X = 0, Y = 1, Dir = "Right"}, {Room = 14, X = 0, Y = 1, Dir = "Left"}}));
+	
+	s.Doors:Add(ships.NewDoor(s, {{Room = -1, X = 0, Y = 0, Dir = "Right"}, {Room = 16, X = 0, Y = 0, Dir = "Left"}})); -- outside
+	
+	s.Doors:Add(ships.NewDoor(s, {{Room = -1, X = 0, Y = 0, Dir = "Right"}, {Room = 16, X = 0, Y = 1, Dir = "Left"}})); -- outside
 	return s
 end

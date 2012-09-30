@@ -64,6 +64,7 @@ namespace FTLOverdrive.Client.Ships
             ID = id;
             X = x;
             Y = y;
+            Ship.DoShipModified();
         }
 
         public virtual Tile GetTile(int x, int y)

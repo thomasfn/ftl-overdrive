@@ -91,6 +91,7 @@ namespace FTLOverdrive.Client.Ships
         }
 
         public Dictionary<int, Room> Rooms { get; set; }
+        public List<Door> Doors { get; set; }
 
         //public List<string> Weapons { get; set; }
 
@@ -139,6 +140,7 @@ namespace FTLOverdrive.Client.Ships
         {
             GibGraphics = new List<string>();
             Rooms = new Dictionary<int, Room>();
+            Doors = new List<Door>();
             //Crew = new List<string>();
             //Weapons = new List<string>();
         }

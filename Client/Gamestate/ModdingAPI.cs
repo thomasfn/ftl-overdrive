@@ -26,7 +26,6 @@ namespace FTLOverdrive.Client.Gamestate
 
             // Bind functions
             BindFunction("print", "print");
-            BindFunction("NewShip", "NewShip"); // Is there any way to call the constructor directly from lua code?
 
             luastate.NewTable("hook");
             BindFunction("hook.Add", "hook_Add");
@@ -41,6 +40,10 @@ namespace FTLOverdrive.Client.Gamestate
             BindFunction("library.GetRace", "library_GetRace");
             BindFunction("library.GetShip", "library_GetShipGenerator");
             BindFunction("library.CreateAnimation", "library_CreateAnimation");
+
+            luastate.NewTable("ships");
+            BindFunction("ships.NewShip", "ships_NewShip"); // Is there any way to call the constructor directly from lua code?
+            BindFunction("ships.NewDoor", "ships_NewDoor");
 
 
             // Load lua files
@@ -204,9 +207,20 @@ namespace FTLOverdrive.Client.Gamestate
         #endregion
 
 
-        private Ship NewShip()
+        private Ship ships_NewShip()
         {
             return new Ship();
+        }
+
+        private Door ships_NewDoor(Ship ship, LuaTable entrances)
+        {
+            var res = new Door.DoorEntrance[entrances.Keys.Count];
+            for (int i = 0; i < entrances.Keys.Count; i++)
+            {
+                LuaTable e = (LuaTable)entrances[i + 1];
+                res[i] = new Door.DoorEntrance((int)(double)e["Room"], (int)(double)e["X"], (int)(double)e["Y"], (string)e["Dir"]);
+            }
+            return new Door(ship, res);
         }
 
         #endregion

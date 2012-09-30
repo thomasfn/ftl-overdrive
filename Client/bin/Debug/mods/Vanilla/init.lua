@@ -6,30 +6,6 @@
 --]]
 dofile( FOLDERNAME .. "/kestral.lua" )
 
-local function GenerateEngi()
-	local s = NewShip()
-	s.Name = "The Kestral"
-	s.BaseGraphic = "img/ship/circle_cruiser_base.png"
-	s.CloakedGraphic = "img/ship/circle_cruiser_cloak.png"
-	s.ShieldGraphic = "img/ship/circle_cruiser_shields.png"
-	s.FloorGraphic = "img/ship/circle_cruiser_floor.png"
-	s.GibGraphics:Add("img/ship/circle_cruiser_gib1.png")
-	s.GibGraphics:Add("img/ship/circle_cruiser_gib2.png")
-	s.GibGraphics:Add("img/ship/circle_cruiser_gib3.png")
-	s.GibGraphics:Add("img/ship/circle_cruiser_gib4.png")
-	s.GibGraphics:Add("img/ship/circle_cruiser_gib5.png")
-	s.GibGraphics:Add("img/ship/circle_cruiser_gib6.png")
-	s.TileHeight = 35
-	s.TileWidth = 35
-    s.FloorOffsetX = 69
-    s.FloorOffsetY = 40
-	--s.Weapons:Add("artemis")
-	--s.Crew:Add("human_male")
-	s:AddRectRoom(0, 0, 2, 2)
-	--s.Rooms:Add(r)
-	return s
-end
-
 local function LoadLibrary()
 	-- Notify console
 	print( "[Vanilla] Loading content..." )

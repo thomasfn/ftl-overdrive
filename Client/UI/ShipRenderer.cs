@@ -65,6 +65,7 @@ namespace FTLOverdrive.Client.UI
             if (Ship != null && sprShip != null)
             {
                 sprShip = new Sprite(GetRenderTexture().Texture);
+                sprShip.Texture.Smooth = false;
                 // For some reasone RenderTexture was flipped vertically.
                 // I couldn't find out why, so just flip it again manually.
                 sprShip.Position = new SFML.Window.Vector2f(AbsX, AbsY + Height);
@@ -125,13 +126,13 @@ namespace FTLOverdrive.Client.UI
             target.Draw(shpLine);
         }
 
-        private static void DrawTexture(RenderTarget target, Vector2f a, Vector2f b, Texture texture)
+        private static void DrawTexture(RenderTarget target, Vector2f a, Vector2f b, Texture texture, float rotation = 0)
         {
             sprTexture.Texture = texture;
             sprTexture.Scale = Util.Scale(sprTexture, b - a);
             sprTexture.Origin = new Vector2f(texture.Size.X * 0.5f, texture.Size.Y * 0.5f);
             sprTexture.Position = (a + b) * 0.5f;
-            sprTexture.Rotation = 0.0f;
+            sprTexture.Rotation = rotation;
             target.Draw(sprTexture);
         }
 
@@ -157,6 +158,8 @@ namespace FTLOverdrive.Client.UI
             // Textures
             Texture baseGraphic = Root.Singleton.Material(Ship.BaseGraphic, true);
             Texture floorGraphic = Root.Singleton.Material(Ship.FloorGraphic, true);
+            Texture doorGraphic = Root.Singleton.Material("img/door_placeholder.png");
+            // TODO use proper door textures (animations, different types, etc.)
 
             var rtWidth = baseGraphic.Size.X;
             var rtHeight = baseGraphic.Size.Y;
@@ -220,7 +223,36 @@ namespace FTLOverdrive.Client.UI
                 }
             }
 
-            //TODO: doors, oxygen, breaches, fire
+            // Draw doors
+            foreach (var door in Ship.Doors)
+            {
+                foreach (var entrance in door.Entrances)
+                {
+                    if (!Ship.Rooms.ContainsKey(entrance.RoomID)) continue;
+
+                    var room = Ship.Rooms[entrance.RoomID];
+                    // Not sure why, but it looks better when I add new Vector2f(0.5F, 0.5F)
+                    var tileCorner = origin + tileX * (room.X + entrance.X) + tileY * (room.Y + entrance.Y) + new Vector2f(0.5F, 0.5F);
+
+                    switch (entrance.Direction)
+                    {
+                        case Door.Direction.Up:
+                            DrawTexture(rt, tileCorner - tileY / 2, tileCorner + tileX + tileY / 2, doorGraphic, 90);
+                            break;
+                        case Door.Direction.Down:
+                            DrawTexture(rt, tileCorner + tileY / 2, tileCorner + tileX + tileY * 3 / 2, doorGraphic, 90);
+                            break;
+                        case Door.Direction.Left:
+                            DrawTexture(rt, tileCorner - tileX / 2, tileCorner + tileX / 2 + tileY, doorGraphic);
+                            break;
+                        case Door.Direction.Right:
+                            DrawTexture(rt, tileCorner + tileX / 2, tileCorner + tileX * 3 / 2 + tileY, doorGraphic);
+                            break;
+                    }
+                }
+            }
+
+            // TODO: system icons, oxygen, breaches, fire, etc.
 
             return rt;
         }

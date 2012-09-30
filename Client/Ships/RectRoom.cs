@@ -27,6 +27,7 @@ namespace FTLOverdrive.Client.Ships
                     tiles[i + Width * j] = new Tile(this, i, j);
                 }
             }
+            Ship.DoShipModified();
         }
 
         public override IEnumerable<Tile> GetTiles()
