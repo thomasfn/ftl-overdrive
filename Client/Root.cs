@@ -81,6 +81,7 @@ namespace FTLOverdrive.Client
         {
             if (dctMaterials.ContainsKey(filename)) return dctMaterials[filename];
             var res = Resource(filename);
+            if (res == null) res = Resource("img/nullResource.png");
             if (res == null) return null;
             var tex = new Texture(res);
             tex.Smooth = smooth;

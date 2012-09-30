@@ -12,3 +12,15 @@ C:\Users\thomasfn\Documents\Visual Studio 2010\Projects\FTLOverdrive\Client\bin\
 C:\Users\thomasfn\Documents\Visual Studio 2010\Projects\FTLOverdrive\Client\bin\Debug\lua51.dll
 C:\Users\thomasfn\Documents\Visual Studio 2010\Projects\FTLOverdrive\Client\bin\Debug\LuaInterface.pdb
 C:\Users\thomasfn\Documents\Visual Studio 2010\Projects\FTLOverdrive\Client\bin\Debug\lua51.pdb
+D:\FTL\ftl-overdrive\Client\bin\Debug\FTLOverdriveClient.exe
+D:\FTL\ftl-overdrive\Client\bin\Debug\FTLOverdriveClient.pdb
+D:\FTL\ftl-overdrive\Client\bin\Debug\FTLOverdriveData.dll
+D:\FTL\ftl-overdrive\Client\bin\Debug\LuaInterface.dll
+D:\FTL\ftl-overdrive\Client\bin\Debug\sfmlnet-audio-2.dll
+D:\FTL\ftl-overdrive\Client\bin\Debug\sfmlnet-graphics-2.dll
+D:\FTL\ftl-overdrive\Client\bin\Debug\sfmlnet-window-2.dll
+D:\FTL\ftl-overdrive\Client\bin\Debug\lua51.dll
+D:\FTL\ftl-overdrive\Client\bin\Debug\FTLOverdriveData.pdb
+D:\FTL\ftl-overdrive\Client\obj\x86\Debug\ResolveAssemblyReference.cache
+D:\FTL\ftl-overdrive\Client\obj\x86\Debug\FTLOverdriveClient.exe
+D:\FTL\ftl-overdrive\Client\obj\x86\Debug\FTLOverdriveClient.pdb

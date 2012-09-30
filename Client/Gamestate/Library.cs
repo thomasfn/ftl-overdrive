@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using FTLOverdrive.Client.Ships;
+
 namespace FTLOverdrive.Client.Gamestate
 {
     public class Library : IState
@@ -69,74 +71,26 @@ namespace FTLOverdrive.Client.Gamestate
             public int Speed { get; set; }
         }
 
-        public class Ship
+        public interface ShipGenerator
         {
-            public string Name { get; set; }
-            public string DisplayName { get; set; }
+            string Name { get; set; }
+            string DisplayName { get; set; }
 
-            public bool Unlocked { get; set; }
-            public bool Default { get; set; }
+            bool Unlocked { get; set; }
+            bool Default { get; set; }
 
-            public string BaseGraphic { get; set; }
-            public string CloakedGraphic { get; set; }
-            public string ShieldGraphic { get; set; }
-            public string FloorGraphic { get; set; }
-            public string MiniGraphic { get; set; }
-            public List<string> GibGraphics { get; set; }
+            // whether it's a player ship or NPC ship
+            bool NPC { get; set; }
 
-            public List<string> Weapons { get; set; }
+            string MiniGraphic { get; set; }
 
-            public List<string> Crew { get; set; }
-
-            public List<Room> Rooms { get; set; }
-
-            public List<string> Systems
-            {
-                get
-                {
-                    var result = new List<string>();
-                    foreach (var room in Rooms)
-                        if (room.System != null)
-                            result.Add(room.System);
-                    return result;
-                }
-            }
-
-            public Ship()
-            {
-                GibGraphics = new List<string>();
-                Rooms = new List<Room>();
-                Crew = new List<string>();
-                Weapons = new List<string>();
-            }
-        }
-
-        public class Room
-        {
-            public int MinX { get; set; }
-            public int MinY { get; set; }
-            public int MaxX { get; set; }
-            public int MaxY { get; set; }
-
-            public List<Door> Doors { get; set; }
-
-            public string BackgroundGraphic { get; set; }
-
-            public string System { get; set; }
-
-            public Room() { Doors = new List<Door>(); }
-        }
-
-        public class Door
-        {
-            public float X { get; set; }
-            public float Y { get; set; }
+            Ship Generate(params object[] args);
         }
 
         private Dictionary<string, Weapon> dctWeapons;
         private Dictionary<string, System> dctSystems;
         private Dictionary<string, Race> dctRaces;
-        private Dictionary<string, Ship> dctShips;
+        private Dictionary<string, ShipGenerator> dctShipGenerators;
 
         public void OnActivate()
         {
@@ -144,7 +98,7 @@ namespace FTLOverdrive.Client.Gamestate
             dctWeapons = new Dictionary<string, Weapon>();
             dctSystems = new Dictionary<string, System>();
             dctRaces = new Dictionary<string, Race>();
-            dctShips = new Dictionary<string, Ship>();
+            dctShipGenerators = new Dictionary<string, ShipGenerator>();
         }
 
         public void AddWeapon(string name, Weapon wep)
@@ -165,10 +119,10 @@ namespace FTLOverdrive.Client.Gamestate
             dctRaces.Add(name, race);
         }
 
-        public void AddShip(string name, Ship ship)
+        public void AddShipGenerator(string name, ShipGenerator gen)
         {
-            ship.Name = name;
-            dctShips.Add(name, ship);
+            gen.Name = name;
+            dctShipGenerators.Add(name, gen);
         }
 
         public Weapon GetWeapon(string name)
@@ -189,18 +143,41 @@ namespace FTLOverdrive.Client.Gamestate
             return dctRaces[name];
         }
 
-        public Ship GetShip(string name)
+        public ShipGenerator GetShipGenerator(string name)
         {
-            if (!dctShips.ContainsKey(name)) return null;
-            return dctShips[name];
+            if (!dctShipGenerators.ContainsKey(name)) return null;
+            return dctShipGenerators[name];
         }
 
-        public List<string> GetShips()
+        public ICollection<ShipGenerator> GetShipGenerators()
         {
-            var result = new List<string>();
-            foreach (var pair in dctShips)
-                result.Add(pair.Key);
-            return result;
+            return dctShipGenerators.Values;
+        }
+
+        public List<ShipGenerator> GetNPCShipGenerators()
+        {
+            var res = new List<ShipGenerator>();
+            foreach (var gen in dctShipGenerators.Values)
+            {
+                if (gen.NPC)
+                {
+                    res.Add(gen);
+                }
+            }
+            return res;
+        }
+
+        public List<ShipGenerator> GetPlayerShipGenerators()
+        {
+            var res = new List<ShipGenerator>();
+            foreach (var gen in dctShipGenerators.Values)
+            {
+                if (!gen.NPC)
+                {
+                    res.Add(gen);
+                }
+            }
+            return res;
         }
 
         public void OnDeactivate()

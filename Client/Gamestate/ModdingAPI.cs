@@ -6,6 +6,8 @@ using System.Reflection;
 
 using LuaInterface;
 
+using FTLOverdrive.Client.Ships;
+
 namespace FTLOverdrive.Client.Gamestate
 {
     public class ModdingAPI : IState
@@ -24,6 +26,7 @@ namespace FTLOverdrive.Client.Gamestate
 
             // Bind functions
             BindFunction("print", "print");
+            BindFunction("NewShip", "NewShip"); // Is there any way to call the constructor directly from lua code?
 
             luastate.NewTable("hook");
             BindFunction("hook.Add", "hook_Add");
@@ -32,14 +35,13 @@ namespace FTLOverdrive.Client.Gamestate
             BindFunction("library.AddWeapon", "library_AddWeapon");
             BindFunction("library.AddSystem", "library_AddSystem");
             BindFunction("library.AddRace", "library_AddRace");
-            BindFunction("library.AddShip", "library_AddShip");
+            BindFunction("library.AddShipGenerator", "library_AddShipGenerator");
             BindFunction("library.GetWeapon", "library_GetWeapon");
             BindFunction("library.GetSystem", "library_GetSystem");
             BindFunction("library.GetRace", "library_GetRace");
-            BindFunction("library.GetShip", "library_GetShip");
+            BindFunction("library.GetShip", "library_GetShipGenerator");
             BindFunction("library.CreateAnimation", "library_CreateAnimation");
-            BindFunction("library.CreateRoom", "library_CreateRoom");
-            BindFunction("library.CreateDoor", "library_CreateDoor");
+
 
             // Load lua files
             if (!Directory.Exists("lua")) Directory.CreateDirectory("lua");
@@ -92,6 +94,28 @@ namespace FTLOverdrive.Client.Gamestate
             }
         }
 
+        public class LuaShipGenerator : Library.ShipGenerator
+        {
+            public string Name { get; set; }
+            public string DisplayName { get; set; }
+
+            public bool Unlocked { get; set; }
+            public bool Default { get; set; }
+
+            // whether it's a player ship or NPC ship
+            public bool NPC { get; set; }
+
+            public string MiniGraphic { get; set; }
+
+            public LuaFunction Callback { get; set; }
+
+            public Ship Generate(params object[] args)
+            {
+                if (Callback == null) return null;
+                else return (Ship)Callback.Call(args)[0];
+            }
+        }
+
         #region Lua Binds
 
         private void print(object obj)
@@ -105,6 +129,8 @@ namespace FTLOverdrive.Client.Gamestate
             if (!dctHooks.ContainsKey(name)) dctHooks.Add(name, new List<LuaFunction>());
             dctHooks[name].Add(function);
         }
+
+        #region Library
 
         private Library.Weapon library_AddWeapon(string name, string type)
         {
@@ -135,12 +161,12 @@ namespace FTLOverdrive.Client.Gamestate
             return race;
         }
 
-        private Library.Ship library_AddShip(string name)
+        private LuaShipGenerator library_AddShipGenerator(string name)
         {
-            // Create ship and return it
-            var ship = new Library.Ship();
-            Root.Singleton.mgrState.Get<Library>().AddShip(name, ship);
-            return ship;
+            // Create ship generator and return it
+            var gen = new LuaShipGenerator();
+            Root.Singleton.mgrState.Get<Library>().AddShipGenerator(name, gen);
+            return gen;
         }
 
         private Library.Weapon library_GetWeapon(string name)
@@ -158,9 +184,9 @@ namespace FTLOverdrive.Client.Gamestate
             return Root.Singleton.mgrState.Get<Library>().GetRace(name);
         }
 
-        private Library.Ship library_GetShip(string name)
+        private Library.ShipGenerator library_GetShipGenerator(string name)
         {
-            return Root.Singleton.mgrState.Get<Library>().GetShip(name);
+            return Root.Singleton.mgrState.Get<Library>().GetShipGenerator(name);
         }
 
         private Library.Animation library_CreateAnimation(int tilestart, int tileend, int speed)
@@ -168,14 +194,11 @@ namespace FTLOverdrive.Client.Gamestate
             return new Library.Animation() { TileStart = tilestart, TileEnd = tileend, Speed = speed };
         }
 
-        private Library.Room library_CreateRoom(int minX, int minY, int maxX, int maxY)
-        {
-            return new Library.Room() { MinX = minX, MinY = minY, MaxX = maxX, MaxY = maxY };
-        }
+        #endregion
 
-        private Library.Door library_CreateDoor(float x, float y)
+        private Ship NewShip()
         {
-            return new Library.Door() { X = x, Y = y };
+            return new Ship();
         }
 
         #endregion

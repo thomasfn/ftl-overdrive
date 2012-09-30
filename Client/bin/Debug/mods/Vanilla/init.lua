@@ -5,6 +5,71 @@
 	Loads the vanilla content into the game
 --]]
 
+local function GenerateEngi()
+	local s = NewShip()
+	s.Name = "The Kestral"
+	s.BaseGraphic = "img/ship/circle_cruiser_base.png"
+	s.CloakedGraphic = "img/ship/circle_cruiser_cloak.png"
+	s.ShieldGraphic = "img/ship/circle_cruiser_shields.png"
+	s.FloorGraphic = "img/ship/circle_cruiser_floor.png"
+	s.GibGraphics:Add("img/ship/circle_cruiser_gib1.png")
+	s.GibGraphics:Add("img/ship/circle_cruiser_gib2.png")
+	s.GibGraphics:Add("img/ship/circle_cruiser_gib3.png")
+	s.GibGraphics:Add("img/ship/circle_cruiser_gib4.png")
+	s.GibGraphics:Add("img/ship/circle_cruiser_gib5.png")
+	s.GibGraphics:Add("img/ship/circle_cruiser_gib6.png")
+	s.TileHeight = 35
+	s.TileWidth = 35
+    s.FloorOffsetX = 69
+    s.FloorOffsetY = 40
+	--s.Weapons:Add("artemis")
+	--s.Crew:Add("human_male")
+	s:AddRectRoom(0, 0, 2, 2)
+	--s.Rooms:Add(r)
+	return s
+end
+
+local function GenerateKestral()
+	local s = NewShip()
+	s.Name = "The Kestral"
+	s.BaseGraphic = "img/ship/kestral_base.png"
+	s.CloakedGraphic = "img/ship/kestral_cloak.png"
+	s.ShieldGraphic = "img/ship/kestral_shields.png"
+	s.FloorGraphic = "img/ship/kestral_floor.png"
+	s.GibGraphics:Add("img/ship/kestral_gib1.png")
+	s.GibGraphics:Add("img/ship/kestral_gib2.png")
+	s.GibGraphics:Add("img/ship/kestral_gib3.png")
+	s.GibGraphics:Add("img/ship/kestral_gib4.png")
+	s.GibGraphics:Add("img/ship/kestral_gib5.png")
+	s.GibGraphics:Add("img/ship/kestral_gib6.png")
+	s.TileHeight = 35
+	s.TileWidth = 35
+    s.FloorOffsetX = 71
+    s.FloorOffsetY = 116
+	--s.Weapons:Add("artemis")
+	--s.Crew:Add("human_male")
+	s:AddRectRoom(0, 14, 2, 1, 2)
+	s:AddRectRoom(1, 12, 2, 2, 2)
+	s:AddRectRoom(2, 10, 2, 2, 1)
+	s:AddRectRoom(3, 10, 3, 2, 1)
+	s:AddRectRoom(4, 8, 1, 2, 2)
+	s:AddRectRoom(5, 8, 3, 2, 2)
+	s:AddRectRoom(6, 6, 0, 2, 1)
+	s:AddRectRoom(7, 6, 1, 2, 2)
+	s:AddRectRoom(8, 6, 3, 2, 2)
+	s:AddRectRoom(9, 6, 5, 2, 1)
+	s:AddRectRoom(10, 4, 2, 2, 2)
+	s:AddRectRoom(11, 3, 1, 2, 1)
+	s:AddRectRoom(12, 3, 4, 2, 1)
+	s:AddRectRoom(13, 1, 1, 2, 1)
+	s:AddRectRoom(14, 1, 2, 2, 2)
+	s:AddRectRoom(15, 1, 4, 2, 1)
+	s:AddRectRoom(16, 0, 2, 1, 2)
+	s.Rooms[10].BackgroundGraphic = "img/ship/interior/room_weapons.png"
+	--s.Rooms:Add(r)
+	return s
+end
+
 local function LoadLibrary()
 	-- Notify console
 	print( "[Vanilla] Loading content..." )
@@ -47,58 +112,23 @@ local function LoadLibrary()
 	r.Animations:Add( "walk.left", library.CreateAnimation( 13, 16, 1 ) )
 	-- todo: the rest of the animations
 	
-	-- Add ships
-	local s = library.AddShip( "kestral" )
-	s.DisplayName = "The Kestral"
-	s.Unlocked = true
-	s.Default = true
-	s.BaseGraphic = "img/ship/kestral_base.png"
-	s.CloakedGraphic = "img/ship/kestral_cloak.png"
-	s.ShieldGraphic = "img/ship/kestral_shields.png"
-	s.FloorGraphic = "img/ship/kestral_floor.png"
-	s.MiniGraphic = "img/customizeUI/miniship_kestral.png"
-	s.GibGraphics:Add( "img/ship/kestral_gib1.png" )
-	s.GibGraphics:Add( "img/ship/kestral_gib2.png" )
-	s.GibGraphics:Add( "img/ship/kestral_gib3.png" )
-	s.GibGraphics:Add( "img/ship/kestral_gib4.png" )
-	s.GibGraphics:Add( "img/ship/kestral_gib5.png" )
-	s.GibGraphics:Add( "img/ship/kestral_gib6.png" )
-	s.Weapons:Add( "artemis" )
-	s.Crew:Add( "human_male" )
-	local r = library.CreateRoom( 1, 1, 2, 1 )
-	r.BackgroundGraphic = "img/ship/interior/room_oxygen_2.png"
-	r.Doors:Add( library.CreateDoor( 0.5, 1 ) )
-	r.Doors:Add( library.CreateDoor( 1.5, 1 ) )
-	s.Rooms:Add( r )
 	
-	s = library.AddShip( "engi" )
-	s.DisplayName = "Engi Cruiser"
-	s.Unlocked = true
-	s.Default = false
-	s.BaseGraphic = "img/ship/circle_cruiser_base.png"
-	s.CloakedGraphic = "img/ship/circle_cruiser_cloak.png"
-	s.ShieldGraphic = "img/ship/circle_cruiser_shields.png"
-	s.FloorGraphic = "img/ship/circle_cruiser_floor.png"
-	s.MiniGraphic = "img/customizeUI/miniship_circle_cruiser.png"
+	-- Add ship generators
+	local sg = library.AddShipGenerator("kestral")
+	sg.DisplayName = "The Kestral"
+	sg.Unlocked = true
+	sg.Default = true
+	sg.NPC = false
+	sg.MiniGraphic = "img/customizeUI/miniship_kestral.png"
+	sg.Callback = GenerateKestral
 	
-	s = library.AddShip( "rock" )
-	s.DisplayName = "Rock Cruiser"
-	s.Unlocked = true
-	s.Default = false
-	s.BaseGraphic = "img/ship/rock_cruiser_base.png"
-	s.CloakedGraphic = "img/ship/rock_cruiser_cloak.png"
-	s.ShieldGraphic = "img/ship/rock_cruiser_shields.png"
-	s.FloorGraphic = "img/ship/rock_cruiser_floor.png"
-	s.MiniGraphic = "img/customizeUI/miniship_rock_cruiser.png"
-	
-	s = library.AddShip( "fed" )
-	s.DisplayName = "Federation Cruiser"
-	s.Unlocked = false
-	s.Default = false
-	s.BaseGraphic = "img/ship/fed_cruiser_base.png"
-	s.CloakedGraphic = "img/ship/fed_cruiser_cloak.png"
-	s.ShieldGraphic = "img/ship/fed_cruiser_shields.png"
-	s.FloorGraphic = "img/ship/fed_cruiser_floor.png"
-	s.MiniGraphic = "img/customizeUI/miniship_fed_cruiser.png"
+	sg = library.AddShipGenerator("engi")
+	sg.DisplayName = "The Torus"
+	sg.Unlocked = true
+	sg.Default = false
+	sg.NPC = false
+	sg.MiniGraphic = "img/customizeUI/miniship_circle_cruiser.png"
+	sg.Callback = GenerateEngi
 end
+
 hook.Add( "Game.LoadLibrary", LoadLibrary )

@@ -57,6 +57,11 @@ namespace FTLOverdrive.Client
             string progfiles = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86).Replace('\\', '/');
             if (!Directory.Exists(progfiles + "/")) return null;
 
+            if (Directory.Exists(progfiles + "/FTL"))
+            {
+                return progfiles + "/FTL";
+            }
+
             // Next, locate steam
             if (!Directory.Exists(progfiles + "/Steam/")) return null;
 

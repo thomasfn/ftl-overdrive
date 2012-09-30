@@ -6,6 +6,7 @@ using SFML.Window;
 using SFML.Audio;
 
 using FTLOverdrive.Client.UI;
+using FTLOverdrive.Client.Ships;
 
 namespace FTLOverdrive.Client.Gamestate
 {
@@ -15,11 +16,12 @@ namespace FTLOverdrive.Client.Gamestate
         private IntRect rctScreen;
 
         private Sprite sprBackground;
-        private Sprite sprShip;
+        private ShipRenderer shipRenderer;
 
         private ImagePanel pnRename;
 
-        private Library.Ship currentship;
+        private Library.ShipGenerator currentShipGen;
+        private Ship currentShip;
 
         private bool easymode;
         private bool finishnow;
@@ -75,16 +77,14 @@ namespace FTLOverdrive.Client.Gamestate
             btnShipLeft.Enabled = true;
             btnShipLeft.OnClick += (sender) =>
             {
-                Library.Ship ship;
-                var shiplist = Root.Singleton.mgrState.Get<Library>().GetShips();
-                int idx = shiplist.IndexOf(currentship.Name);
+                var shiplist = Root.Singleton.mgrState.Get<Library>().GetPlayerShipGenerators();
+                int idx = shiplist.IndexOf(currentShipGen);
                 do
                 {
                     idx--;
                     if (idx < 0) idx = shiplist.Count - 1;
-                    ship = Root.Singleton.mgrState.Get<Library>().GetShip(shiplist[idx]);
-                } while (!ship.Unlocked);
-                SetShip(ship);
+                } while (!shiplist[idx].Unlocked);
+                SetShipGenerator(shiplist[idx]);
             };
             Util.LayoutControl(btnShipLeft, 30, 194, 32, 28, rctScreen);
             btnShipLeft.Parent = Root.Singleton.Canvas;
@@ -98,16 +98,14 @@ namespace FTLOverdrive.Client.Gamestate
             btnShipRight.FlipH = true;
             btnShipRight.OnClick += (sender) =>
             {
-                Library.Ship ship;
-                var shiplist = Root.Singleton.mgrState.Get<Library>().GetShips();
-                int idx = shiplist.IndexOf(currentship.Name);
+                var shiplist = Root.Singleton.mgrState.Get<Library>().GetPlayerShipGenerators();
+                int idx = shiplist.IndexOf(currentShipGen);
                 do
                 {
                     idx++;
                     if (idx >= shiplist.Count) idx = 0;
-                    ship = Root.Singleton.mgrState.Get<Library>().GetShip(shiplist[idx]);
-                } while (!ship.Unlocked);
-                SetShip(ship);
+                } while (!shiplist[idx].Unlocked);
+                SetShipGenerator(shiplist[idx]);
             };
             Util.LayoutControl(btnShipRight, 128, 194, 32, 28, rctScreen);
             btnShipRight.Parent = Root.Singleton.Canvas;
@@ -165,38 +163,39 @@ namespace FTLOverdrive.Client.Gamestate
             // Locate the default ship
             if (firstActivation)
             {
-                SetShip(GetDefaultShip());
+                shipRenderer = new ShipRenderer();
+                shipRenderer.ShowRooms = true;
+                Util.LayoutControl(shipRenderer, 310, 0, 660, 450, rctScreen);
+                shipRenderer.Parent = Root.Singleton.Canvas;
+                shipRenderer.Init();
+
+                SetShipGenerator(GetDefaultShipGenerator());
             }
             firstActivation = false;
         }
 
-        private Library.Ship GetDefaultShip()
+        private Library.ShipGenerator GetDefaultShipGenerator()
         {
             var lib = Root.Singleton.mgrState.Get<Library>();
-            var ships = lib.GetShips();
-            foreach (var shipname in ships)
+            var gens = lib.GetPlayerShipGenerators();
+            foreach (var gen in gens)
             {
-                var ship = lib.GetShip(shipname);
-                if (ship.Default)
+                if (gen.Default)
                 {
-                    return ship;
+                    return gen;
                 }
             }
-            throw new Exception("No default ship!");
+            throw new Exception("No default ship generator!");
         }
 
-        public void SetShip(Library.Ship ship)
+        public void SetShipGenerator(Library.ShipGenerator gen)
         {
             // Set current ship
-            currentship = ship;
+            currentShipGen = gen;
+            currentShip = gen.Generate();
 
-            // Remove old UI
-            if (sprShip != null) sprShip.Dispose();
-
-            // Create new UI
-            sprShip = new Sprite(Root.Singleton.Material(ship.BaseGraphic));
-            sprShip.Texture.Smooth = true;
-            Util.LayoutSprite(sprShip, 310, 0, 660, 450, rctScreen);
+            // Update ship renderer
+            shipRenderer.Ship = currentShip;
         }
 
         private void window_KeyPressed(object sender, KeyEventArgs e)
@@ -227,7 +226,6 @@ namespace FTLOverdrive.Client.Gamestate
             if (stage == RenderStage.PREGUI)
             {
                 window.Draw(sprBackground);
-                window.Draw(sprShip);
             }
         }
     }
