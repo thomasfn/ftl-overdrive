@@ -24,9 +24,9 @@ local function LoadLibrary()
 	-- Add system types
 	local s = library.AddSystem( "bridge" )
 	s.DisplayName = "Bridge"
-	s.OverlayGraphic = "img/icons/s_pilot_overlay.png"
-	s.IconGraphics:Add( "img/icons/s_pilot_red1.png" )
-	s.IconGraphics:Add( "img/icons/s_pilot_green1.png" )
+	s.IconGraphics["overlay"] = "img/icons/s_pilot_overlay.png"
+	s.IconGraphics["red"] = "img/icons/s_pilot_red1.png"
+	s.IconGraphics["green"] = "img/icons/s_pilot_green1.png"
 	--s.SubSystem = true -- This crashes for some reason?
 	s.MinPower = 1
 	s.MaxPower = 3
@@ -34,63 +34,63 @@ local function LoadLibrary()
 	
 	s = library.AddSystem( "doorcontrol" )
 	s.DisplayName = "Door Control"
-	s.OverlayGraphic = "img/icons/s_doors_overlay.png"
-	s.IconGraphics:Add( "img/icons/s_doors_red1.png" )
-	s.IconGraphics:Add( "img/icons/s_doors_green1.png" )
+	s.IconGraphics["overlay"] = "img/icons/s_doors_overlay.png"
+	s.IconGraphics["red"] = "img/icons/s_doors_red1.png"
+	s.IconGraphics["green"] = "img/icons/s_doors_green1.png"
 	s.MinPower = 1
 	s.MaxPower = 3
 	s.Order = 1
 	
 	s = library.AddSystem( "sensors" )
 	s.DisplayName = "Sensors"
-	s.OverlayGraphic = "img/icons/s_sensors_overlay.png"
-	s.IconGraphics:Add( "img/icons/s_sensors_red1.png" )
-	s.IconGraphics:Add( "img/icons/s_sensors_green1.png" )
+	s.IconGraphics["overlay"] = "img/icons/s_sensors_overlay.png"
+	s.IconGraphics["red"] = "img/icons/s_sensors_red1.png"
+	s.IconGraphics["green"] = "img/icons/s_sensors_green1.png"
 	s.MinPower = 1
 	s.MaxPower = 3
 	s.Order = 2
 	
 	s = library.AddSystem( "medbay" )
 	s.DisplayName = "Medical Bay"
-	s.OverlayGraphic = "img/icons/s_medbay_overlay.png"
-	s.IconGraphics:Add( "img/icons/s_medbay_red1.png" )
-	s.IconGraphics:Add( "img/icons/s_medbay_green1.png" )
+	s.IconGraphics["overlay"] = "img/icons/s_medbay_overlay.png"
+	s.IconGraphics["red"] = "img/icons/s_medbay_red1.png"
+	s.IconGraphics["green"] = "img/icons/s_medbay_green1.png"
 	s.MinPower = 1
 	s.MaxPower = 3
 	s.Order = 3
 	
 	s = library.AddSystem( "o2" )
 	s.DisplayName = "Oxygen Generator"
-	s.OverlayGraphic = "img/icons/s_oxygen_overlay.png"
-	s.IconGraphics:Add( "img/icons/s_oxygen_red1.png" )
-	s.IconGraphics:Add( "img/icons/s_oxygen_green1.png" )
+	s.IconGraphics["overlay"] = "img/icons/s_oxygen_overlay.png"
+	s.IconGraphics["red"] = "img/icons/s_oxygen_red1.png"
+	s.IconGraphics["green"] = "img/icons/s_oxygen_green1.png"
 	s.MinPower = 1
 	s.MaxPower = 3
 	s.Order = 4
 	
 	s = library.AddSystem( "shields" )
 	s.DisplayName = "Shields"
-	s.OverlayGraphic = "img/icons/s_shields_overlay.png"
-	s.IconGraphics:Add( "img/icons/s_shields_red1.png" )
-	s.IconGraphics:Add( "img/icons/s_shields_green1.png" )
+	s.IconGraphics["overlay"] = "img/icons/s_shields_overlay.png"
+	s.IconGraphics["red"] = "img/icons/s_shields_red1.png"
+	s.IconGraphics["green"] = "img/icons/s_shields_green1.png"
 	s.MinPower = 2
 	s.MaxPower = 8
 	s.Order = 5
 	
 	s = library.AddSystem( "engines" )
 	s.DisplayName = "Engines"
-	s.OverlayGraphic = "img/icons/s_engines_overlay.png"
-	s.IconGraphics:Add( "img/icons/s_engines_red1.png" )
-	s.IconGraphics:Add( "img/icons/s_engines_green1.png" )
+	s.IconGraphics["overlay"] = "img/icons/s_engines_overlay.png"
+	s.IconGraphics["red"] = "img/icons/s_engines_red1.png"
+	s.IconGraphics["green"] = "img/icons/s_engines_green1.png"
 	s.MinPower = 2
 	s.MaxPower = 6
 	s.Order = 6
 	
 	s = library.AddSystem( "weapons" )
 	s.DisplayName = "Weapons"
-	s.OverlayGraphic = "img/icons/s_weapons_overlay.png"
-	s.IconGraphics:Add( "img/icons/s_weapons_red1.png" )
-	s.IconGraphics:Add( "img/icons/s_weapons_green1.png" )
+	s.IconGraphics["overlay"] = "img/icons/s_weapons_overlay.png"
+	s.IconGraphics["red"] = "img/icons/s_weapons_red1.png"
+	s.IconGraphics["green"] = "img/icons/s_weapons_green1.png"
 	s.MinPower = 3
 	s.MaxPower = 8
 	s.Order = 7

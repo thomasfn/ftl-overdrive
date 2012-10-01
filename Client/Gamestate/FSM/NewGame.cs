@@ -321,7 +321,7 @@ namespace FTLOverdrive.Client.Gamestate
                 btnSystem.Init();
 
                 var systembox = new SystemBox();
-                systembox.SystemIcon = Root.Singleton.Material(system.IconGraphics[system.IconGraphics.Count - 1]);
+                systembox.SystemIcon = Root.Singleton.Material(system.IconGraphics["green"]);
                 systembox.PowerLevel = system.MinPower;
                 systembox.Width = btnSystem.Width - 2;
                 systembox.Height = btnSystem.Height - 2;

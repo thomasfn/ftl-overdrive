@@ -16,7 +16,6 @@ namespace FTLOverdrive.Client.Ships
         public float Y { get; private set; }
 
         public abstract IEnumerable<Tile> GetTiles();
-        public abstract IntRect GetBoundingBox();
 
         private string system = "";
         public string System
@@ -31,7 +30,6 @@ namespace FTLOverdrive.Client.Ships
                 Ship.DoShipModified();
             }
         }
-
         public Room SetSystem(string sys)
         {
             System = sys;
@@ -51,7 +49,6 @@ namespace FTLOverdrive.Client.Ships
                 Ship.DoShipModified();
             }
         }
-
         public Room SetBackgroundGraphic(string bgGraphic)
         {
             BackgroundGraphic = bgGraphic;
@@ -81,6 +78,28 @@ namespace FTLOverdrive.Client.Ships
         public virtual bool HasTile(int x, int y)
         {
             return (GetTile(x, y) != null);
+        }
+
+        public virtual IntRect GetBoundingBox()
+        {
+            int minX = int.MaxValue;
+            int minY = int.MaxValue;
+            int maxX = int.MinValue;
+            int maxY = int.MinValue;
+            foreach (var tile in GetTiles())
+            {
+                minX = Math.Min(minX, tile.X);
+                minY = Math.Min(minY, tile.Y);
+                maxX = Math.Max(maxX, tile.X);
+                maxY = Math.Max(maxY, tile.Y);
+            }
+            if (minX == int.MaxValue) throw new Exception("No tiles in " + ToString());
+            return new IntRect(minX, minY, maxX - minX, maxY - minY);
+        }
+
+        public override string ToString()
+        {
+            return "Room #" + ID;
         }
 
         public class Tile

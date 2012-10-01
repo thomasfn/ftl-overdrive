@@ -33,8 +33,7 @@ namespace FTLOverdrive.Client.Gamestate
             public string Name { get; set; }
             public string DisplayName { get; set; }
 
-            public string OverlayGraphic { get; set; }
-            public List<string> IconGraphics { get; set; }
+            public Dictionary<string, string> IconGraphics { get; set; }
 
             public int Order { get; set; }
 
@@ -43,7 +42,7 @@ namespace FTLOverdrive.Client.Gamestate
 
             public bool SubSystem { get; set; }
 
-            public System() { IconGraphics = new List<string>(); }
+            public System() { IconGraphics = new Dictionary<string, string>(); }
         }
 
         public class Race

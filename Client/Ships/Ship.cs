@@ -149,19 +149,19 @@ namespace FTLOverdrive.Client.Ships
         {
             if (Rooms.ContainsKey(room.ID))
             {
-                throw new Exception("Room " + room.ID + " already exists in ship " + ToString());
+                throw new Exception("" + room + " already exists in ship " + ToString());
             }
             Rooms[room.ID] = room;
             DoShipModified();
             return room;
         }
 
-        public RectRoom AddRectRoom(int x, int y, int w, int h)
+        public RectRoom AddRectRoom(float x, float y, int w, int h)
         {
             return AddRectRoom(Rooms.Count, x, y, w, h);
         }
 
-        public RectRoom AddRectRoom(int id, int x, int y, int w, int h)
+        public RectRoom AddRectRoom(int id, float x, float y, int w, int h)
         {
             return AddRoom(new RectRoom(this, id, x, y, w, h));
         }

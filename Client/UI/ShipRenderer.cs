@@ -7,6 +7,7 @@ using SFML.Graphics;
 
 using FTLOverdrive.Client.Ships;
 using SFML.Window;
+using FTLOverdrive.Client.Gamestate;
 
 namespace FTLOverdrive.Client.UI
 {
@@ -134,6 +135,17 @@ namespace FTLOverdrive.Client.UI
             target.Draw(sprTexture);
         }
 
+        private static void DrawColoredTexture(RenderTarget target, Vector2f a, Vector2f b, Texture texture, Color color, float rotation = 0)
+        {
+            var sprTexture = new Sprite(texture);
+            sprTexture.Scale = Util.Scale(sprTexture, b - a);
+            sprTexture.Origin = new Vector2f(texture.Size.X * 0.5f, texture.Size.Y * 0.5f);
+            sprTexture.Position = (a + b) * 0.5f;
+            sprTexture.Rotation = rotation;
+            sprTexture.Color = color;
+            target.Draw(sprTexture);
+        }
+
         private RenderTexture GetRenderTexture()
         {
             int wallThickness = 2;
@@ -143,6 +155,7 @@ namespace FTLOverdrive.Client.UI
             var colTile = new Color(228, 226, 216);
             var colWall = new Color(0, 0, 0);
             var colTileBorder = new Color(198, 196, 192);
+            var colSystem = new Color(128, 128, 128);
             //colTile = new Color(0, 0, 50);
 
             // Vectors
@@ -173,6 +186,8 @@ namespace FTLOverdrive.Client.UI
             foreach (var room in Ship.Rooms.Values)
             {
                 var roomCorner = origin + tileX * room.X + tileY * room.Y;
+                var roomCenter = roomCorner + tileX * (room.GetBoundingBox().Left + (float)room.GetBoundingBox().Width / 2) +
+                                              tileY * (room.GetBoundingBox().Top + (float)room.GetBoundingBox().Height / 2);
                 foreach (var tile in room.GetTiles())
                 {
                     var tileCorner = roomCorner + tileX * tile.X + tileY * tile.Y;
@@ -184,6 +199,19 @@ namespace FTLOverdrive.Client.UI
                 {
                     var roomGraphic = Root.Singleton.Material(room.BackgroundGraphic, false);
                     DrawTexture(rt, roomCorner, roomCorner + new Vector2f(roomGraphic.Size.X, roomGraphic.Size.Y), roomGraphic);
+                }
+                if (room.System != null)
+                {
+                    var system = Root.Singleton.mgrState.Get<Library>().GetSystem(room.System);
+                    if (system != null)
+                    {
+                        var systemGraphic = Root.Singleton.Material(system.IconGraphics["overlay"], false);
+                        if (systemGraphic != null)
+                        {
+                            DrawColoredTexture(rt, roomCenter - new Vector2f(systemGraphic.Size.X, systemGraphic.Size.Y) / 2,
+                                                   roomCenter + new Vector2f(systemGraphic.Size.X, systemGraphic.Size.Y) / 2, systemGraphic, colSystem);
+                        }
+                    }
                 }
             }
             
