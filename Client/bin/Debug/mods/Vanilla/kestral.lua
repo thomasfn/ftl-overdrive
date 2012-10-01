@@ -5,19 +5,16 @@
 	Loads the vanilla content into the game
 --]]
 
-local function Kestral()
+function Kestral()
 	-- Basic settings
-	local s = library.AddShip( "kestral" )
-	s.DisplayName = "The Kestral"
-	s.Unlocked = true
-	s.Default = true
+	local s = ships.NewShip()
+	s.Name = "The Kestrel"
 	
 	-- Graphics
 	s.BaseGraphic = "img/ship/kestral_base.png"
 	s.CloakedGraphic = "img/ship/kestral_cloak.png"
 	s.ShieldGraphic = "img/ship/kestral_shields.png"
 	s.FloorGraphic = "img/ship/kestral_floor.png"
-	s.MiniGraphic = "img/customizeUI/miniship_kestral.png"
 	s.GibGraphics:Add( "img/ship/kestral_gib1.png" )
 	s.GibGraphics:Add( "img/ship/kestral_gib2.png" )
 	s.GibGraphics:Add( "img/ship/kestral_gib3.png" )
@@ -26,88 +23,98 @@ local function Kestral()
 	s.GibGraphics:Add( "img/ship/kestral_gib6.png" )
 	
 	-- Floor settings
-	s.FloorOffsetX = 69
-	s.FloorOffsetY = 120
-	s.TileSize = 34
+	s.TileHeight = 35
+	s.TileWidth = 35
+    s.FloorOffsetX = 71
+    s.FloorOffsetY = 116
 	
 	-- Starter weapons
-	s.Weapons:Add( "artemis" )
+	--s.Weapons:Add( "artemis" )
 	
 	-- Starter crew
-	s.Crew:Add( "human_male" )
+	--s.Crew:Add( "human_male" )
 	
 	-- Rooms
-	local r = library.CreateRoom( 2, 2, 3, 2 )
-	r.System = "o2"
-	r.BackgroundGraphic = "img/ship/interior/room_oxygen_2.png"
-	r.Doors:Add( library.CreateDoor( 2, 3, "down" ) )
-	r.Doors:Add( library.CreateDoor( 2, 3, "right" ) )
-	s.Rooms:Add( r )
+	s:AddRectRoom(0, 14, 2, 1, 2):SetSystem("bridge"):SetBackgroundGraphic("img/ship/interior/room_pilot.png")
+	s:AddRectRoom(1, 12, 2, 2, 2)
+	s:AddRectRoom(2, 10, 2, 2, 1):SetSystem("doorcontrol"):SetBackgroundGraphic("img/ship/interior/room_doors.png")
+	s:AddRectRoom(3, 10, 3, 2, 1):SetSystem("sensors"):SetBackgroundGraphic("img/ship/interior/room_sensors.png")
+	s:AddRectRoom(4, 8, 1, 2, 2):SetSystem("medbay"):SetBackgroundGraphic("img/ship/interior/room_medbay.png")
+	s:AddRectRoom(5, 8, 3, 2, 2):SetSystem("shields"):SetBackgroundGraphic("img/ship/interior/room_shields.png")
+	s:AddRectRoom(6, 6, 0, 2, 1)
+	s:AddRectRoom(7, 6, 1, 2, 2)
+	s:AddRectRoom(8, 6, 3, 2, 2)
+	s:AddRectRoom(9, 6, 5, 2, 1)
+	s:AddRectRoom(10, 4, 2, 2, 2):SetSystem("weapons"):SetBackgroundGraphic("img/ship/interior/room_weapons.png")
+	s:AddRectRoom(11, 3, 1, 2, 1)
+	s:AddRectRoom(12, 3, 4, 2, 1)
+	s:AddRectRoom(13, 1, 1, 2, 1):SetSystem("o2"):SetBackgroundGraphic("img/ship/interior/room_oxygen.png")
+	s:AddRectRoom(14, 1, 2, 2, 2):SetSystem("engines"):SetBackgroundGraphic("img/ship/interior/room_engines.png")
+	s:AddRectRoom(15, 1, 4, 2, 1)
+	s:AddRectRoom(16, 0, 2, 1, 2)
 	
-	r = library.CreateRoom( 4, 2, 5, 2 )
-	r.Doors:Add( library.CreateDoor( 4, 2, "left" ) )
-	r.Doors:Add( library.CreateDoor( 5, 2, "down" ) )
-	s.Rooms:Add( r )
+	-- Doors
+	s.Doors:Add(ships.NewDoor(s, {{Room = 1, X = 1, Y = 1, Dir = "Right"}, {Room = 0, X = 0, Y = 1, Dir = "Left"}}));
 	
-	r = library.CreateRoom( 2, 3, 3, 4 )
-	r.System = "engines"
-	r.Doors:Add( library.CreateDoor( 2, 3, "left" ) )
-	r.Doors:Add( library.CreateDoor( 2, 4, "left" ) )
-	r.Doors:Add( library.CreateDoor( 3, 3, "up" ) )
-	r.Doors:Add( library.CreateDoor( 3, 4, "down" ) )
-	s.Rooms:Add( r )
+	s.Doors:Add(ships.NewDoor(s, {{Room = 2, X = 1, Y = 0, Dir = "Right"}, {Room = 1, X = 0, Y = 0, Dir = "Left"}}));
 	
-	r = library.CreateRoom( 1, 3, 1, 4 )
-	r.Doors:Add( library.CreateDoor( 1, 3, "left" ) )
-	r.Doors:Add( library.CreateDoor( 1, 4, "left" ) )
-	r.Doors:Add( library.CreateDoor( 1, 3, "right" ) )
-	r.Doors:Add( library.CreateDoor( 1, 4, "right" ) )
-	s.Rooms:Add( r )
+	s.Doors:Add(ships.NewDoor(s, {{Room = 3, X = 1, Y = 0, Dir = "Right"}, {Room = 1, X = 0, Y = 1, Dir = "Left"}}));
 	
-	r = library.CreateRoom( 2, 5, 3, 5 )
-	s.Rooms:Add( r )
+	s.Doors:Add(ships.NewDoor(s, {{Room = 4, X = 1, Y = 1, Dir = "Right"}, {Room = 2, X = 0, Y = 0, Dir = "Left"}}));
 	
-	r = library.CreateRoom( 4, 5, 5, 5 )
-	s.Rooms:Add( r )
+	s.Doors:Add(ships.NewDoor(s, {{Room = 5, X = 1, Y = 0, Dir = "Right"}, {Room = 3, X = 0, Y = 0, Dir = "Left"}}));
 	
-	r = library.CreateRoom( 5, 3, 6, 4 )
-	r.System = "weapons"
-	s.Rooms:Add( r )
+	s.Doors:Add(ships.NewDoor(s, {{Room = 4, X = 0, Y = 1, Dir = "Down"},
+	                              {Room = 5, X = 0, Y = 0, Dir = "Up"}}));
 	
-	r = library.CreateRoom( 7, 1, 8, 1 )
-	s.Rooms:Add( r )
+	s.Doors:Add(ships.NewDoor(s, {{Room = 7, X = 1, Y = 0, Dir = "Right"}, {Room = 4, X = 0, Y = 0, Dir = "Left"}}));
 	
-	r = library.CreateRoom( 7, 2, 8, 3 )
-	s.Rooms:Add( r )
+	s.Doors:Add(ships.NewDoor(s, {{Room = 8, X = 1, Y = 1, Dir = "Right"}, {Room = 5, X = 0, Y = 1, Dir = "Left"}}));
 	
-	r = library.CreateRoom( 7, 4, 8, 5 )
-	s.Rooms:Add( r )
+	s.Doors:Add(ships.NewDoor(s, {{Room = -1, X = 0, Y = 0, Dir = "Down"}, -- outside
+	                              {Room = 6, X = 1, Y = 0, Dir = "Up"}}));
 	
-	r = library.CreateRoom( 7, 6, 8, 6 )
-	s.Rooms:Add( r )
+	s.Doors:Add(ships.NewDoor(s, {{Room = -1, X = 0, Y = 0, Dir = "Down"}, -- outside
+	                              {Room = 6, X = 0, Y = 0, Dir = "Up"}}));
 	
-	r = library.CreateRoom( 9, 2, 10, 3 )
-	r.System = "medbay"
-	s.Rooms:Add( r )
+	s.Doors:Add(ships.NewDoor(s, {{Room = 6, X = 1, Y = 0, Dir = "Down"},
+	                              {Room = 7, X = 1, Y = 0, Dir = "Up"}}));
 	
-	r = library.CreateRoom( 9, 4, 10, 5 )
-	r.System = "shields"
-	s.Rooms:Add( r )
+	s.Doors:Add(ships.NewDoor(s, {{Room = 8, X = 1, Y = 1, Dir = "Down"},
+	                              {Room = 9, X = 1, Y = 0, Dir = "Up"}}));
 	
-	r = library.CreateRoom( 11, 3, 12, 3 )
-	r.System = "doorcontrol"
-	s.Rooms:Add( r )
+	s.Doors:Add(ships.NewDoor(s, {{Room = 9, X = 1, Y = 0, Dir = "Down"},
+	                              {Room = -1, X = 0, Y = 0, Dir = "Up"}})); -- outside
 	
-	r = library.CreateRoom( 11, 4, 12, 4 )
-	r.System = "sensors"
-	s.Rooms:Add( r )
+	s.Doors:Add(ships.NewDoor(s, {{Room = 9, X = 0, Y = 0, Dir = "Down"},
+	                              {Room = -1, X = 0, Y = 0, Dir = "Up"}})); -- outside
 	
-	r = library.CreateRoom( 13, 3, 14, 4 )
-	s.Rooms:Add( r )
+	s.Doors:Add(ships.NewDoor(s, {{Room = 10, X = 1, Y = 0, Dir = "Right"}, {Room = 7, X = 0, Y = 1, Dir = "Left"}}));
 	
-	r = library.CreateRoom( 15, 3, 15, 4 )
-	r.System = "bridge"
-	s.Rooms:Add( r )
-
+	s.Doors:Add(ships.NewDoor(s, {{Room = 10, X = 1, Y = 1, Dir = "Right"}, {Room = 8, X = 0, Y = 0, Dir = "Left"}}));
+	
+	s.Doors:Add(ships.NewDoor(s, {{Room = 11, X = 1, Y = 0, Dir = "Down"},
+	                              {Room = 10, X = 0, Y = 0, Dir = "Up"}}));
+	
+	s.Doors:Add(ships.NewDoor(s, {{Room = 10, X = 0, Y = 1, Dir = "Down"},
+	                              {Room = 12, X = 1, Y = 0, Dir = "Up"}}));
+	
+	s.Doors:Add(ships.NewDoor(s, {{Room = 13, X = 1, Y = 0, Dir = "Right"}, {Room = 11, X = 0, Y = 0, Dir = "Left"}}));
+	
+	s.Doors:Add(ships.NewDoor(s, {{Room = 15, X = 1, Y = 0, Dir = "Right"}, {Room = 12, X = 0, Y = 0, Dir = "Left"}}));
+	
+	s.Doors:Add(ships.NewDoor(s, {{Room = 13, X = 1, Y = 0, Dir = "Down"},
+	                              {Room = 14, X = 1, Y = 0, Dir = "Up"}}));
+	
+	s.Doors:Add(ships.NewDoor(s, {{Room = 14, X = 1, Y = 1, Dir = "Down"},
+	                              {Room = 15, X = 1, Y = 0, Dir = "Up"}}));
+	
+	s.Doors:Add(ships.NewDoor(s, {{Room = 16, X = 0, Y = 0, Dir = "Right"}, {Room = 14, X = 0, Y = 0, Dir = "Left"}}));
+	
+	s.Doors:Add(ships.NewDoor(s, {{Room = 16, X = 0, Y = 1, Dir = "Right"}, {Room = 14, X = 0, Y = 1, Dir = "Left"}}));
+	
+	s.Doors:Add(ships.NewDoor(s, {{Room = -1, X = 0, Y = 0, Dir = "Right"}, {Room = 16, X = 0, Y = 0, Dir = "Left"}})); -- outside
+	
+	s.Doors:Add(ships.NewDoor(s, {{Room = -1, X = 0, Y = 0, Dir = "Right"}, {Room = 16, X = 0, Y = 1, Dir = "Left"}})); -- outside
+	return s
 end
-hook.Add( "Game.LoadLibrary", Kestral )

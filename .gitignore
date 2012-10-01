@@ -9,3 +9,5 @@
 /Client/obj/x86/Debug/DesignTimeResolveAssemblyReferencesInput.cache
 /Client/obj/x86/Debug/ResolveAssemblyReference.cache
 /Client/obj/x86/Debug/Client.csproj.FileListAbsolute.txt
+
+/Client/bin/Debug/settings.ini

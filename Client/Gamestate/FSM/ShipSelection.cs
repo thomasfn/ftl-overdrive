@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,7 +22,7 @@ namespace FTLOverdrive.Client.Gamestate
 
         private class ShipButton : ImageButton
         {
-            public string ShipName { get; set; }
+            public string GeneratorName { get; set; }
             public bool Locked { get; set; }
 
             public Texture ShipImage { get; set; }
@@ -38,7 +38,7 @@ namespace FTLOverdrive.Client.Gamestate
             {
             }
 
-            public ShipButton(Library.Ship ship)
+            public ShipButton(Library.ShipGenerator gen)
             {
                 Image = Root.Singleton.Material("img/customizeUI/ship_list_button_on.png");
                 HoveredImage = Root.Singleton.Material("img/customizeUI/ship_list_button_select2.png");
@@ -49,9 +49,9 @@ namespace FTLOverdrive.Client.Gamestate
 
                 this.HoverSound = Root.Singleton.Sound("audio/waves/ui/select_light1.wav");
 
-                ShipName = ship.Name;
-                ShipImage = Root.Singleton.Material(ship.MiniGraphic);
-                Locked = !ship.Unlocked;
+                GeneratorName = gen.Name;
+                ShipImage = Root.Singleton.Material(gen.MiniGraphic);
+                Locked = !gen.Unlocked;
                 Enabled = true;
             }
 
@@ -62,11 +62,11 @@ namespace FTLOverdrive.Client.Gamestate
                 
                 OnClick += (sender) =>
                 {
-                    var ship = Root.Singleton.mgrState.Get<Library>().GetShip(ShipName);
-                    if (ship.Unlocked)
+                    var gen = Root.Singleton.mgrState.Get<Library>().GetShipGenerator(GeneratorName);
+                    if (gen.Unlocked)
                     {
                         //Console.WriteLine("Selecting unlocked ship: " + ShipName);
-                        Root.Singleton.mgrState.Get<NewGame>().SetShip(ship);
+                        Root.Singleton.mgrState.Get<NewGame>().SetShipGenerator(gen);
                         Root.Singleton.mgrState.Get<ShipSelection>().finishnow = true;
                     }
                     else
@@ -157,11 +157,9 @@ namespace FTLOverdrive.Client.Gamestate
 
             int shipX = 0;
             int shipY = 0;
-            foreach (var shipName in Root.Singleton.mgrState.Get<Library>().GetShips())
+            foreach (var gen in Root.Singleton.mgrState.Get<Library>().GetPlayerShipGenerators())
             {
-                var ship = Root.Singleton.mgrState.Get<Library>().GetShip(shipName);
-
-                var btnShip = new ShipButton(ship);
+                var btnShip = new ShipButton(gen);
                 Util.LayoutControl(btnShip, 24 + 205 * shipX, 52 + 135 * shipY, 191, 121, rctScreen);
                 btnShip.Parent = pnWindow;
                 btnShip.Init();

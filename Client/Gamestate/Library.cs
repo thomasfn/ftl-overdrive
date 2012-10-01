@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using FTLOverdrive.Client.Ships;
+
 namespace FTLOverdrive.Client.Gamestate
 {
     public class Library : IState
@@ -31,8 +33,7 @@ namespace FTLOverdrive.Client.Gamestate
             public string Name { get; set; }
             public string DisplayName { get; set; }
 
-            public string OverlayGraphic { get; set; }
-            public List<string> IconGraphics { get; set; }
+            public Dictionary<string, string> IconGraphics { get; set; }
 
             public int Order { get; set; }
 
@@ -41,7 +42,8 @@ namespace FTLOverdrive.Client.Gamestate
 
             public bool SubSystem { get; set; }
 
-            public System() { IconGraphics = new List<string>(); }
+            public System() { IconGraphics = new Dictionary<string, string>(); }
+
         }
 
         public class Race
@@ -71,7 +73,7 @@ namespace FTLOverdrive.Client.Gamestate
             public int Speed { get; set; }
         }
 
-        public class Ship
+        /*public class Ship
         {
             public string Name { get; set; }
             public string DisplayName { get; set; }
@@ -140,12 +142,29 @@ namespace FTLOverdrive.Client.Gamestate
             public int X { get; set; }
             public int Y { get; set; }
             public DoorDirection Direction { get; set; }
+        }*/
+
+        public interface ShipGenerator
+        {
+            string Name { get; set; }
+            string DisplayName { get; set; }
+
+            bool Unlocked { get; set; }
+            bool Default { get; set; }
+
+            // whether it's a player ship or NPC ship
+            bool NPC { get; set; }
+
+            string MiniGraphic { get; set; }
+
+            Ship Generate(params object[] args);
         }
 
         private Dictionary<string, Weapon> dctWeapons;
         private Dictionary<string, System> dctSystems;
         private Dictionary<string, Race> dctRaces;
-        private Dictionary<string, Ship> dctShips;
+
+        private Dictionary<string, ShipGenerator> dctShipGenerators;
 
         public void OnActivate()
         {
@@ -153,7 +172,7 @@ namespace FTLOverdrive.Client.Gamestate
             dctWeapons = new Dictionary<string, Weapon>();
             dctSystems = new Dictionary<string, System>();
             dctRaces = new Dictionary<string, Race>();
-            dctShips = new Dictionary<string, Ship>();
+            dctShipGenerators = new Dictionary<string, ShipGenerator>();
         }
 
         public void AddWeapon(string name, Weapon wep)
@@ -174,10 +193,10 @@ namespace FTLOverdrive.Client.Gamestate
             dctRaces.Add(name, race);
         }
 
-        public void AddShip(string name, Ship ship)
+        public void AddShipGenerator(string name, ShipGenerator gen)
         {
-            ship.Name = name;
-            dctShips.Add(name, ship);
+            gen.Name = name;
+            dctShipGenerators.Add(name, gen);
         }
 
         public Weapon GetWeapon(string name)
@@ -198,7 +217,7 @@ namespace FTLOverdrive.Client.Gamestate
             return dctRaces[name];
         }
 
-        public Ship GetShip(string name)
+        /*public Ship GetShip(string name)
         {
             if (!dctShips.ContainsKey(name)) return null;
             return dctShips[name];
@@ -210,6 +229,43 @@ namespace FTLOverdrive.Client.Gamestate
             foreach (var pair in dctShips)
                 result.Add(pair.Key);
             return result;
+        }*/
+
+        public ShipGenerator GetShipGenerator(string name)
+        {
+            if (!dctShipGenerators.ContainsKey(name)) return null;
+            return dctShipGenerators[name];
+        }
+
+        public ICollection<ShipGenerator> GetShipGenerators()
+        {
+            return dctShipGenerators.Values;
+        }
+
+        public List<ShipGenerator> GetNPCShipGenerators()
+        {
+            var res = new List<ShipGenerator>();
+            foreach (var gen in dctShipGenerators.Values)
+            {
+                if (gen.NPC)
+                {
+                    res.Add(gen);
+                }
+            }
+            return res;
+        }
+
+        public List<ShipGenerator> GetPlayerShipGenerators()
+        {
+            var res = new List<ShipGenerator>();
+            foreach (var gen in dctShipGenerators.Values)
+            {
+                if (!gen.NPC)
+                {
+                    res.Add(gen);
+                }
+            }
+            return res;
         }
 
         public void OnDeactivate()

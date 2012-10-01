@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 using SFML.Graphics;
@@ -6,6 +6,7 @@ using SFML.Window;
 using SFML.Audio;
 
 using FTLOverdrive.Client.UI;
+using FTLOverdrive.Client.Ships;
 
 namespace FTLOverdrive.Client.Gamestate
 {
@@ -15,24 +16,19 @@ namespace FTLOverdrive.Client.Gamestate
         private IntRect rctScreen;
 
         private Sprite sprBackground;
-        private Sprite sprShip;
-        private Sprite sprInterior;
+        private ShipRenderer shipRenderer = new ShipRenderer();
 
         private ImagePanel pnRename;
 
-        private Library.Ship currentship;
+        private Library.ShipGenerator currentShipGen;
+        private Ship currentShip;
 
         private TextEntry tbShipName;
 
         private List<ImageButton> lstSystems;
 
-        private Ship.Interior interior;
-        private RenderTexture rtInterior;
-
         private bool easymode;
-        private bool hiderooms;
         private bool finishnow;
-        private bool firstActivation = true;
 
         public void OnActivate()
         {
@@ -49,6 +45,11 @@ namespace FTLOverdrive.Client.Gamestate
             sprBackground.Scale = Util.Scale(sprBackground, new Vector2f(rctScreen.Width, rctScreen.Height));
 
             // Load UI
+            shipRenderer.ShowRooms = true;
+            Util.LayoutControl(shipRenderer, 310, 0, 660, 450, rctScreen);
+            shipRenderer.Parent = Root.Singleton.Canvas;
+            shipRenderer.Init();
+
             pnRename = new ImagePanel();
             pnRename.Image = Root.Singleton.Material("img/customizeUI/box_shipname.png");
             Util.LayoutControl(pnRename, 10, 10, 442, 48, rctScreen);
@@ -101,16 +102,14 @@ namespace FTLOverdrive.Client.Gamestate
             btnShipLeft.HoverSound = Root.Singleton.Sound("audio/waves/ui/select_light1.wav");
             btnShipLeft.OnClick += (sender) =>
             {
-                Library.Ship ship;
-                var shiplist = Root.Singleton.mgrState.Get<Library>().GetShips();
-                int idx = shiplist.IndexOf(currentship.Name);
+                var shiplist = Root.Singleton.mgrState.Get<Library>().GetPlayerShipGenerators();
+                int idx = shiplist.IndexOf(currentShipGen);
                 do
                 {
                     idx--;
                     if (idx < 0) idx = shiplist.Count - 1;
-                    ship = Root.Singleton.mgrState.Get<Library>().GetShip(shiplist[idx]);
-                } while (!ship.Unlocked);
-                SetShip(ship);
+                } while (!shiplist[idx].Unlocked);
+                SetShipGenerator(shiplist[idx]);
             };
             Util.LayoutControl(btnShipLeft, 30, 194, 32, 28, rctScreen);
             btnShipLeft.Parent = Root.Singleton.Canvas;
@@ -125,16 +124,14 @@ namespace FTLOverdrive.Client.Gamestate
             btnShipRight.HoverSound = Root.Singleton.Sound("audio/waves/ui/select_light1.wav");
             btnShipRight.OnClick += (sender) =>
             {
-                Library.Ship ship;
-                var shiplist = Root.Singleton.mgrState.Get<Library>().GetShips();
-                int idx = shiplist.IndexOf(currentship.Name);
+                var shiplist = Root.Singleton.mgrState.Get<Library>().GetPlayerShipGenerators();
+                int idx = shiplist.IndexOf(currentShipGen);
                 do
                 {
                     idx++;
                     if (idx >= shiplist.Count) idx = 0;
-                    ship = Root.Singleton.mgrState.Get<Library>().GetShip(shiplist[idx]);
-                } while (!ship.Unlocked);
-                SetShip(ship);
+                } while (!shiplist[idx].Unlocked);
+                SetShipGenerator(shiplist[idx]);
             };
             Util.LayoutControl(btnShipRight, 128, 194, 32, 28, rctScreen);
             btnShipRight.Parent = Root.Singleton.Canvas;
@@ -243,19 +240,19 @@ namespace FTLOverdrive.Client.Gamestate
             btnHideRooms.HoverSound = Root.Singleton.Sound("audio/waves/ui/select_light1.wav");
             btnHideRooms.OnClick += (sender) =>
             {
-                if (hiderooms)
+                if (!shipRenderer.ShowRooms)
                 {
                     btnHideRooms.Image = Root.Singleton.Material("img/customizeUI/button_hide_on.png");
                     btnHideRooms.HoveredImage = Root.Singleton.Material("img/customizeUI/button_hide_select2.png");
                     btnHideRooms.DisabledImage = Root.Singleton.Material("img/customizeUI/button_hide_off.png");
-                    hiderooms = false;
+                    shipRenderer.ShowRooms = true;
                 }
                 else
                 {
                     btnHideRooms.Image = Root.Singleton.Material("img/customizeUI/button_show_on.png");
                     btnHideRooms.HoveredImage = Root.Singleton.Material("img/customizeUI/button_show_select2.png");
                     btnHideRooms.DisabledImage = Root.Singleton.Material("img/customizeUI/button_show_off.png");
-                    hiderooms = true;
+                    shipRenderer.ShowRooms = false;
                 }
                 btnHideRooms.UpdateImage();
             };
@@ -263,38 +260,33 @@ namespace FTLOverdrive.Client.Gamestate
             btnHideRooms.Parent = Root.Singleton.Canvas;
             btnHideRooms.Init();
 
-            // Locate the default ship
-            if (firstActivation)
+            if (currentShipGen == null)
             {
-                SetShip(GetDefaultShip());
+                // Locate the default ship
+                SetShipGenerator(GetDefaultShipGenerator());
             }
-            firstActivation = false;
+            else
+            {
+                SetShipGenerator(currentShipGen);
+            }
         }
 
-        private Library.Ship GetDefaultShip()
+        private Library.ShipGenerator GetDefaultShipGenerator()
         {
             var lib = Root.Singleton.mgrState.Get<Library>();
-            var ships = lib.GetShips();
-            foreach (var shipname in ships)
+            var gens = lib.GetPlayerShipGenerators();
+            foreach (var gen in gens)
             {
-                var ship = lib.GetShip(shipname);
-                if (ship.Default)
+                if (gen.Default)
                 {
-                    return ship;
+                    return gen;
                 }
             }
-            throw new Exception("No default ship!");
+            throw new Exception("No default ship generator!");
         }
 
-        public void SetShip(Library.Ship ship)
+        public void SetShipGenerator(Library.ShipGenerator gen)
         {
-            // Set current ship
-            currentship = ship;
-
-            // Remove old UI
-            if (sprShip != null) sprShip.Dispose();
-            if (sprInterior != null) sprInterior.Dispose();
-            if (rtInterior != null) rtInterior.Dispose();
             if (lstSystems != null)
             {
                 foreach (var system in lstSystems)
@@ -303,58 +295,40 @@ namespace FTLOverdrive.Client.Gamestate
                 lstSystems = null;
             }
 
+            // Set current ship
+            currentShipGen = gen;
+            currentShip = gen.Generate();
+
+            // Update ship renderer
+            shipRenderer.Ship = currentShip;
+
             // Create new UI
-            sprShip = new Sprite(Root.Singleton.Material(ship.BaseGraphic));
-            sprShip.Texture.Smooth = true;
-            Util.LayoutSprite(sprShip, 310, 0, 660, 450, rctScreen);
-
-            interior = new Ship.Interior(ship);
-            rtInterior = interior.CreateRender(660, 450);
-            sprInterior = new Sprite(rtInterior.Texture);
-            sprInterior.Texture.Smooth = true;
-            Util.LayoutSprite(sprInterior, 310, 0, 660, 450, rctScreen);
-
-            tbShipName.Text = ship.DisplayName;
+            tbShipName.Text = currentShip.Name;
 
             lstSystems = new List<ImageButton>();
-            var systems = currentship.Systems;
-            systems.Sort((a, b) =>
-            {
-                var systemA = Root.Singleton.mgrState.Get<Library>().GetSystem(a);
-                var systemB = Root.Singleton.mgrState.Get<Library>().GetSystem(b);
-                if (systemA.Order < systemB.Order)
-                    return -1;
-                else if (systemA.Order == systemB.Order)
-                    return 0;
-                else
-                    return 1;
-            });
+            var systems = currentShip.Systems;
             for (int i = 0; i < systems.Count; i++)
             {
-                var system = Root.Singleton.mgrState.Get<Library>().GetSystem(systems[i]);
-                if (system != null)
-                {
-                    var btnSystem = new ImageButton();
-                    btnSystem.Image = Root.Singleton.Material("img/customizeUI/box_system_on.png");
-                    btnSystem.HoveredImage = Root.Singleton.Material("img/customizeUI/box_system_select2.png");
-                    btnSystem.DisabledImage = Root.Singleton.Material("img/customizeUI/box_system_off.png");
-                    btnSystem.Enabled = true;
-                    //btnSystem.HoverSound = Root.Singleton.Sound("audio/waves/ui/select_light1.wav");
-                    Util.LayoutControl(btnSystem, 370 + (i * 38), 380, 38, 96, rctScreen);
-                    btnSystem.Parent = Root.Singleton.Canvas;
-                    btnSystem.Init();
+                var system = systems[i];
+                var btnSystem = new ImageButton();
+                btnSystem.Image = Root.Singleton.Material("img/customizeUI/box_system_on.png");
+                btnSystem.HoveredImage = Root.Singleton.Material("img/customizeUI/box_system_select2.png");
+                btnSystem.DisabledImage = Root.Singleton.Material("img/customizeUI/box_system_off.png");
+                btnSystem.Enabled = true;
+                //btnSystem.HoverSound = Root.Singleton.Sound("audio/waves/ui/select_light1.wav");
+                Util.LayoutControl(btnSystem, 370 + (i * 38), 380, 38, 96, rctScreen);
+                btnSystem.Parent = Root.Singleton.Canvas;
+                btnSystem.Init();
 
-                    var systembox = new SystemBox();
-                    systembox.SystemIcon = Root.Singleton.Material(system.IconGraphics[system.IconGraphics.Count - 1]);
-                    systembox.PowerLevel = system.MinPower;
-                    systembox.Width = btnSystem.Width - 2;
-                    systembox.Height = btnSystem.Height - 2;
-                    systembox.Parent = btnSystem;
-                    systembox.Init();
+                var systembox = new SystemBox();
+                systembox.SystemIcon = Root.Singleton.Material(system.IconGraphics["green"]);
+                systembox.PowerLevel = system.MinPower;
+                systembox.Width = btnSystem.Width - 2;
+                systembox.Height = btnSystem.Height - 2;
+                systembox.Parent = btnSystem;
+                systembox.Init();
 
-                    lstSystems.Add(btnSystem);
-                }
-                else Root.Singleton.Log("Invalid system '" + systems[i] + "'");
+                lstSystems.Add(btnSystem);
             }
         }
 
@@ -386,8 +360,6 @@ namespace FTLOverdrive.Client.Gamestate
             if (stage == RenderStage.PREGUI)
             {
                 window.Draw(sprBackground);
-                window.Draw(sprShip);
-                window.Draw(sprInterior);
             }
         }
     }

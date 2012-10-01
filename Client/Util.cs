@@ -57,11 +57,16 @@ namespace FTLOverdrive.Client
             string progfiles = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86).Replace('\\', '/');
             if (!Directory.Exists(progfiles + "/")) return null;
 
+            if (Directory.Exists(progfiles + "/FTL/"))
+            {
+                return progfiles + "/FTL/";
+            }
+
             // Next, locate steam
             if (!Directory.Exists(progfiles + "/Steam/")) return null;
 
             // Next, locate FTL
-            if (!Directory.Exists(progfiles + "/Steam/steamapps/common/FTL Faster Than Light")) return null;
+            if (!Directory.Exists(progfiles + "/Steam/steamapps/common/FTL Faster Than Light/")) return null;
 
             // Done
             return progfiles + "/Steam/steamapps/common/FTL Faster Than Light/";

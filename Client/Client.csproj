@@ -35,16 +35,16 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="LuaInterface">
-      <HintPath>..\..\..\..\Programming Stuff\LuaInterface\Built\LuaInterface.dll</HintPath>
+      <HintPath>bin\debug\LuaInterface.dll</HintPath>
     </Reference>
     <Reference Include="sfmlnet-audio-2">
-      <HintPath>..\..\..\..\Programming Stuff\SFML.Net-2.0-rc\lib\x86\sfmlnet-audio-2.dll</HintPath>
+      <HintPath>bin\debug\sfmlnet-audio-2.dll</HintPath>
     </Reference>
     <Reference Include="sfmlnet-graphics-2">
-      <HintPath>..\..\..\..\Programming Stuff\SFML.Net-2.0-rc\lib\x86\sfmlnet-graphics-2.dll</HintPath>
+      <HintPath>bin\debug\sfmlnet-graphics-2.dll</HintPath>
     </Reference>
     <Reference Include="sfmlnet-window-2">
-      <HintPath>..\..\..\..\Programming Stuff\SFML.Net-2.0-rc\lib\x86\sfmlnet-window-2.dll</HintPath>
+      <HintPath>bin\debug\sfmlnet-window-2.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -70,17 +70,21 @@
     <Compile Include="Gamestate\StateController.cs" />
     <Compile Include="Gamestate\ThreadedBase.cs" />
     <Compile Include="SettingsFile.cs" />
-    <Compile Include="Ship\Interior.cs" />
+    <Compile Include="Ships\Door.cs" />
+    <Compile Include="Ships\RectRoom.cs" />
+    <Compile Include="Ships\Room.cs" />
     <Compile Include="UI\Canvas.cs" />
     <Compile Include="UI\Control.cs" />
     <Compile Include="UI\ImageButton.cs" />
     <Compile Include="UI\ImagePanel.cs" />
     <Compile Include="UI\Label.cs" />
     <Compile Include="UI\Panel.cs" />
+    <Compile Include="UI\ShipRenderer.cs" />
     <Compile Include="UI\SystemBox.cs" />
     <Compile Include="UI\TextEntry.cs" />
     <Compile Include="UI\TextButton.cs" />
     <Compile Include="UI\ImageToggleButton.cs" />
+    <Compile Include="Ships\Ship.cs" />
     <Compile Include="Util.cs" />
   </ItemGroup>
   <ItemGroup>
