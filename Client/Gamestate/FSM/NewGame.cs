@@ -45,6 +45,11 @@ namespace FTLOverdrive.Client.Gamestate
             sprBackground.Scale = Util.Scale(sprBackground, new Vector2f(rctScreen.Width, rctScreen.Height));
 
             // Load UI
+            shipRenderer.ShowRooms = true;
+            Util.LayoutControl(shipRenderer, 310, 0, 660, 450, rctScreen);
+            shipRenderer.Parent = Root.Singleton.Canvas;
+            shipRenderer.Init();
+
             pnRename = new ImagePanel();
             pnRename.Image = Root.Singleton.Material("img/customizeUI/box_shipname.png");
             Util.LayoutControl(pnRename, 10, 10, 442, 48, rctScreen);
@@ -254,11 +259,6 @@ namespace FTLOverdrive.Client.Gamestate
             Util.LayoutControl(btnHideRooms, 23, 301, 150, 28, rctScreen);
             btnHideRooms.Parent = Root.Singleton.Canvas;
             btnHideRooms.Init();
-            
-            shipRenderer.ShowRooms = true;
-            Util.LayoutControl(shipRenderer, 310, 0, 660, 450, rctScreen);
-            shipRenderer.Parent = Root.Singleton.Canvas;
-            shipRenderer.Init();
 
             if (currentShipGen == null)
             {

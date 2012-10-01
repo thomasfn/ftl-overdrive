@@ -152,6 +152,7 @@ namespace FTLOverdrive.Client.Ships
                 throw new Exception("Room " + room.ID + " already exists in ship " + ToString());
             }
             Rooms[room.ID] = room;
+            DoShipModified();
             return room;
         }
 

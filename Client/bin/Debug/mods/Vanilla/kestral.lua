@@ -49,8 +49,7 @@ function Kestral()
 	s:AddRectRoom(11, 3, 1, 2, 1)
 	s:AddRectRoom(12, 3, 4, 2, 1)
 	s:AddRectRoom(13, 1, 1, 2, 1):SetSystem("o2"):SetBackgroundGraphic("img/ship/interior/room_oxygen.png")
-	--FIXME This texture produses very weird artifacts.
-	s:AddRectRoom(14, 1, 2, 2, 2):SetSystem("engines")--:SetBackgroundGraphic("img/ship/interior/room_engines.png")
+	s:AddRectRoom(14, 1, 2, 2, 2):SetSystem("engines"):SetBackgroundGraphic("img/ship/interior/room_engines.png")
 	s:AddRectRoom(15, 1, 4, 2, 1)
 	s:AddRectRoom(16, 0, 2, 1, 2)
 	

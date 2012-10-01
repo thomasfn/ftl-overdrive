@@ -66,10 +66,8 @@ namespace FTLOverdrive.Client.UI
             {
                 sprShip = new Sprite(GetRenderTexture().Texture);
                 sprShip.Texture.Smooth = false;
-                // For some reasone RenderTexture was flipped vertically.
-                // I couldn't find out why, so just flip it again manually.
-                sprShip.Position = new SFML.Window.Vector2f(AbsX, AbsY + Height);
-                sprShip.Scale = new Vector2f(1, -1) * Height / sprShip.Texture.Size.Y;
+                sprShip.Position = new SFML.Window.Vector2f(AbsX, AbsY);
+                sprShip.Scale = new Vector2f(1, 1) * Height / sprShip.Texture.Size.Y;
             }
             base.UpdateLayout();
         }
@@ -103,11 +101,10 @@ namespace FTLOverdrive.Client.UI
 
 
 
-        private static RectangleShape shpLine = new RectangleShape();
-        private static Sprite sprTexture = new Sprite();
 
         private static void DrawLine(RenderTexture target, Vector2f a, Vector2f b, Color col, int thickness = 1)
         {
+            var shpLine = new RectangleShape();
             shpLine.Size = new Vector2f((float)Math.Sqrt((b.X - a.X) * (b.X - a.X) + (b.Y - a.Y) * (b.Y - a.Y)), thickness);
             shpLine.Origin = shpLine.Size * 0.5f;
             shpLine.Position = (a + b) * 0.5f;
@@ -118,6 +115,7 @@ namespace FTLOverdrive.Client.UI
 
         private static void DrawQuad(RenderTexture target, Vector2f a, Vector2f b, Color col)
         {
+            var shpLine = new RectangleShape();
             shpLine.Size = b - a;
             shpLine.Origin = shpLine.Size * 0.5f;
             shpLine.Position = (a + b) * 0.5f;
@@ -128,7 +126,7 @@ namespace FTLOverdrive.Client.UI
 
         private static void DrawTexture(RenderTarget target, Vector2f a, Vector2f b, Texture texture, float rotation = 0)
         {
-            sprTexture.Texture = texture;
+            var sprTexture = new Sprite(texture);
             sprTexture.Scale = Util.Scale(sprTexture, b - a);
             sprTexture.Origin = new Vector2f(texture.Size.X * 0.5f, texture.Size.Y * 0.5f);
             sprTexture.Position = (a + b) * 0.5f;
@@ -156,8 +154,8 @@ namespace FTLOverdrive.Client.UI
             var wallY = new Vector2f(0.0f, wallThickness / 2);
 
             // Textures
-            Texture baseGraphic = Root.Singleton.Material(Ship.BaseGraphic, true);
-            Texture floorGraphic = Root.Singleton.Material(Ship.FloorGraphic, true);
+            Texture baseGraphic = Root.Singleton.Material(Ship.BaseGraphic, false);
+            Texture floorGraphic = Root.Singleton.Material(Ship.FloorGraphic, false);
             Texture doorGraphic = Root.Singleton.Material("img/door_placeholder.png", false);
             // TODO use proper door textures (animations, different types, etc.)
 
@@ -184,11 +182,11 @@ namespace FTLOverdrive.Client.UI
                 }
                 if (room.BackgroundGraphic != null)
                 {
-                    var roomGraphic = Root.Singleton.Material(room.BackgroundGraphic);
+                    var roomGraphic = Root.Singleton.Material(room.BackgroundGraphic, false);
                     DrawTexture(rt, roomCorner, roomCorner + new Vector2f(roomGraphic.Size.X, roomGraphic.Size.Y), roomGraphic);
                 }
             }
-
+            
             // Draw walls
             foreach (var room in Ship.Rooms.Values)
             {
@@ -253,7 +251,7 @@ namespace FTLOverdrive.Client.UI
             }
 
             // TODO: system icons, oxygen, breaches, fire, etc.
-
+            rt.Display();
             return rt;
         }
     }
