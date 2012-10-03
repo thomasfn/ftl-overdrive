@@ -8,7 +8,7 @@ using SFML.Window;
 
 namespace FTLOverdrive.Client.UI
 {
-    // TODO animatons; a proper way to choose door type; hiding the wall under open door
+    // TODO animatons; a proper way to choose door type
     public class DoorEntranceRenderer : Control
     {
         private ShipRenderer shipRenderer;
@@ -17,6 +17,8 @@ namespace FTLOverdrive.Client.UI
 
         private Sprite sprHighlight;
         private Sprite sprDoor;
+
+        private int rotation;
 
         private int type = 0;
 
@@ -40,25 +42,21 @@ namespace FTLOverdrive.Client.UI
             {
                 case Door.Direction.Left:
                     y += (int)(s.TileHeight / 2);
-                    sprHighlight.Rotation = 0;
-                    sprDoor.Rotation = 0;
+                    rotation = 0;
                     break;
                 case Door.Direction.Up:
                     x += (int)(s.TileWidth / 2);
-                    sprHighlight.Rotation = 90;
-                    sprDoor.Rotation = 90;
+                    rotation = 90;
                     break;
                 case Door.Direction.Right:
                     x += (int)(s.TileWidth);
                     y += (int)(s.TileHeight / 2);
-                    sprHighlight.Rotation = 180;
-                    sprDoor.Rotation = 180;
+                    rotation = 180;
                     break;
                 case Door.Direction.Down:
                     x += (int)(s.TileWidth / 2);
                     y += (int)(s.TileHeight);
-                    sprHighlight.Rotation = 270;
-                    sprDoor.Rotation = 270;
+                    rotation = 270;
                     break;
             }
 
@@ -77,14 +75,17 @@ namespace FTLOverdrive.Client.UI
         protected override void UpdateLayout()
         {
             base.UpdateLayout();
+
             sprHighlight.Color = new Color(255, 255, 255, 128);
             sprHighlight.Origin = new Vector2f(sprHighlight.TextureRect.Width / 2, sprHighlight.TextureRect.Height / 2);
             sprHighlight.Position = new SFML.Window.Vector2f(AbsX + (Width / 2), AbsY + (Height / 2));
+            sprHighlight.Rotation = rotation;
             sprHighlight.Scale = shipRenderer.getScale();
 
             sprDoor.TextureRect = new IntRect(35 * (door.Open ? 4 : 0),  type * 35, 35, 35);
             sprDoor.Origin = new Vector2f(sprDoor.TextureRect.Width / 2, sprDoor.TextureRect.Height / 2);
             sprDoor.Position = new SFML.Window.Vector2f(AbsX + (Width / 2), AbsY + (Height / 2));
+            sprDoor.Rotation = rotation;
             sprDoor.Scale = shipRenderer.getScale();
         }
 

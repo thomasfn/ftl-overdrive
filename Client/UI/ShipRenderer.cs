@@ -294,6 +294,32 @@ namespace FTLOverdrive.Client.UI
                 }
             }
 
+            // Doorways
+            foreach (var door in Ship.Doors)
+            {
+                foreach (var entrance in door.Entrances)
+                {
+                    if (!Ship.Rooms.Contains(entrance.RoomID)) continue;
+                    var room = Ship.Rooms[entrance.RoomID];
+                    var tileCorner = origin + tileX * (room.X + entrance.X) + tileY * (room.Y + entrance.Y);
+                    switch (entrance.Direction)
+                    {
+                        case Door.Direction.Up:
+                            DrawLine(rt, tileCorner + tileX * 0.14F + wallY, tileCorner + tileX * (1 - 0.14F) + wallY, colTile, wallThickness);
+                            break;
+                        case Door.Direction.Down:
+                            DrawLine(rt, tileCorner + tileX * 0.14F + tileY - wallY, tileCorner + tileX * (1 - 0.14F) + tileY - wallY, colTile, wallThickness);
+                            break;
+                        case Door.Direction.Left:
+                            DrawLine(rt, tileCorner + tileY * 0.14F + wallX, tileCorner + tileY * (1 - 0.14F) + wallX, colTile, wallThickness);
+                            break;
+                        case Door.Direction.Right:
+                            DrawLine(rt, tileCorner + tileY * 0.14F + tileX - wallX, tileCorner + tileY * (1 - 0.14F) + tileX - wallX, colTile, wallThickness);
+                            break;
+                    }
+                }
+            }
+
             // TODO: oxygen, breaches, fire, etc.
             rt.Display();
             return rt;
