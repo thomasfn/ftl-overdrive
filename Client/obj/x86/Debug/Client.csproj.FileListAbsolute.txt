@@ -18,3 +18,11 @@ D:\FTL\ftl-overdrive\Client\bin\Debug\FTLOverdriveData.pdb
 D:\FTL\ftl-overdrive\Client\obj\x86\Debug\ResolveAssemblyReference.cache
 D:\FTL\ftl-overdrive\Client\obj\x86\Debug\FTLOverdriveClient.exe
 D:\FTL\ftl-overdrive\Client\obj\x86\Debug\FTLOverdriveClient.pdb
+D:\FTL\ftl-overdrive1\Client\bin\Debug\FTLOverdriveClient.exe
+D:\FTL\ftl-overdrive1\Client\bin\Debug\FTLOverdriveClient.pdb
+D:\FTL\ftl-overdrive1\Client\bin\Debug\FTLOverdriveData.dll
+D:\FTL\ftl-overdrive1\Client\bin\Debug\lua51.dll
+D:\FTL\ftl-overdrive1\Client\bin\Debug\FTLOverdriveData.pdb
+D:\FTL\ftl-overdrive1\Client\obj\x86\Debug\ResolveAssemblyReference.cache
+D:\FTL\ftl-overdrive1\Client\obj\x86\Debug\FTLOverdriveClient.exe
+D:\FTL\ftl-overdrive1\Client\obj\x86\Debug\FTLOverdriveClient.pdb

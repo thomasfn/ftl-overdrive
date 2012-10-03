@@ -13,7 +13,7 @@ namespace FTLOverdrive.Client
     {
         public static Vector2f Scale(Sprite spr, Vector2f pixelsize, float mult = 1.0f)
         {
-            return new Vector2f(pixelsize.X / (float)spr.Texture.Size.X, pixelsize.Y / (float)spr.Texture.Size.Y) * mult;
+            return new Vector2f(pixelsize.X / (float)spr.TextureRect.Width, pixelsize.Y / (float)spr.TextureRect.Height) * mult;
         }
 
         public static IntRect ScreenRect(uint w, uint h, float aspect)

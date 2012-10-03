@@ -211,7 +211,7 @@ namespace FTLOverdrive.Client.Gamestate
             return new Ship();
         }
 
-        private Door ships_NewDoor(Ship ship, LuaTable entrances)
+        private Door ships_NewDoor(LuaTable entrances)
         {
             var res = new Door.DoorEntrance[entrances.Keys.Count];
             for (int i = 0; i < entrances.Keys.Count; i++)
@@ -219,7 +219,7 @@ namespace FTLOverdrive.Client.Gamestate
                 LuaTable e = (LuaTable)entrances[i + 1];
                 res[i] = new Door.DoorEntrance((int)(double)e["Room"], (int)(double)e["X"], (int)(double)e["Y"], (string)e["Dir"]);
             }
-            return new Door(ship, res);
+            return new Door(res);
         }
 
         #endregion
