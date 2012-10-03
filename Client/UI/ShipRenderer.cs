@@ -8,11 +8,14 @@ using SFML.Graphics;
 using FTLOverdrive.Client.Ships;
 using SFML.Window;
 using FTLOverdrive.Client.Gamestate;
+using System.Collections.Specialized;
 
 namespace FTLOverdrive.Client.UI
 {
     public class ShipRenderer : Control
     {
+        public bool CanInteract { get; set; }
+
         private bool showRooms;
         public bool ShowRooms
         {
@@ -52,15 +55,49 @@ namespace FTLOverdrive.Client.UI
 
         private RenderTexture rtShip;
 
+        private Dictionary<Door.DoorEntrance, DoorEntranceRenderer> doorRenderers;
+
         public override void Init()
         {
             sprShip = new Sprite();
+            doorRenderers = new Dictionary<Door.DoorEntrance, DoorEntranceRenderer>();
             base.Init();
         }
 
-        private void onShipModified(Ship sender)
+        private void onShipModified(Object sender, Ship.ShipModifiedEventArgs e)
         {
-            UpdateLayout();
+            if (sender != Ship) return;
+            switch (e.Action)
+            {
+                case Ships.Ship.ShipModifiedEventArgs.ShipModifiedAction.Doors:
+                    updateDoors(e.CollectionEventArgs);
+                    break;
+                default:
+                    UpdateLayout();
+                    break;
+            }
+        }
+
+        private void updateDoors(NotifyCollectionChangedEventArgs e)
+        {
+            foreach (var doorRenderer in doorRenderers.Values)
+            {
+                doorRenderer.Remove();
+            }
+            doorRenderers.Clear();
+            foreach (var door in Ship.Doors)
+            {
+                foreach (var entrance in door.Entrances)
+                {
+                    if (entrance.RoomID != -1)
+                    {
+                        var doorRenderer = new DoorEntranceRenderer(this, door, entrance);
+                        doorRenderers.Add(entrance, doorRenderer);
+                        doorRenderer.Parent = this;
+                        doorRenderer.Init();
+                    }
+                }
+            }
         }
 
         protected override void UpdateLayout()
@@ -71,9 +108,16 @@ namespace FTLOverdrive.Client.UI
                 sprShip = new Sprite(rtShip.Texture);
                 sprShip.Texture.Smooth = false;
                 sprShip.Position = new SFML.Window.Vector2f(AbsX, AbsY);
-                sprShip.Scale = new Vector2f(1, 1) * Height / sprShip.Texture.Size.Y;
+                sprShip.Scale = getScale();
+
+                updateDoors(null);
             }
             base.UpdateLayout();
+        }
+
+        public Vector2f getScale()
+        {
+            return new Vector2f(1, 1) * Height / sprShip.Texture.Size.Y;
         }
 
         private int updateCounter = 0;
@@ -172,8 +216,6 @@ namespace FTLOverdrive.Client.UI
             // Textures
             Texture baseGraphic = Root.Singleton.Material(Ship.BaseGraphic, false);
             Texture floorGraphic = Root.Singleton.Material(Ship.FloorGraphic, false);
-            Texture doorGraphic = Root.Singleton.Material("img/door_placeholder.png", false);
-            // TODO use proper door textures (animations, different types, etc.)
 
             var rtWidth = baseGraphic.Size.X;
             var rtHeight = baseGraphic.Size.Y;
@@ -186,7 +228,7 @@ namespace FTLOverdrive.Client.UI
             DrawTexture(rt, new Vector2f(0.0f, 0.0f), new Vector2f(rtWidth, rtHeight), floorGraphic);
 
             // Draw rooms
-            foreach (var room in Ship.Rooms.Values)
+            foreach (var room in Ship.Rooms)
             {
                 var roomCorner = origin + tileX * room.X + tileY * room.Y;
                 var roomCenter = roomCorner + tileX * (room.GetBoundingBox().Left + (float)room.GetBoundingBox().Width / 2) +
@@ -219,7 +261,7 @@ namespace FTLOverdrive.Client.UI
             }
             
             // Draw walls
-            foreach (var room in Ship.Rooms.Values)
+            foreach (var room in Ship.Rooms)
             {
                 var roomCorner = origin + tileX * room.X + tileY * room.Y;
                 foreach (var tile in room.GetTiles())
@@ -252,36 +294,7 @@ namespace FTLOverdrive.Client.UI
                 }
             }
 
-            // Draw doors
-            foreach (var door in Ship.Doors)
-            {
-                foreach (var entrance in door.Entrances)
-                {
-                    if (!Ship.Rooms.ContainsKey(entrance.RoomID)) continue;
-
-                    var room = Ship.Rooms[entrance.RoomID];
-                    // Not sure why, but it looks better when I add new Vector2f(0.5F, 0.5F)
-                    var tileCorner = origin + tileX * (room.X + entrance.X) + tileY * (room.Y + entrance.Y) + new Vector2f(0.5F, 0.5F);
-
-                    switch (entrance.Direction)
-                    {
-                        case Door.Direction.Up:
-                            DrawTexture(rt, tileCorner - tileY / 2, tileCorner + tileX + tileY / 2, doorGraphic, 90);
-                            break;
-                        case Door.Direction.Down:
-                            DrawTexture(rt, tileCorner + tileY / 2, tileCorner + tileX + tileY * 3 / 2, doorGraphic, 90);
-                            break;
-                        case Door.Direction.Left:
-                            DrawTexture(rt, tileCorner - tileX / 2, tileCorner + tileX / 2 + tileY, doorGraphic);
-                            break;
-                        case Door.Direction.Right:
-                            DrawTexture(rt, tileCorner + tileX / 2, tileCorner + tileX * 3 / 2 + tileY, doorGraphic);
-                            break;
-                    }
-                }
-            }
-
-            // TODO: system icons, oxygen, breaches, fire, etc.
+            // TODO: oxygen, breaches, fire, etc.
             rt.Display();
             return rt;
         }
