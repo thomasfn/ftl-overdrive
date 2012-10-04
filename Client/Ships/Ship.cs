@@ -1,17 +1,36 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-using SFML.Graphics;
 using FTLOverdrive.Client.Gamestate;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 
 namespace FTLOverdrive.Client.Ships
 {
     public class Ship
     {
-        public delegate void ShipModifiedHandler(Ship sender);
-        public event ShipModifiedHandler ShipModified;
+        public class ShipModifiedEventArgs : EventArgs
+        {
+            public enum ShipModifiedAction { Rooms, Doors, Reset }
+            public ShipModifiedAction Action { get; set; }
+            public NotifyCollectionChangedEventArgs CollectionEventArgs { get; set; }
+
+            public ShipModifiedEventArgs(ShipModifiedAction action = ShipModifiedAction.Reset, NotifyCollectionChangedEventArgs e = null)
+            {
+                Action = action;
+                CollectionEventArgs = e;
+            }
+        }
+
+        public event EventHandler<ShipModifiedEventArgs> ShipModified;
+        public void DoShipModified()
+        {
+            if (ShipModified != null) ShipModified(this, new ShipModifiedEventArgs());
+        }
+        public void DoShipModified(ShipModifiedEventArgs e)
+        {
+            if (ShipModified != null) ShipModified(this, e);
+        }
 
         public string Name { get; set; }
 
@@ -20,86 +39,56 @@ namespace FTLOverdrive.Client.Ships
         private string baseGraphic;
         public string BaseGraphic
         {
-            get
-            {
-                return baseGraphic;
-            }
-            set
-            {
-                baseGraphic = value;
-                DoShipModified();
-            }
+            get { return baseGraphic; }
+            set { baseGraphic = value; DoShipModified(); }
         }
         private string cloackedGraphic;
         public string CloakedGraphic
         {
-            get
-            {
-                return cloackedGraphic;
-            }
-            set
-            {
-                cloackedGraphic = value;
-                DoShipModified();
-            }
+            get { return cloackedGraphic; }
+            set { cloackedGraphic = value; DoShipModified(); }
         }
         private string shildGraphic;
         public string ShieldGraphic
         {
-            get
-            {
-                return shildGraphic;
-            }
-            set
-            {
-                shildGraphic = value;
-                DoShipModified();
-            }
+            get { return shildGraphic; }
+            set { shildGraphic = value; DoShipModified(); }
         }
         private string floorGraphic;
         public string FloorGraphic
         {
-            get
-            {
-                return floorGraphic;
-            }
-            set
-            {
-                floorGraphic = value;
-                DoShipModified();
-            }
+            get { return floorGraphic; }
+            set { floorGraphic = value; DoShipModified(); }
         }
         private List<string> gibGraphics;
         public List<string> GibGraphics
         {
-            get
-            {
-                return gibGraphics;
-            }
-            set
-            {
-                gibGraphics = value;
-                DoShipModified();
-            }
+            get { return gibGraphics; }
+            set { gibGraphics = value; DoShipModified(); }
         }
 
         #endregion
 
-        public void DoShipModified()
-        {
-            if (ShipModified != null) { ShipModified(this); }
-        }
-
-        public Dictionary<int, Room> Rooms { get; set; }
-        public List<Door> Doors { get; set; }
+        public ObservableKeyedCollection<int, Room> Rooms { get; set; }
+        public ObservableCollectionEx<Door> Doors { get; set; }
 
         //public List<string> Weapons { get; set; }
 
         //public List<string> Crew { get; set; }
 
-        public float TileHeight { get; set; }
+        private float tileHeight;
+        public float TileHeight
+        {
+            get { return tileHeight; }
+            set { tileHeight = value; DoShipModified(); }
+        }
 
-        public float TileWidth { get; set; }
+        private float tileWidth;
+        public float TileWidth
+        {
+            get { return tileWidth; }
+            set { tileWidth = value; DoShipModified(); }
+        }
 
         public float FloorOffsetX { get; set; }
         public float FloorOffsetY { get; set; }
@@ -109,7 +98,7 @@ namespace FTLOverdrive.Client.Ships
             get
             {
                 var res = new List<Library.System>();
-                foreach (var room in Rooms.Values)
+                foreach (var room in Rooms)
                 {
                     if (room.System == "") continue;
 
@@ -139,20 +128,31 @@ namespace FTLOverdrive.Client.Ships
         public Ship()
         {
             GibGraphics = new List<string>();
-            Rooms = new Dictionary<int, Room>();
-            Doors = new List<Door>();
+            Rooms = new ObservableKeyedCollection<int, Room>(r => r.ID);
+            Rooms.CollectionChanged += (sender, e) =>
+                DoShipModified(new ShipModifiedEventArgs(ShipModifiedEventArgs.ShipModifiedAction.Rooms, e));
+            Doors = new ObservableCollectionEx<Door>();
+            Doors.CollectionChanged += (sender, e) =>
+                DoShipModified(new ShipModifiedEventArgs(ShipModifiedEventArgs.ShipModifiedAction.Doors, e));
             //Crew = new List<string>();
             //Weapons = new List<string>();
         }
 
+        private void onDoorsChanged(Object sender, NotifyCollectionChangedEventArgs e)
+        {
+        }
+
+        private void onRoomsChanged(Object sender, NotifyCollectionChangedEventArgs e)
+        {
+        }
+
         public T AddRoom<T>(T room) where T : Room
         {
-            if (Rooms.ContainsKey(room.ID))
+            if (Rooms.Contains(room.ID))
             {
                 throw new Exception("" + room + " already exists in ship " + ToString());
             }
-            Rooms[room.ID] = room;
-            DoShipModified();
+            Rooms.Add(room);
             return room;
         }
 
@@ -163,7 +163,7 @@ namespace FTLOverdrive.Client.Ships
 
         public RectRoom AddRectRoom(int id, float x, float y, int w, int h)
         {
-            return AddRoom(new RectRoom(this, id, x, y, w, h));
+            return AddRoom(new RectRoom(id, x, y, w, h));
         }
 
         public override string ToString()

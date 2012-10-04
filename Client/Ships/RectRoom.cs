@@ -9,12 +9,22 @@ namespace FTLOverdrive.Client.Ships
 {
     public class RectRoom : Room
     {
-        public int Width { get; private set; }
-        public int Height { get; private set; }
+        private int width;
+        public int Width
+        {
+            get { return width; }
+            set { width = value; NotifyPropertyChanged("Width"); }
+        }
+        private int height;
+        public int Height
+        {
+            get { return height; }
+            set { height = value; NotifyPropertyChanged("Height"); }
+        }
 
         private Tile[] tiles;
 
-        public RectRoom(Ship ship, int id, float x = 0, float y = 0, int w = 1, int h = 1) : base(ship, id, x, y)
+        public RectRoom(int id, float x = 0, float y = 0, int w = 1, int h = 1) : base(id, x, y)
         {
             Width = w;
             Height = h;

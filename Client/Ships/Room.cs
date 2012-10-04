@@ -4,31 +4,39 @@ using System.Linq;
 using System.Text;
 
 using SFML.Graphics;
+using System.ComponentModel;
 
 namespace FTLOverdrive.Client.Ships
 {
-    public abstract class Room
+    public abstract class Room : INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void NotifyPropertyChanged(String info)
+        {
+            if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(info));
+        }
+
         public int ID { get; private set; }
-        protected Ship Ship { get; private set; }
 
-        public float X { get; private set; }
-        public float Y { get; private set; }
-
-        public abstract IEnumerable<Tile> GetTiles();
+        private float x;
+        public float X
+        {
+            get { return x; }
+            set { x = value; NotifyPropertyChanged("X"); }
+        }
+        
+        private float y;
+        public float Y
+        {
+            get { return y; }
+            set { y = value; NotifyPropertyChanged("Y"); }
+        }
 
         private string system = "";
         public string System
         {
-            get
-            {
-                return system;
-            }
-            set
-            {
-                system = value;
-                Ship.DoShipModified();
-            }
+            get { return system; }
+            set { system = value; NotifyPropertyChanged("System"); }
         }
         public Room SetSystem(string sys)
         {
@@ -39,15 +47,8 @@ namespace FTLOverdrive.Client.Ships
         private string backgroundGraphic;
         public string BackgroundGraphic
         {
-            get
-            {
-                return backgroundGraphic;
-            }
-            set
-            {
-                backgroundGraphic = value;
-                Ship.DoShipModified();
-            }
+            get { return backgroundGraphic; }
+            set { backgroundGraphic = value; NotifyPropertyChanged("BackgroundGraphic"); }
         }
         public Room SetBackgroundGraphic(string bgGraphic)
         {
@@ -55,13 +56,14 @@ namespace FTLOverdrive.Client.Ships
             return this;
         }
 
-        public Room(Ship ship, int id, float x = 0, float y = 0)
+        public Room(int id, float x = 0, float y = 0)
         {
-            Ship = ship;
             ID = id;
             X = x;
             Y = y;
         }
+
+        public abstract IEnumerable<Tile> GetTiles();
 
         public virtual Tile GetTile(int x, int y)
         {
@@ -114,44 +116,23 @@ namespace FTLOverdrive.Client.Ships
             private int oxygen;
             public int Oxygen
             {
-                get
-                {
-                    return oxygen;
-                }
-                set
-                {
-                    oxygen = value;
-                    Room.Ship.DoShipModified();
-                }
+                get { return oxygen; }
+                set { oxygen = value; Room.NotifyPropertyChanged("Tile.Oxygen"); }
             }
 
             // 0 = no breach, 100 = max breach
             private int breach;
             public int Breach
             {
-                get
-                {
-                    return breach;
-                }
-                set
-                {
-                    breach = value;
-                    Room.Ship.DoShipModified();
-                }
+                get { return breach; }
+                set { breach = value; Room.NotifyPropertyChanged("Tile.Breach"); }
             }
 
             private bool fire;
             public bool Fire
             {
-                get
-                {
-                    return fire;
-                }
-                set
-                {
-                    fire = value;
-                    Room.Ship.DoShipModified();
-                }
+                get { return fire; }
+                set { fire = value; Room.NotifyPropertyChanged("Tile.Fire"); }
             }
 
             public Tile(Room room, int x, int y)
