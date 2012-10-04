@@ -214,7 +214,7 @@ namespace FTLOverdrive.Client
             bool vsync = Settings.ReadInt("Video", "VSync", 1) == 1;
 
             // Setup the new window
-            window = new RenderWindow(vmode, "FTL: Overdrive", fscreen ? Styles.Fullscreen : Styles.Default, new ContextSettings(24, 8, 8));
+            window = new RenderWindow(vmode, "FTL: Overdrive", fscreen ? Styles.Fullscreen : Styles.Close, new ContextSettings(24, 8, 8));
             window.SetVisible(true);
             window.SetVerticalSyncEnabled(vsync);
             window.MouseMoved += new EventHandler<MouseMoveEventArgs>(window_MouseMoved);
