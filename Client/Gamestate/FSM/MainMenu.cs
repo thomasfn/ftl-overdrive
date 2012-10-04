@@ -38,7 +38,7 @@ namespace FTLOverdrive.Client.Gamestate
             //mscMenu.Play();
 
             // Load UI
-            var btnContinue = new ImageButton();
+			var btnContinue = new ImageButton();
             btnContinue.Image = Root.Singleton.Material("img/main_menus/continue_on.png");
             btnContinue.HoveredImage = Root.Singleton.Material("img/main_menus/continue_select2.png");
             btnContinue.DisabledImage = Root.Singleton.Material("img/main_menus/continue_off.png");
@@ -52,7 +52,7 @@ namespace FTLOverdrive.Client.Gamestate
             btnContinue.Parent = Root.Singleton.Canvas;
             btnContinue.Init();
 
-            var btnNewGame = new ImageButton();
+			var btnNewGame = new ImageButton();
             btnNewGame.Image = Root.Singleton.Material("img/main_menus/start_on.png");
             btnNewGame.HoveredImage = Root.Singleton.Material("img/main_menus/start_select2.png");
             btnNewGame.DisabledImage = Root.Singleton.Material("img/main_menus/start_off.png");
@@ -70,7 +70,7 @@ namespace FTLOverdrive.Client.Gamestate
             btnNewGame.Parent = Root.Singleton.Canvas;
             btnNewGame.Init();
 
-            var btnTutorial = new ImageButton();
+			var btnTutorial = new ImageButton();
             btnTutorial.Image = Root.Singleton.Material("img/main_menus/tutorial_on.png");
             btnTutorial.HoveredImage = Root.Singleton.Material("img/main_menus/tutorial_select2.png");
             btnTutorial.DisabledImage = Root.Singleton.Material("img/main_menus/tutorial_off.png");
@@ -84,7 +84,7 @@ namespace FTLOverdrive.Client.Gamestate
             btnTutorial.Parent = Root.Singleton.Canvas;
             btnTutorial.Init();
 
-            var btnStats = new ImageButton();
+			var btnStats = new ImageButton();
             btnStats.Image = Root.Singleton.Material("img/main_menus/stats_on.png");
             btnStats.HoveredImage = Root.Singleton.Material("img/main_menus/stats_select2.png");
             btnStats.DisabledImage = Root.Singleton.Material("img/main_menus/stats_off.png");
@@ -98,7 +98,7 @@ namespace FTLOverdrive.Client.Gamestate
             btnStats.Parent = Root.Singleton.Canvas;
             btnStats.Init();
 
-            var btnOptions = new ImageButton();
+			var btnOptions = new ImageButton();
             btnOptions.Image = Root.Singleton.Material("img/main_menus/options_on.png");
             btnOptions.HoveredImage = Root.Singleton.Material("img/main_menus/options_select2.png");
             btnOptions.DisabledImage = Root.Singleton.Material("img/main_menus/options_off.png");
@@ -113,7 +113,7 @@ namespace FTLOverdrive.Client.Gamestate
             btnOptions.Parent = Root.Singleton.Canvas;
             btnOptions.Init();
 
-            var btnCredits = new ImageButton();
+			var btnCredits = new ImageButton();
             btnCredits.Image = Root.Singleton.Material("img/main_menus/credits_on.png");
             btnCredits.HoveredImage = Root.Singleton.Material("img/main_menus/credits_select2.png");
             btnCredits.DisabledImage = Root.Singleton.Material("img/main_menus/credits_off.png");
@@ -127,7 +127,7 @@ namespace FTLOverdrive.Client.Gamestate
             btnCredits.Parent = Root.Singleton.Canvas;
             btnCredits.Init();
 
-            var btnQuit = new ImageButton();
+			var btnQuit = new ImageButton();
             btnQuit.Image = Root.Singleton.Material("img/main_menus/quit_on.png");
             btnQuit.HoveredImage = Root.Singleton.Material("img/main_menus/quit_select2.png");
             btnQuit.DisabledImage = Root.Singleton.Material("img/main_menus/quit_off.png");
