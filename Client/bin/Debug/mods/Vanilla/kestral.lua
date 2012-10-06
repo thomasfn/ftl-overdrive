@@ -5,9 +5,8 @@
 	Loads the vanilla content into the game
 --]]
 
-function Kestral()
+function Kestral(s)
 	-- Basic settings
-	local s = ships.NewShip()
 	s.Name = "The Kestrel"
 	
 	-- Graphics

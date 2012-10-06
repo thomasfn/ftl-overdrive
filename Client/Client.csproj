@@ -61,12 +61,14 @@
   <ItemGroup>
     <Compile Include="Gamestate\FSM\MainMenu.cs" />
     <Compile Include="Gamestate\FSM\NewGame.cs" />
+    <Compile Include="Gamestate\FSM\SectorMapScreen.cs" />
     <Compile Include="Gamestate\FSM\ShipSelection.cs" />
     <Compile Include="Gamestate\IRenderable.cs" />
     <Compile Include="Gamestate\IState.cs" />
     <Compile Include="Gamestate\Library.cs" />
     <Compile Include="Gamestate\ModdingAPI.cs" />
     <Compile Include="Gamestate\OptionsMenu.cs" />
+    <Compile Include="Map\SectorMap.cs" />
     <Compile Include="ObservableKeyedCollection.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -99,6 +101,7 @@
       <Name>Data</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -6,6 +6,7 @@
 --]]
 
 dofile( FOLDERNAME .. "/kestral.lua" )
+dofile( FOLDERNAME .. "/map.lua" )
 
 local function LoadLibrary()
 	-- Notify console
@@ -121,5 +122,8 @@ local function LoadLibrary()
 	sg.NPC = false
 	sg.MiniGraphic = "img/customizeUI/miniship_kestral.png"
 	sg.Callback = Kestral
+	
+	-- Add sector map generators
+	local sg = library.AddSectorMapGenerator("default", GenerateDefaultSectorMap)
 end
 hook.Add( "Game.LoadLibrary", LoadLibrary )

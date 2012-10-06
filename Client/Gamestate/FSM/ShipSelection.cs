@@ -140,7 +140,7 @@ namespace FTLOverdrive.Client.Gamestate
             window = Root.Singleton.Window;
             rctScreen = Util.ScreenRect(window.Size.X, window.Size.Y, 1.7778f);
             finishnow = false;
-            window.KeyPressed += new EventHandler<KeyEventArgs>(window_KeyPressed);
+            window.KeyPressed += window_KeyPressed;
 
             // Create UI
             pnObscure = new Panel();
