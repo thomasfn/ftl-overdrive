@@ -172,16 +172,10 @@ namespace FTLOverdrive.Client.Gamestate
         private TextButton AddButton(int y)
         {
             var btn = new TextButton();
-            btn.Colour = Color.White;
-            btn.HoveredColour = Color.Yellow;
-            btn.DisabledColour = new Color(128, 128, 128);
-            btn.DepressedColour = Color.Yellow;
-            btn.Text = "";
             btn.Font = Root.Singleton.Font("fonts/JustinFont12Bold.ttf");
             btn.Scale = 0.475f;
             btn.X = 25;
             btn.Y = y;
-            btn.Enabled = true;
             btn.Parent = pnWindow;
             btn.Init();
             return btn;

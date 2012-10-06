@@ -66,6 +66,17 @@ namespace FTLOverdrive.Client.UI
             }
         }
 
+        public TextButton()
+        {
+            Colour = Color.White;
+            HoveredColour = Color.Yellow;
+            DisabledColour = new Color(128, 128, 128);
+            DepressedColour = Color.Yellow;
+            Text = "";
+            Font = Root.Singleton.Font("fonts/JustinFont11.ttf");
+            Enabled = true;
+        }
+
         public override void Init()
         {
             label = new Text(Text, Font);
@@ -115,7 +126,12 @@ namespace FTLOverdrive.Client.UI
             base.SetPressed(pressed, mousemoveevent);
             if (label != null)
                 UpdateColour();
-            if (Enabled && (!pressed) && (!mousemoveevent) && (OnClick != null)) OnClick(this);
+            if (Enabled && (!pressed) && (!mousemoveevent)) DoClick();
+        }
+
+        protected virtual void DoClick()
+        {
+            if (OnClick != null) OnClick(this);
         }
 
         protected override void Draw(RenderWindow window)

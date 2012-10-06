@@ -7,6 +7,7 @@ using System.Reflection;
 using LuaInterface;
 
 using FTLOverdrive.Client.Ships;
+using FTLOverdrive.Client.Map;
 
 namespace FTLOverdrive.Client.Gamestate
 {
@@ -35,15 +36,16 @@ namespace FTLOverdrive.Client.Gamestate
             BindFunction("library.AddSystem", "library_AddSystem");
             BindFunction("library.AddRace", "library_AddRace");
             BindFunction("library.AddShipGenerator", "library_AddShipGenerator");
+            BindFunction("library.AddSectorMapGenerator", "library_AddSectorMapGenerator");
             BindFunction("library.GetWeapon", "library_GetWeapon");
             BindFunction("library.GetSystem", "library_GetSystem");
             BindFunction("library.GetRace", "library_GetRace");
             BindFunction("library.GetShip", "library_GetShipGenerator");
+            BindFunction("library.GetSectorMapGenerator", "library_GetSectorMapGenerator");
             BindFunction("library.CreateAnimation", "library_CreateAnimation");
 
             luastate.NewTable("ships");
-            BindFunction("ships.NewShip", "ships_NewShip"); // Is there any way to call the constructor directly from lua code?
-            BindFunction("ships.NewDoor", "ships_NewDoor");
+            BindFunction("ships.NewDoor", "ships_NewDoor"); // Is there any way to call the constructor directly from lua code?
 
             // Load lua files
             if (!Directory.Exists("lua")) Directory.CreateDirectory("lua");
@@ -103,7 +105,7 @@ namespace FTLOverdrive.Client.Gamestate
             }
         }
 
-        public class LuaShipGenerator : Library.ShipGenerator
+        private class LuaShipGenerator : Library.ShipGenerator
         {
             public string Name { get; set; }
             public string DisplayName { get; set; }
@@ -118,10 +120,32 @@ namespace FTLOverdrive.Client.Gamestate
 
             public LuaFunction Callback { get; set; }
 
+            public LuaShipGenerator(LuaFunction callback)
+            {
+                Callback = callback;
+            }
+
             public Ship Generate(params object[] args)
             {
                 if (Callback == null) return null;
-                else return (Ship)Callback.Call(args)[0];
+                else return (Ship)Callback.Call(new Ship(), args)[0];
+            }
+        }
+
+        private class LuaSectorMapGenerator : Library.SectorMapGenerator
+        {
+            public string Name { get; set; }
+            public LuaFunction Callback { get; set; }
+
+            public LuaSectorMapGenerator(LuaFunction callback)
+            {
+                Callback = callback;
+            }
+
+            public SectorMap Generate()
+            {
+                if (Callback == null) return null;
+                else return (SectorMap)Callback.Call(new SectorMap())[0];
             }
         }
 
@@ -170,11 +194,19 @@ namespace FTLOverdrive.Client.Gamestate
             return race;
         }
 
-        private LuaShipGenerator library_AddShipGenerator(string name)
+        private LuaShipGenerator library_AddShipGenerator(string name, LuaFunction callback = null)
         {
             // Create ship generator and return it
-            var gen = new LuaShipGenerator();
+            var gen = new LuaShipGenerator(callback);
             Root.Singleton.mgrState.Get<Library>().AddShipGenerator(name, gen);
+            return gen;
+        }
+
+        private LuaSectorMapGenerator library_AddSectorMapGenerator(string name, LuaFunction callback = null)
+        {
+            // Create sector map generator and return it
+            var gen = new LuaSectorMapGenerator(callback);
+            Root.Singleton.mgrState.Get<Library>().AddSectorMapGenerator(name, gen);
             return gen;
         }
 
@@ -198,18 +230,17 @@ namespace FTLOverdrive.Client.Gamestate
             return Root.Singleton.mgrState.Get<Library>().GetShipGenerator(name);
         }
 
+        private Library.SectorMapGenerator library_GetSectorMapGenerator(string name)
+        {
+            return Root.Singleton.mgrState.Get<Library>().GetSectorMapGenerator(name);
+        }
+
         private Library.Animation library_CreateAnimation(int tilestart, int tileend, int speed)
         {
             return new Library.Animation() { TileStart = tilestart, TileEnd = tileend, Speed = speed };
         }
 
         #endregion
-
-
-        private Ship ships_NewShip()
-        {
-            return new Ship();
-        }
 
         private Door ships_NewDoor(LuaTable entrances)
         {

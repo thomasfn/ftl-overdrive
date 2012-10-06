@@ -56,21 +56,12 @@ namespace FTLOverdrive.Client.Ships
                 RoomID = roomID;
                 X = x;
                 Y = y;
-                Direction = DoorEntrance.DirectionFromString(direction);
+                Direction = (Direction)Enum.Parse(typeof(Direction), direction);
             }
 
             public DoorEntrance(Room room, int x, int y, Direction direction) : this(room.ID, x, y, direction) { }
 
             public DoorEntrance(Room room, int x, int y, string direction) : this(room.ID, x, y, direction) { }
-
-            public static Direction DirectionFromString(String s)
-            {
-                if (s.ToLower() == Direction.Up.ToString().ToLower()) return Direction.Up;
-                if (s.ToLower() == Direction.Down.ToString().ToLower()) return Direction.Down;
-                if (s.ToLower() == Direction.Left.ToString().ToLower()) return Direction.Left;
-                if (s.ToLower() == Direction.Right.ToString().ToLower()) return Direction.Right;
-                throw new ArgumentException(s + " is not a valid direction!");
-            }
         }
 
         public enum Direction { Up, Down, Left, Right }

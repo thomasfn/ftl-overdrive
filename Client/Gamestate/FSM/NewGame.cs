@@ -7,6 +7,7 @@ using SFML.Audio;
 
 using FTLOverdrive.Client.UI;
 using FTLOverdrive.Client.Ships;
+using FTLOverdrive.Client.Gamestate.FSM;
 
 namespace FTLOverdrive.Client.Gamestate
 {
@@ -187,7 +188,9 @@ namespace FTLOverdrive.Client.Gamestate
             btnStart.HoverSound = Root.Singleton.Sound("audio/waves/ui/select_light1.wav");
             btnStart.OnClick += (sender) =>
             {
-                
+                var generators = Root.Singleton.mgrState.Get<Library>().GetSectorMapGenerators();
+                Root.Singleton.mgrState.Get<SectorMapScreen>().Map = generators[0].Generate();
+                Root.Singleton.mgrState.Activate<SectorMapScreen>();
             };
             Util.LayoutControl(btnStart, 1082, 16, 152, 48, rctScreen);
             btnStart.Parent = Root.Singleton.Canvas;
