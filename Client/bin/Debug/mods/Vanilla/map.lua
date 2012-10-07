@@ -64,7 +64,7 @@ function GenerateDefaultSectorMap(sm)
 		for j = 1,nNodes[i] do
 			local k;
 			repeat
-				k = WeightedRandom(sectorWeights)
+				k = WeightedRandom(sectorTypeWeights)
 			until sectorTypes[k].MinSector <= i
 			nodes[i][j] = sm:AddNode(sectorTypes[k].Type, sectorTypes[k].Name, 70 * i - 35, 35 * (j - (nNodes[i] + 1) / 2) + 74)
 		end

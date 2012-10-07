@@ -18,6 +18,10 @@ namespace FTLOverdrive.Client.Gamestate.FSM
         private ImagePanel pnWindow;
         private bool finishnow;
 
+        private static readonly Color colCivilian = new Color(135, 200, 75);
+        private static readonly Color colHostile = new Color(215, 50, 50);
+        private static readonly Color colNebula = new Color(128, 50, 210);
+
         public SectorMap Map { get; set; }
 
         private class SectorMapPanel : Control
@@ -56,13 +60,13 @@ namespace FTLOverdrive.Client.Gamestate.FSM
                     switch (node.Type)
                     {
                         case SectorMap.SectorType.Civilian:
-                            shpCircle.FillColor = Color.Green;
+                            shpCircle.FillColor = colCivilian;
                             break;
                         case SectorMap.SectorType.Hostile:
-                            shpCircle.FillColor = Color.Red;
+                            shpCircle.FillColor = colHostile;
                             break;
                         case SectorMap.SectorType.Nebula:
-                            shpCircle.FillColor = Color.Magenta;
+                            shpCircle.FillColor = colNebula;
                             break;
                     }
                     shpCircle.OutlineColor = Color.White;
