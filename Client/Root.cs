@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Diagnostics;
 
 using SFML.Window;
 using SFML.Graphics;
@@ -42,6 +43,9 @@ namespace FTLOverdrive.Client
         private Dictionary<string, Music> dctMusic;
         private Dictionary<string, SoundBuffer> dctSound;
         private Dictionary<string, Font> dctFonts;
+
+        private Stopwatch timer;
+        public float Time { get { return (float)timer.Elapsed.TotalSeconds; } }
 
         public Gamestate.StateController mgrState { get; private set; }
 
@@ -186,6 +190,10 @@ namespace FTLOverdrive.Client
             // Save settings
             Settings.Save();
             Settings.SetPopulate(false);
+
+            // Start timer
+            timer = new Stopwatch();
+            timer.Start();
         }
 
         public void ResetWindow()

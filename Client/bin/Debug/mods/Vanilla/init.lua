@@ -108,7 +108,7 @@ local function LoadLibrary()
 	r.TilesheetSelected = "img/people/human_player_highlight.png"
 	r.TilesX = 16
 	r.TilesY = 9
-	r.Animations:Add( "walk.down", library.CreateAnimation( 1, 4, 1 ) )
+	r.Animations:Add( "walk.down", library.CreateAnimation( 1, 4, 4 ) )
 	r.Animations:Add( "walk.right", library.CreateAnimation( 5, 8, 1 ) )
 	r.Animations:Add( "walk.up", library.CreateAnimation( 9, 12, 1 ) )
 	r.Animations:Add( "walk.left", library.CreateAnimation( 13, 16, 1 ) )

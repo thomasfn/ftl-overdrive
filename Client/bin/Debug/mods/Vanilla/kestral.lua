@@ -30,11 +30,8 @@ function Kestral(s)
 	-- Starter weapons
 	--s.Weapons:Add( "artemis" )
 	
-	-- Starter crew
-	--s.Crew:Add( "human_male" )
-	
 	-- Rooms
-	s:AddRectRoom(0, 14, 2, 1, 2):SetSystem("bridge"):SetBackgroundGraphic("img/ship/interior/room_pilot.png")
+	local pilot = s:AddRectRoom(0, 14, 2, 1, 2):SetSystem("bridge"):SetBackgroundGraphic("img/ship/interior/room_pilot.png")
 	s:AddRectRoom(1, 12, 2, 2, 2)
 	s:AddRectRoom(2, 10, 2, 2, 1):SetSystem("doorcontrol"):SetBackgroundGraphic("img/ship/interior/room_doors.png")
 	s:AddRectRoom(3, 10, 3, 2, 1):SetSystem("sensors"):SetBackgroundGraphic("img/ship/interior/room_sensors.png")
@@ -115,5 +112,12 @@ function Kestral(s)
 	s.Doors:Add(ships.NewDoor({{Room = -1, X = 0, Y = 0, Dir = "Right"}, {Room = 16, X = 0, Y = 0, Dir = "Left"}})); -- outside
 	
 	s.Doors:Add(ships.NewDoor({{Room = -1, X = 0, Y = 0, Dir = "Right"}, {Room = 16, X = 0, Y = 1, Dir = "Left"}})); -- outside
+	
+	-- Starter crew
+	local test = s:AddCrewMember( library.GetRace( "human_male" ), "Bob" )
+	test:SetRoom( pilot )
+	test:SetAnimation( "walk.down" )
+	
+	-- Return
 	return s
 end

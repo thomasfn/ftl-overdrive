@@ -11,7 +11,7 @@ namespace FTLOverdrive.Client.Ships
     {
         public class ShipModifiedEventArgs : EventArgs
         {
-            public enum ShipModifiedAction { Rooms, Doors, Reset }
+            public enum ShipModifiedAction { Rooms, Doors, Reset, Crew }
             public ShipModifiedAction Action { get; set; }
             public NotifyCollectionChangedEventArgs CollectionEventArgs { get; set; }
 
@@ -71,6 +71,7 @@ namespace FTLOverdrive.Client.Ships
 
         public ObservableKeyedCollection<int, Room> Rooms { get; set; }
         public ObservableCollectionEx<Door> Doors { get; set; }
+        public ObservableCollectionEx<CrewMember> Crew { get; set; }
 
         //public List<string> Weapons { get; set; }
 
@@ -134,7 +135,9 @@ namespace FTLOverdrive.Client.Ships
             Doors = new ObservableCollectionEx<Door>();
             Doors.CollectionChanged += (sender, e) =>
                 DoShipModified(new ShipModifiedEventArgs(ShipModifiedEventArgs.ShipModifiedAction.Doors, e));
-            //Crew = new List<string>();
+            Crew = new ObservableCollectionEx<CrewMember>();
+            Crew.CollectionChanged += (sender, e) =>
+                DoShipModified(new ShipModifiedEventArgs(ShipModifiedEventArgs.ShipModifiedAction.Crew, e));
             //Weapons = new List<string>();
         }
 
@@ -164,6 +167,13 @@ namespace FTLOverdrive.Client.Ships
         public RectRoom AddRectRoom(int id, float x, float y, int w, int h)
         {
             return AddRoom(new RectRoom(id, x, y, w, h));
+        }
+
+        public CrewMember AddCrewMember(Library.Race race, string name)
+        {
+            var member = new CrewMember(race, this, name);
+            Crew.Add(member);
+            return member;
         }
 
         public override string ToString()

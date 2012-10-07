@@ -76,6 +76,7 @@
     <Compile Include="Gamestate\StateController.cs" />
     <Compile Include="Gamestate\ThreadedBase.cs" />
     <Compile Include="SettingsFile.cs" />
+    <Compile Include="Ships\CrewMember.cs" />
     <Compile Include="Ships\Door.cs" />
     <Compile Include="Ships\RectRoom.cs" />
     <Compile Include="Ships\Room.cs" />

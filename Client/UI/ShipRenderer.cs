@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 
 using SFML.Graphics;
+using SFML.Window;
 
 using FTLOverdrive.Client.Ships;
-using SFML.Window;
 using FTLOverdrive.Client.Gamestate;
 using System.Collections.Specialized;
 
@@ -135,6 +135,9 @@ namespace FTLOverdrive.Client.UI
             base.Draw(window);
             if (Ship == null) return;
             window.Draw(sprShip);
+
+            foreach (var crew in Ship.Crew)
+                crew.Draw(window);
         }
 
         public override void Remove()
@@ -146,8 +149,6 @@ namespace FTLOverdrive.Client.UI
                 sprShip = null;
             }
         }
-
-
 
 
         private static void DrawLine(RenderTexture target, Vector2f a, Vector2f b, Color col, int thickness = 1)
