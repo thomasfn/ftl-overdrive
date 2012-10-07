@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 
 using FTLOverdrive.Client.Ships;
+using FTLOverdrive.Client.Map;
 
 namespace FTLOverdrive.Client.Gamestate
 {
@@ -160,11 +161,19 @@ namespace FTLOverdrive.Client.Gamestate
             Ship Generate(params object[] args);
         }
 
+        public interface SectorMapGenerator
+        {
+            string Name { get; set; }
+
+            SectorMap Generate();
+        }
+
         private Dictionary<string, Weapon> dctWeapons;
         private Dictionary<string, System> dctSystems;
         private Dictionary<string, Race> dctRaces;
 
         private Dictionary<string, ShipGenerator> dctShipGenerators;
+        private Dictionary<string, SectorMapGenerator> dctSectorMapGenerators;
 
         public void OnActivate()
         {
@@ -173,6 +182,7 @@ namespace FTLOverdrive.Client.Gamestate
             dctSystems = new Dictionary<string, System>();
             dctRaces = new Dictionary<string, Race>();
             dctShipGenerators = new Dictionary<string, ShipGenerator>();
+            dctSectorMapGenerators = new Dictionary<string, SectorMapGenerator>();
         }
 
         public void AddWeapon(string name, Weapon wep)
@@ -199,6 +209,12 @@ namespace FTLOverdrive.Client.Gamestate
             dctShipGenerators.Add(name, gen);
         }
 
+        public void AddSectorMapGenerator(string name, SectorMapGenerator gen)
+        {
+            gen.Name = name;
+            dctSectorMapGenerators.Add(name, gen);
+        }
+
         public Weapon GetWeapon(string name)
         {
             if (!dctWeapons.ContainsKey(name)) return null;
@@ -217,29 +233,15 @@ namespace FTLOverdrive.Client.Gamestate
             return dctRaces[name];
         }
 
-        /*public Ship GetShip(string name)
-        {
-            if (!dctShips.ContainsKey(name)) return null;
-            return dctShips[name];
-        }
-
-        public List<string> GetShips()
-        {
-            var result = new List<string>();
-            foreach (var pair in dctShips)
-                result.Add(pair.Key);
-            return result;
-        }*/
-
         public ShipGenerator GetShipGenerator(string name)
         {
             if (!dctShipGenerators.ContainsKey(name)) return null;
             return dctShipGenerators[name];
         }
 
-        public ICollection<ShipGenerator> GetShipGenerators()
+        public List<ShipGenerator> GetShipGenerators()
         {
-            return dctShipGenerators.Values;
+            return dctShipGenerators.Values.ToList();
         }
 
         public List<ShipGenerator> GetNPCShipGenerators()
@@ -266,6 +268,17 @@ namespace FTLOverdrive.Client.Gamestate
                 }
             }
             return res;
+        }
+
+        public SectorMapGenerator GetSectorMapGenerator(string name)
+        {
+            if (!dctShipGenerators.ContainsKey(name)) return null;
+            return dctSectorMapGenerators[name];
+        }
+
+        public List<SectorMapGenerator> GetSectorMapGenerators()
+        {
+            return dctSectorMapGenerators.Values.ToList();
         }
 
         public void OnDeactivate()

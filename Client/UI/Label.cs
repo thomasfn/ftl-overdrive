@@ -38,6 +38,9 @@ namespace FTLOverdrive.Client.UI
         {
             AutoScale = true;
             Scale = 1.0f;
+            Colour = Color.White;
+            Text = "";
+            Font = Root.Singleton.Font("fonts/JustinFont11.ttf");
         }
 
         public override void Init()
