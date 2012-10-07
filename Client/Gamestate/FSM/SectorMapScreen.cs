@@ -7,7 +7,7 @@ using FTLOverdrive.Client.UI;
 using SFML.Window;
 using FTLOverdrive.Client.Map;
 
-namespace FTLOverdrive.Client.Gamestate.FSM
+namespace FTLOverdrive.Client.Gamestate
 {
     class SectorMapScreen : IState, IRenderable
     {
