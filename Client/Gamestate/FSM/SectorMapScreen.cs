@@ -45,10 +45,17 @@ namespace FTLOverdrive.Client.Gamestate
                 {
                     foreach (var nextNode in node.NextNodes)
                     {
-                        var vertices = new Vertex[2];
-                        vertices[0] = new Vertex(new Vector2f(node.X + AbsX, node.Y + AbsY));
-                        vertices[1] = new Vertex(new Vector2f(nextNode.X + AbsX, nextNode.Y + AbsY));
-                        window.Draw(vertices, PrimitiveType.Lines);
+                        Vector2f start=new Vector2f(node.X + AbsX, node.Y + AbsY),end=new Vector2f(nextNode.X + AbsX, nextNode.Y + AbsY);
+                        Vector2f center = new Vector2f(.5f*(start.X+end.X),.5f*(start.Y+end.Y));
+                        float deltaX = end.X-start.X;
+                        float deltaY = end.Y-start.Y;
+                        float length = (float)Math.Sqrt(deltaX*deltaX+deltaY*deltaY);
+                        RectangleShape shpRectangle = new RectangleShape(new Vector2f(length,2.0f));
+                        shpRectangle.Position=start;
+                        shpRectangle.Rotation=(float)Math.Atan2(deltaY,deltaX)*(float)(180.0/Math.PI);
+                        shpRectangle.OutlineColor = Color.White;
+                        shpRectangle.FillColor = Color.White;
+                        window.Draw(shpRectangle);
                     }
 
                     var shpCircle = new CircleShape();
