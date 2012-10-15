@@ -139,6 +139,7 @@ namespace FTLOverdrive.Client.Ships
             Crew.CollectionChanged += (sender, e) =>
                 DoShipModified(new ShipModifiedEventArgs(ShipModifiedEventArgs.ShipModifiedAction.Crew, e));
             //Weapons = new List<string>();
+            Name = "Unnamed Ship";
         }
 
         private void onDoorsChanged(Object sender, NotifyCollectionChangedEventArgs e)

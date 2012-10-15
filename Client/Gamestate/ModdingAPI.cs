@@ -45,12 +45,13 @@ namespace FTLOverdrive.Client.Gamestate
             BindFunction("library.CreateAnimation", "library_CreateAnimation");
 
             luastate.NewTable("ships");
-            BindFunction("ships.NewDoor", "ships_NewDoor"); // Is there any way to call the constructor directly from lua code?
+            // You can't pass non-empty LuaTables to constructors. Possibly a bug in LI.
+            BindFunction("ships.NewDoor", "ships_NewDoor");
 
             // Load lua files
             if (!Directory.Exists("lua")) Directory.CreateDirectory("lua");
             foreach (string name in Directory.GetFiles("lua"))
-                luastate.DoFile("lua/" + name);
+                luastate.DoFile(name);
         }
 
         public void LoadMods()
@@ -128,7 +129,7 @@ namespace FTLOverdrive.Client.Gamestate
             public Ship Generate(params object[] args)
             {
                 if (Callback == null) return null;
-                else return (Ship)Callback.Call(new Ship(), args)[0];
+                else return (Ship)Callback.Call(args)[0];
             }
         }
 
@@ -145,7 +146,7 @@ namespace FTLOverdrive.Client.Gamestate
             public SectorMap Generate()
             {
                 if (Callback == null) return null;
-                else return (SectorMap)Callback.Call(new SectorMap())[0];
+                else return (SectorMap)Callback.Call()[0];
             }
         }
 
@@ -153,7 +154,7 @@ namespace FTLOverdrive.Client.Gamestate
 
         private void print(object obj)
         {
-            Root.Singleton.Log("[Lua] " + obj.ToString());
+            Root.Singleton.Log("[Lua] " + (obj != null ? obj.ToString() : "null"));
         }
 
         private void hook_Add(string name, LuaFunction function)

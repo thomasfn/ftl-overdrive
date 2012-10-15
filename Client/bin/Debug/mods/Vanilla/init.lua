@@ -115,15 +115,14 @@ local function LoadLibrary()
 	-- todo: the rest of the animations
 	
 	-- Add ship generators
-	local sg = library.AddShipGenerator("kestral")
+	local sg = library.AddShipGenerator("kestral", generateKestral)
 	sg.DisplayName = "The Kestral"
 	sg.Unlocked = true
 	sg.Default = true
 	sg.NPC = false
 	sg.MiniGraphic = "img/customizeUI/miniship_kestral.png"
-	sg.Callback = Kestral
 	
 	-- Add sector map generators
-	local sg = library.AddSectorMapGenerator("default", GenerateDefaultSectorMap)
+	local sg = library.AddSectorMapGenerator("vanilla", generateVanillaSectorMap)
 end
 hook.Add( "Game.LoadLibrary", LoadLibrary )

@@ -4,11 +4,15 @@
 	****************************
 	Loads the vanilla content into the game
 --]]
+--require 'CLRPackage'
+--import "FTLOverdriveClient.Client.Ships"
+local Ships = CLRPackage("FTLOverdriveClient", "FTLOverdrive.Client.Ships")
+local Ship = Ships.Ship
 
-function Kestral(s)
+function generateKestral()
+	local s = Ship()
 	-- Basic settings
 	s.Name = "The Kestrel"
-	
 	-- Graphics
 	s.BaseGraphic = "img/ship/kestral_base.png"
 	s.CloakedGraphic = "img/ship/kestral_cloak.png"
@@ -50,6 +54,7 @@ function Kestral(s)
 	s:AddRectRoom(16, 0, 2, 1, 2)
 	
 	-- Doors
+	
 	s.Doors:Add(ships.NewDoor({{Room = 1, X = 1, Y = 1, Dir = "Right"}, {Room = 0, X = 0, Y = 1, Dir = "Left"}}));
 	
 	s.Doors:Add(ships.NewDoor({{Room = 2, X = 1, Y = 0, Dir = "Right"}, {Room = 1, X = 0, Y = 0, Dir = "Left"}}));
@@ -113,11 +118,11 @@ function Kestral(s)
 	
 	s.Doors:Add(ships.NewDoor({{Room = -1, X = 0, Y = 0, Dir = "Right"}, {Room = 16, X = 0, Y = 1, Dir = "Left"}})); -- outside
 	
+	
 	-- Starter crew
 	local test = s:AddCrewMember( library.GetRace( "human_male" ), "Bob" )
 	test:SetRoom( pilot )
 	test:SetAnimation( "walk.down" )
-	
 	-- Return
 	return s
 end
