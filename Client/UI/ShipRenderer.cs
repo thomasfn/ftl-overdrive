@@ -53,8 +53,6 @@ namespace FTLOverdrive.Client.UI
         }
         private Sprite sprShip;
 
-        private RenderTexture rtShip;
-
         private Dictionary<Door.DoorEntrance, DoorEntranceRenderer> doorRenderers;
 
         public override void Init()
@@ -104,8 +102,7 @@ namespace FTLOverdrive.Client.UI
         {
             if (Ship != null && sprShip != null)
             {
-                rtShip = GetRenderTexture(); // We cache this so it doesn't get GCed
-                sprShip = new Sprite(rtShip.Texture);
+                sprShip = new Sprite(new Texture(GetRenderTexture().Texture));
                 sprShip.Texture.Smooth = false;
                 sprShip.Position = new SFML.Window.Vector2f(AbsX, AbsY);
                 sprShip.Scale = getScale();

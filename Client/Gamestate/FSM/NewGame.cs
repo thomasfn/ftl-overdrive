@@ -370,8 +370,9 @@ namespace FTLOverdrive.Client.Gamestate
             btnStart.OnClick += sender =>
             {
                 var generators = Root.Singleton.mgrState.Get<Library>().GetSectorMapGenerators();
-                Root.Singleton.mgrState.Get<SectorMapScreen>().Map = generators[0].Generate();
-                Root.Singleton.mgrState.Activate<SectorMapScreen>();
+                // TODO allow player to chose which generator to use
+                Root.Singleton.mgrState.Get<SectorScreen>().Sector = generators[0].Generate().CurrentNode.Sector;
+                Root.Singleton.mgrState.Activate<SectorScreen>();
             };
             Util.LayoutControl(btnStart, 1082, 16, 152, 48, rctScreen);
             btnStart.Parent = Root.Singleton.Canvas;
