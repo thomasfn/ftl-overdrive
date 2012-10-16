@@ -61,12 +61,15 @@
     <Compile Include="Gamestate\FSM\MainMenu.cs" />
     <Compile Include="Gamestate\FSM\NewGame.cs" />
     <Compile Include="Gamestate\FSM\SectorMapScreen.cs" />
+    <Compile Include="Gamestate\FSM\SectorScreen.cs" />
     <Compile Include="Gamestate\FSM\ShipSelection.cs" />
     <Compile Include="Gamestate\IRenderable.cs" />
     <Compile Include="Gamestate\IState.cs" />
     <Compile Include="Gamestate\Library.cs" />
     <Compile Include="Gamestate\ModdingAPI.cs" />
     <Compile Include="Gamestate\OptionsMenu.cs" />
+    <Compile Include="Map\Beacon.cs" />
+    <Compile Include="Map\Sector.cs" />
     <Compile Include="Map\SectorMap.cs" />
     <Compile Include="ObservableKeyedCollection.cs" />
     <Compile Include="Program.cs" />
@@ -94,7 +97,6 @@
     <Compile Include="UI\ImageToggleButton.cs" />
     <Compile Include="Ships\Ship.cs" />
     <Compile Include="Util.cs" />
-
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Data\Data.csproj">

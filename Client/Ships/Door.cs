@@ -36,6 +36,13 @@ namespace FTLOverdrive.Client.Ships
             Entrances[1] = new DoorEntrance(room2, x2, y2, dir2);
         }
 
+        public Door(int room1, int x1, int y1, string dir1, int room2, int x2, int y2, string dir2)
+        {
+            Entrances = new DoorEntrance[2];
+            Entrances[0] = new DoorEntrance(room1, x1, y1, dir1);
+            Entrances[1] = new DoorEntrance(room2, x2, y2, dir2);
+        }
+
         public class DoorEntrance
         {
             public readonly int RoomID;
