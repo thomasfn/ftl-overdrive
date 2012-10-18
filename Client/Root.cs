@@ -8,6 +8,7 @@ using SFML.Graphics;
 using SFML.Audio;
 
 using FTLOverdrive.Data;
+using FTLOverdrive.Client.Gamestate.FSM;
 
 namespace FTLOverdrive.Client
 {
@@ -186,7 +187,7 @@ namespace FTLOverdrive.Client
 
             // Main menu state
             Log("Starting game...");
-            mgrState.FSMTransist<Gamestate.MainMenu>();
+            mgrState.FSMTransist<MainMenu>();
 
             // Save settings
             Settings.Save();

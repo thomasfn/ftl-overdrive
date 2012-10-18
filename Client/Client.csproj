@@ -59,6 +59,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Gamestate\FSM\MainMenu.cs" />
+    <Compile Include="Gamestate\FSM\ModalWindow.cs" />
     <Compile Include="Gamestate\FSM\NewGame.cs" />
     <Compile Include="Gamestate\FSM\SectorMapScreen.cs" />
     <Compile Include="Gamestate\FSM\SectorScreen.cs" />
@@ -67,7 +68,7 @@
     <Compile Include="Gamestate\IState.cs" />
     <Compile Include="Gamestate\Library.cs" />
     <Compile Include="Gamestate\ModdingAPI.cs" />
-    <Compile Include="Gamestate\OptionsMenu.cs" />
+    <Compile Include="Gamestate\FSM\OptionsMenu.cs" />
     <Compile Include="Map\Beacon.cs" />
     <Compile Include="Map\Sector.cs" />
     <Compile Include="Map\SectorMap.cs" />

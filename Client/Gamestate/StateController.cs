@@ -55,14 +55,29 @@ namespace FTLOverdrive.Client.Gamestate
             dctStates[typeof(T)].Activate();
         }
 
+        public void Activate(IState state)
+        {
+            dctStates[state.GetType()].Activate();
+        }
+
         public void Deactivate<T>() where T : IState
         {
             dctStates[typeof(T)].Deactivate();
         }
 
+        public void Deactivate(IState state)
+        {
+            dctStates[state.GetType()].Deactivate();
+        }
+
         public bool IsActive<T>() where T : IState
         {
             return dctStates[typeof(T)].Active;
+        }
+
+        public bool IsActive(IState state)
+        {
+            return dctStates[state.GetType()].Active;
         }
 
         public T Get<T>() where T : IState
@@ -78,6 +93,17 @@ namespace FTLOverdrive.Client.Gamestate
                 fsm_current = null;
             }
             fsm_current = dctStates[typeof(T)];
+            fsm_current.Activate();
+        }
+
+        public void FSMTransist(IState state)
+        {
+            if (fsm_current != null)
+            {
+                fsm_current.Deactivate();
+                fsm_current = null;
+            }
+            fsm_current = dctStates[state.GetType()];
             fsm_current.Activate();
         }
 

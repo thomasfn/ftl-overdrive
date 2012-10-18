@@ -9,16 +9,10 @@ using SFML.Audio;
 
 using FTLOverdrive.Client.UI;
 
-namespace FTLOverdrive.Client.Gamestate
+namespace FTLOverdrive.Client.Gamestate.FSM
 {
-    class ShipSelection : IState, IRenderable
+    class ShipSelection : ModalWindow<NewGame>
     {
-        private RenderWindow window;
-        private IntRect rctScreen;
-
-        private Panel pnObscure;
-        private ImagePanel pnWindow;
-        private bool finishnow;
         private ImagePanel pnDescription;
 
         private ShipButton[] btnShips = new ShipButton[9];
@@ -46,8 +40,8 @@ namespace FTLOverdrive.Client.Gamestate
                     {
                         var gen = gens[page * 9 + i];
                         btnShips[i] = new ShipButton(gen);
-                        Util.LayoutControl(btnShips[i], 24 + 205 * (i % 3), 52 + 135 * (i / 3), 191, 121, rctScreen);
-                        btnShips[i].Parent = pnWindow;
+                        Util.LayoutControl(btnShips[i], 24 + 205 * (i % 3), 52 + 135 * (i / 3), btnShips[i].Image.Size, ScreenRectangle);
+                        btnShips[i].Parent = Window;
                         btnShips[i].Init();
                     }
                     catch (ArgumentOutOfRangeException) { }
@@ -102,7 +96,7 @@ namespace FTLOverdrive.Client.Gamestate
                     {
                         //Console.WriteLine("Selecting unlocked ship: " + ShipName);
                         Root.Singleton.mgrState.Get<NewGame>().SetShipGenerator(gen);
-                        Root.Singleton.mgrState.Get<ShipSelection>().finishnow = true;
+                        Root.Singleton.mgrState.Get<ShipSelection>().Finish = true;
                     }
                     else
                     {
@@ -169,26 +163,12 @@ namespace FTLOverdrive.Client.Gamestate
             }
         }
 
-        public void OnActivate()
+        public override void OnActivate()
         {
-            // Store window
-            window = Root.Singleton.Window;
-            rctScreen = Util.ScreenRect(window.Size.X, window.Size.Y, 1.7778f);
-            finishnow = false;
-            window.KeyPressed += window_KeyPressed;
+            BackgroundImage = Root.Singleton.Material("img/customizeUI/ship_list_main.png");
+            base.OnActivate();
 
-            // Create UI
-            pnObscure = new Panel();
-            pnObscure.Colour = new Color(0, 0, 0, 192);
-            Util.LayoutControl(pnObscure, 0, 0, 1280, 720, rctScreen);
-            pnObscure.Parent = Root.Singleton.Canvas;
-            pnObscure.Init();
-
-            pnWindow = new ImagePanel();
-            pnWindow.Image = Root.Singleton.Material("img/customizeUI/ship_list_main.png");
-            Util.LayoutControl(pnWindow, (1280 / 2) - (647 / 2), (720 / 2) - (465 / 2), 647, 465, rctScreen);
-            pnWindow.Parent = Root.Singleton.Canvas;
-            pnWindow.Init();
+            Window.X -= 65;
 
             Page = 0;
 
@@ -197,9 +177,12 @@ namespace FTLOverdrive.Client.Gamestate
                 initPageButtons();
             }
 
-
-            // Modal screen
-            Root.Singleton.Canvas.ModalFocus = pnWindow;
+            pnDescription = new ImagePanel();
+            // this is wrong image, but I can't find the correct one
+            pnDescription.Image = Root.Singleton.Material("img/customizeUI/box_text_crewdrones.png");
+            Util.LayoutControl(pnDescription, 925, 150, pnDescription.Image.Size, ScreenRectangle);
+            pnDescription.Parent = Root.Singleton.Canvas;
+            pnDescription.Init();
         }
 
         private void initPageButtons()
@@ -214,8 +197,8 @@ namespace FTLOverdrive.Client.Gamestate
             {
                 Page--;
             };
-            Util.LayoutControl(btnLeft, 125, 12, 32, 28, rctScreen);
-            btnLeft.Parent = pnWindow;
+            Util.LayoutControl(btnLeft, 125, 12, 32, 28, ScreenRectangle);
+            btnLeft.Parent = Window;
             btnLeft.Init();
 
             var btnRight = new ImageButton();
@@ -229,42 +212,9 @@ namespace FTLOverdrive.Client.Gamestate
             {
                 Page++;
             };
-            Util.LayoutControl(btnRight, 463, 12, 32, 28, rctScreen);
-            btnRight.Parent = pnWindow;
+            Util.LayoutControl(btnRight, 463, 12, 32, 28, ScreenRectangle);
+            btnRight.Parent = Window;
             btnRight.Init();
-        }
-
-        private void window_KeyPressed(object sender, KeyEventArgs e)
-        {
-            // Finish if escape
-            if (e.Code == Keyboard.Key.Escape) finishnow = true;
-        }
-
-        public void Think(float delta)
-        {
-            // Check for escape
-            if (finishnow)
-            {
-                // Close state
-                Root.Singleton.mgrState.Deactivate<ShipSelection>();
-
-                // Reopen hangar
-                Root.Singleton.mgrState.FSMTransist<NewGame>();
-            }
-        }
-
-        public void OnDeactivate()
-        {
-            // Unmodal our window
-            Root.Singleton.Canvas.ModalFocus = null;
-
-            // Remove our controls
-            pnObscure.Remove();
-            pnWindow.Remove();
-        }
-
-        public void Render(RenderStage stage)
-        {
         }
     }
 }

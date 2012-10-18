@@ -7,7 +7,7 @@ using SFML.Audio;
 
 using FTLOverdrive.Client.UI;
 
-namespace FTLOverdrive.Client.Gamestate
+namespace FTLOverdrive.Client.Gamestate.FSM
 {
     public class MainMenu : IState, IRenderable
     {
@@ -44,11 +44,7 @@ namespace FTLOverdrive.Client.Gamestate
             btnContinue.DisabledImage = Root.Singleton.Material("img/main_menus/continue_off.png");
             btnContinue.Enabled = false;
             btnContinue.HoverSound = sndButtonHover;
-            Util.LayoutControl(btnContinue,
-                (int)(1200 - btnContinue.Image.Size.X), 260,
-                (int)btnContinue.Image.Size.X,
-                (int)btnContinue.Image.Size.Y,
-                rctScreen);
+            Util.LayoutControl(btnContinue, (int)(1200 - btnContinue.Image.Size.X), 260, btnContinue.Image.Size, rctScreen);
             btnContinue.Parent = Root.Singleton.Canvas;
             btnContinue.Init();
 
@@ -62,11 +58,7 @@ namespace FTLOverdrive.Client.Gamestate
             {
                 Root.Singleton.mgrState.FSMTransist<NewGame>();
             };
-            Util.LayoutControl(btnNewGame,
-                (int)(1200 - btnNewGame.Image.Size.X), 320,
-                (int)btnNewGame.Image.Size.X,
-                (int)btnNewGame.Image.Size.Y,
-                rctScreen);
+            Util.LayoutControl(btnNewGame, (int)(1200 - btnNewGame.Image.Size.X), 320, btnNewGame.Image.Size, rctScreen);
             btnNewGame.Parent = Root.Singleton.Canvas;
             btnNewGame.Init();
 
@@ -76,11 +68,7 @@ namespace FTLOverdrive.Client.Gamestate
             btnTutorial.DisabledImage = Root.Singleton.Material("img/main_menus/tutorial_off.png");
             btnTutorial.Enabled = false;
             btnTutorial.HoverSound = sndButtonHover;
-            Util.LayoutControl(btnTutorial,
-                (int)(1200 - btnTutorial.Image.Size.X), 380,
-                (int)btnTutorial.Image.Size.X,
-                (int)btnTutorial.Image.Size.Y,
-                rctScreen);
+            Util.LayoutControl(btnTutorial, (int)(1200 - btnTutorial.Image.Size.X), 380, btnTutorial.Image.Size, rctScreen);
             btnTutorial.Parent = Root.Singleton.Canvas;
             btnTutorial.Init();
 
@@ -90,11 +78,7 @@ namespace FTLOverdrive.Client.Gamestate
             btnStats.DisabledImage = Root.Singleton.Material("img/main_menus/stats_off.png");
             btnStats.Enabled = false;
             btnStats.HoverSound = sndButtonHover;
-            Util.LayoutControl(btnStats,
-                (int)(1200 - btnStats.Image.Size.X), 440,
-                (int)btnStats.Image.Size.X,
-                (int)btnStats.Image.Size.Y,
-                rctScreen);
+            Util.LayoutControl(btnStats, (int)(1200 - btnStats.Image.Size.X), 440, btnStats.Image.Size, rctScreen);
             btnStats.Parent = Root.Singleton.Canvas;
             btnStats.Init();
 
@@ -104,12 +88,11 @@ namespace FTLOverdrive.Client.Gamestate
             btnOptions.DisabledImage = Root.Singleton.Material("img/main_menus/options_off.png");
             btnOptions.Enabled = true;
             btnOptions.HoverSound = sndButtonHover;
-            btnOptions.OnClick += (sender) => { Root.Singleton.mgrState.Activate<Gamestate.OptionsMenu>(); };
-            Util.LayoutControl(btnOptions,
-                (int)(1200 - btnOptions.Image.Size.X), 500,
-                (int)btnOptions.Image.Size.X,
-                (int)btnOptions.Image.Size.Y,
-                rctScreen);
+            btnOptions.OnClick += (sender) =>
+            {
+                Root.Singleton.mgrState.Activate<OptionsMenu>();
+            };
+            Util.LayoutControl(btnOptions, (int)(1200 - btnOptions.Image.Size.X), 500, btnOptions.Image.Size, rctScreen);
             btnOptions.Parent = Root.Singleton.Canvas;
             btnOptions.Init();
 
@@ -119,11 +102,7 @@ namespace FTLOverdrive.Client.Gamestate
             btnCredits.DisabledImage = Root.Singleton.Material("img/main_menus/credits_off.png");
             btnCredits.Enabled = false;
             btnCredits.HoverSound = sndButtonHover;
-            Util.LayoutControl(btnCredits,
-                (int)(1200 - btnCredits.Image.Size.X), 560,
-                (int)btnCredits.Image.Size.X,
-                (int)btnCredits.Image.Size.Y,
-                rctScreen);
+            Util.LayoutControl(btnCredits, (int)(1200 - btnCredits.Image.Size.X), 560, btnCredits.Image.Size, rctScreen);
             btnCredits.Parent = Root.Singleton.Canvas;
             btnCredits.Init();
 
@@ -134,11 +113,7 @@ namespace FTLOverdrive.Client.Gamestate
             btnQuit.Enabled = true;
             btnQuit.HoverSound = sndButtonHover;
             btnQuit.OnClick += (sender) => { Root.Singleton.Exiting = true; };
-            Util.LayoutControl(btnQuit,
-                (int)(1200 - btnQuit.Image.Size.X), 620,
-                (int)btnQuit.Image.Size.X,
-                (int)btnQuit.Image.Size.Y,
-                rctScreen);
+            Util.LayoutControl(btnQuit, (int)(1200 - btnQuit.Image.Size.X), 620, btnQuit.Image.Size, rctScreen);
             btnQuit.Parent = Root.Singleton.Canvas;
             btnQuit.Init();
         }
