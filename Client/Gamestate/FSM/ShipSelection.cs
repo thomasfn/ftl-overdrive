@@ -19,6 +19,41 @@ namespace FTLOverdrive.Client.Gamestate
         private Panel pnObscure;
         private ImagePanel pnWindow;
         private bool finishnow;
+        private ImagePanel pnDescription;
+
+        private ShipButton[] btnShips = new ShipButton[9];
+
+        private int page;
+        public int Page
+        {
+            get { return page; }
+            set
+            {
+                foreach (var btn in btnShips)
+                {
+                    if (btn != null) btn.Remove();
+                }
+                page = value;
+
+                var gens = Root.Singleton.mgrState.Get<Library>().GetPlayerShipGenerators();
+
+                if (page < 0) page = gens.Count / 9;
+                if (page > gens.Count / 9) page = 0;
+
+                for (int i = 0; i < 9; i++)
+                {
+                    try
+                    {
+                        var gen = gens[page * 9 + i];
+                        btnShips[i] = new ShipButton(gen);
+                        Util.LayoutControl(btnShips[i], 24 + 205 * (i % 3), 52 + 135 * (i / 3), 191, 121, rctScreen);
+                        btnShips[i].Parent = pnWindow;
+                        btnShips[i].Init();
+                    }
+                    catch (ArgumentOutOfRangeException) { }
+                }
+            }
+        }
 
         private class ShipButton : ImageButton
         {
@@ -155,25 +190,48 @@ namespace FTLOverdrive.Client.Gamestate
             pnWindow.Parent = Root.Singleton.Canvas;
             pnWindow.Init();
 
-            int shipX = 0;
-            int shipY = 0;
-            foreach (var gen in Root.Singleton.mgrState.Get<Library>().GetPlayerShipGenerators())
-            {
-                var btnShip = new ShipButton(gen);
-                Util.LayoutControl(btnShip, 24 + 205 * shipX, 52 + 135 * shipY, 191, 121, rctScreen);
-                btnShip.Parent = pnWindow;
-                btnShip.Init();
+            Page = 0;
 
-                shipX++;
-                if (shipX >= 3)
-                {
-                    shipX = 0;
-                    shipY++;
-                }
+            if (Root.Singleton.mgrState.Get<Library>().GetPlayerShipGenerators().Count > 9)
+            {
+                initPageButtons();
             }
+
 
             // Modal screen
             Root.Singleton.Canvas.ModalFocus = pnWindow;
+        }
+
+        private void initPageButtons()
+        {
+            var btnLeft = new ImageButton();
+            btnLeft.Image = Root.Singleton.Material("img/customizeUI/button_arrow_on.png");
+            btnLeft.HoveredImage = Root.Singleton.Material("img/customizeUI/button_arrow_select2.png");
+            btnLeft.DisabledImage = Root.Singleton.Material("img/customizeUI/button_arrow_off.png");
+            btnLeft.Enabled = true;
+            btnLeft.HoverSound = Root.Singleton.Sound("audio/waves/ui/select_light1.wav");
+            btnLeft.OnClick += (sender) =>
+            {
+                Page--;
+            };
+            Util.LayoutControl(btnLeft, 125, 12, 32, 28, rctScreen);
+            btnLeft.Parent = pnWindow;
+            btnLeft.Init();
+
+            var btnRight = new ImageButton();
+            btnRight.Image = Root.Singleton.Material("img/customizeUI/button_arrow_on.png");
+            btnRight.HoveredImage = Root.Singleton.Material("img/customizeUI/button_arrow_select2.png");
+            btnRight.DisabledImage = Root.Singleton.Material("img/customizeUI/button_arrow_off.png");
+            btnRight.Enabled = true;
+            btnRight.FlipH = true;
+            btnRight.HoverSound = Root.Singleton.Sound("audio/waves/ui/select_light1.wav");
+            btnRight.OnClick += (sender) =>
+            {
+                Page++;
+            };
+            Util.LayoutControl(btnRight, 463, 12, 32, 28, rctScreen);
+            btnRight.Parent = pnWindow;
+            btnRight.Init();
         }
 
         private void window_KeyPressed(object sender, KeyEventArgs e)

@@ -36,12 +36,12 @@ namespace FTLOverdrive.Client.Gamestate
             LoadSprites ();
             LoadUI ();
 
-			InitShipNamePanel ();
-			InitShipRenameButton ();
-            InitShipNameText ();
-            InitListShipsButton ();
-			InitShipsLeftButton ();
-			InitShipsRightButton ();
+			InitShipNamePanel();
+			InitShipRenameButton();
+            InitShipNameText();
+            InitListShipsButton();
+			InitShipsLeftButton();
+			InitShipsRightButton();
 
             ImageToggleButton btnNormal = null, btnEasy = null;
             easymode = false;
@@ -84,7 +84,7 @@ namespace FTLOverdrive.Client.Gamestate
 			btnNormal.Parent = Root.Singleton.Canvas;
 			btnNormal.Init ();
 			#endregion
-            InitStartButton ();
+            InitStartButton();
 
             ImageToggleButton btnTypeA = null, btnTypeB = null;
 
@@ -125,7 +125,7 @@ namespace FTLOverdrive.Client.Gamestate
 			btnTypeB.Parent = Root.Singleton.Canvas;
 			btnTypeB.Init ();
 			#endregion
-            InitShowRoomsButton ();
+            InitShowRoomsButton();
 
             if (currentShipGen == null)
             {
