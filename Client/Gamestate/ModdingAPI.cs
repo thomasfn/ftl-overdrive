@@ -110,12 +110,13 @@ namespace FTLOverdrive.Client.Gamestate
         {
             public string Name { get; set; }
             public string DisplayName { get; set; }
+            public string Description { get; set; }
 
             public bool Unlocked { get; set; }
             public bool Default { get; set; }
 
             // whether it's a player ship or NPC ship
-            public bool NPC { get; set; }
+            public bool IsNPC { get; set; }
 
             public string MiniGraphic { get; set; }
 

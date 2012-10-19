@@ -60,7 +60,7 @@ namespace FTLOverdrive.Client.Gamestate.FSM
         private TextButton btnAchievePopups;
         private TextButton btnWindowFocusPause;
 
-        private bool windowresetneeded, finishnow;
+        private bool windowresetneeded;
 
         public override void OnActivate()
         {

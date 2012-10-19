@@ -74,87 +74,17 @@ namespace FTLOverdrive.Client.Gamestate
             public int Speed { get; set; }
         }
 
-        /*public class Ship
-        {
-            public string Name { get; set; }
-            public string DisplayName { get; set; }
-
-            public bool Unlocked { get; set; }
-            public bool Default { get; set; }
-
-            public int FloorOffsetX { get; set; }
-            public int FloorOffsetY { get; set; }
-            public int TileSize { get; set; }
-
-            public string BaseGraphic { get; set; }
-            public string CloakedGraphic { get; set; }
-            public string ShieldGraphic { get; set; }
-            public string FloorGraphic { get; set; }
-            public string MiniGraphic { get; set; }
-            public List<string> GibGraphics { get; set; }
-
-            public List<string> Weapons { get; set; }
-
-            public List<string> Crew { get; set; }
-
-            public List<Room> Rooms { get; set; }
-
-            public List<string> Systems
-            {
-                get
-                {
-                    var result = new List<string>();
-                    foreach (var room in Rooms)
-                        if (room.System != null)
-                            result.Add(room.System);
-                    return result;
-                }
-            }
-
-            public Ship()
-            {
-                GibGraphics = new List<string>();
-                Rooms = new List<Room>();
-                Crew = new List<string>();
-                Weapons = new List<string>();
-            }
-        }
-
-        public class Room
-        {
-            public int MinX { get; set; }
-            public int MinY { get; set; }
-            public int MaxX { get; set; }
-            public int MaxY { get; set; }
-
-            public List<Door> Doors { get; set; }
-
-            public string BackgroundGraphic { get; set; }
-
-            public string System { get; set; }
-
-            public Room() { Doors = new List<Door>(); }
-        }
-
-        public enum DoorDirection { Left, Up, Right, Down };
-
-        public class Door
-        {
-            public int X { get; set; }
-            public int Y { get; set; }
-            public DoorDirection Direction { get; set; }
-        }*/
-
         public interface ShipGenerator
         {
             string Name { get; set; }
             string DisplayName { get; set; }
+            string Description { get; set; }
 
             bool Unlocked { get; set; }
             bool Default { get; set; }
 
             // whether it's a player ship or NPC ship
-            bool NPC { get; set; }
+            bool IsNPC { get; set; }
 
             string MiniGraphic { get; set; }
 
@@ -249,7 +179,7 @@ namespace FTLOverdrive.Client.Gamestate
             var res = new List<ShipGenerator>();
             foreach (var gen in dctShipGenerators.Values)
             {
-                if (gen.NPC)
+                if (gen.IsNPC)
                 {
                     res.Add(gen);
                 }
@@ -262,7 +192,7 @@ namespace FTLOverdrive.Client.Gamestate
             var res = new List<ShipGenerator>();
             foreach (var gen in dctShipGenerators.Values)
             {
-                if (!gen.NPC)
+                if (!gen.IsNPC)
                 {
                     res.Add(gen);
                 }

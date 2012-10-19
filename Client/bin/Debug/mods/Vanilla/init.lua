@@ -118,10 +118,11 @@ local function LoadLibrary()
 	-- Add 25 page generators to test pages in ShipSelection
 	for i = 1,25 do
 		local sg = library.AddShipGenerator("kestral"..i, generateKestral)
-		sg.DisplayName = "The Kestral "..i
+		sg.DisplayName = "Kestrel Cruiser "..i
+		sg.Description = "This class of ship was decommissioned\nfrom Federation service years ago.\nAfter a number of refits and updating\nthis classic ship is ready for battle."
 		sg.Unlocked = true
 		sg.Default = true
-		sg.NPC = false
+		sg.IsNPC = false
 		sg.MiniGraphic = "img/customizeUI/miniship_kestral.png"
 	end
 	

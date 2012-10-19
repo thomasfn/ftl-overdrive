@@ -14,6 +14,8 @@ namespace FTLOverdrive.Client.Gamestate.FSM
     class ShipSelection : ModalWindow<NewGame>
     {
         private ImagePanel pnDescription;
+        private Label lbName;
+        private Label lbDescription;
 
         private ShipButton[] btnShips = new ShipButton[9];
 
@@ -39,7 +41,7 @@ namespace FTLOverdrive.Client.Gamestate.FSM
                     try
                     {
                         var gen = gens[page * 9 + i];
-                        btnShips[i] = new ShipButton(gen);
+                        btnShips[i] = new ShipButton(this, gen);
                         Util.LayoutControl(btnShips[i], 24 + 205 * (i % 3), 52 + 135 * (i / 3), btnShips[i].Image.Size, ScreenRectangle);
                         btnShips[i].Parent = Window;
                         btnShips[i].Init();
@@ -63,11 +65,9 @@ namespace FTLOverdrive.Client.Gamestate.FSM
             private Sprite sprShip;
             private Sprite sprLock;
 
-            public ShipButton()
-            {
-            }
+            private ShipSelection parent;
 
-            public ShipButton(Library.ShipGenerator gen)
+            public ShipButton(ShipSelection parent, Library.ShipGenerator gen)
             {
                 Image = Root.Singleton.Material("img/customizeUI/ship_list_button_on.png");
                 HoveredImage = Root.Singleton.Material("img/customizeUI/ship_list_button_select2.png");
@@ -76,7 +76,9 @@ namespace FTLOverdrive.Client.Gamestate.FSM
                 HoveredLockImage = Root.Singleton.Material("img/customizeUI/box_lock_selected.png");
                 DisabledLockImage = Root.Singleton.Material("img/customizeUI/box_lock_off.png");
 
-                this.HoverSound = Root.Singleton.Sound("audio/waves/ui/select_light1.wav");
+                HoverSound = Root.Singleton.Sound("audio/waves/ui/select_light1.wav");
+
+                this.parent = parent;
 
                 GeneratorName = gen.Name;
                 ShipImage = Root.Singleton.Material(gen.MiniGraphic);
@@ -152,6 +154,22 @@ namespace FTLOverdrive.Client.Gamestate.FSM
                 base.UpdateImage();
             }
 
+            public override void SetHovered(bool hovered)
+            {
+                base.SetHovered(hovered);
+                if (hovered)
+                {
+                    parent.pnDescription.Visible = true;
+                    var gen = Root.Singleton.mgrState.Get<Library>().GetShipGenerator(GeneratorName);
+                    parent.lbName.Text = gen.DisplayName;
+                    parent.lbDescription.Text = gen.Description;
+                }
+                else
+                {
+                    parent.pnDescription.Visible = false;
+                }
+            }
+
             protected override void Draw(RenderWindow window)
             {
                 base.Draw(window);
@@ -176,13 +194,32 @@ namespace FTLOverdrive.Client.Gamestate.FSM
             {
                 initPageButtons();
             }
+            initShipDescription();
+        }
 
+        private void initShipDescription()
+        {
             pnDescription = new ImagePanel();
             // this is wrong image, but I can't find the correct one
             pnDescription.Image = Root.Singleton.Material("img/customizeUI/box_text_crewdrones.png");
             Util.LayoutControl(pnDescription, 925, 150, pnDescription.Image.Size, ScreenRectangle);
+            pnDescription.Visible = false;
             pnDescription.Parent = Root.Singleton.Canvas;
             pnDescription.Init();
+
+            lbName = new Label();
+            lbName.Font = Root.Singleton.Font("fonts/JustinFont10.ttf");
+            lbName.Scale = 0.8F;
+            Util.LayoutControl(lbName, 15, 15, 0, 0, ScreenRectangle);
+            lbName.Parent = pnDescription;
+            lbName.Init();
+
+            lbDescription = new Label();
+            lbDescription.Font = Root.Singleton.Font("fonts/JustinFont7.ttf");
+            lbDescription.Scale = 0.8F;
+            Util.LayoutControl(lbDescription, 15, 35, 0, 0, ScreenRectangle);
+            lbDescription.Parent = pnDescription;
+            lbDescription.Init();
         }
 
         private void initPageButtons()
