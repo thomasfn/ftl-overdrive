@@ -35,6 +35,8 @@ namespace FTLOverdrive.Client
                 return new IntRect(0, 0, (int)w, (int)h);
         }
 
+        #region Layout
+
         public static void LayoutControl(UI.Control ctrl, int x, int y, int w, int h, IntRect screenrect)
         {
             // x,y,w,h are relative to 1280x720
@@ -44,12 +46,95 @@ namespace FTLOverdrive.Client
             ctrl.Height = (int)((h / 720.0f) * screenrect.Height);
         }
 
+        public static void LayoutControl(UI.Control ctrl, Vector2i pos, Vector2i size, IntRect screenrect)
+        {
+            LayoutControl(ctrl, (int)pos.X, (int)pos.Y, (int)size.X, (int)size.Y, screenrect);
+        }
+
+        public static void LayoutControl(UI.Control ctrl, Vector2i pos, Vector2u size, IntRect screenrect)
+        {
+            LayoutControl(ctrl, (int)pos.X, (int)pos.Y, (int)size.X, (int)size.Y, screenrect);
+        }
+
+        public static void LayoutControl(UI.Control ctrl, Vector2u pos, Vector2i size, IntRect screenrect)
+        {
+            LayoutControl(ctrl, (int)pos.X, (int)pos.Y, (int)size.X, (int)size.Y, screenrect);
+        }
+
+        public static void LayoutControl(UI.Control ctrl, Vector2u pos, Vector2u size, IntRect screenrect)
+        {
+            LayoutControl(ctrl, (int)pos.X, (int)pos.Y, (int)size.X, (int)size.Y, screenrect);
+        }
+
+        public static void LayoutControl(UI.Control ctrl, int x, int y, Vector2i size, IntRect screenrect)
+        {
+            LayoutControl(ctrl, x, y, (int)size.X, (int)size.Y, screenrect);
+        }
+
+        public static void LayoutControl(UI.Control ctrl, int x, int y, Vector2u size, IntRect screenrect)
+        {
+            LayoutControl(ctrl, x, y, (int)size.X, (int)size.Y, screenrect);
+        }
+
+        public static void LayoutControl(UI.Control ctrl, Vector2i pos, int width, int height, IntRect screenrect)
+        {
+            LayoutControl(ctrl, (int)pos.X, (int)pos.Y, width, height, screenrect);
+        }
+
+        public static void LayoutControl(UI.Control ctrl, Vector2u pos, int width, int height, IntRect screenrect)
+        {
+            LayoutControl(ctrl, (int)pos.X, (int)pos.Y, width, height, screenrect);
+        }
+
+
         public static void LayoutSprite(Sprite sprite, int x, int y, int w, int h, IntRect screenrect)
         {
             // x,y,w,h are relative to 1280x720
             sprite.Position = new Vector2f((x / 1280.0f) * screenrect.Width, (y / 720.0f) * screenrect.Height);
             sprite.Scale = new Vector2f(((w / 1280.0f) * screenrect.Width) / sprite.Texture.Size.X, ((h / 720.0f) * screenrect.Height) / sprite.Texture.Size.Y);
         }
+
+        public static void LayoutSprite(Sprite sprite, Vector2i pos, Vector2i size, IntRect screenrect)
+        {
+            LayoutSprite(sprite, (int)pos.X, (int)pos.Y, (int)size.X, (int)size.Y, screenrect);
+        }
+
+        public static void LayoutSprite(Sprite sprite, Vector2i pos, Vector2u size, IntRect screenrect)
+        {
+            LayoutSprite(sprite, (int)pos.X, (int)pos.Y, (int)size.X, (int)size.Y, screenrect);
+        }
+
+        public static void LayoutSprite(Sprite sprite, Vector2u pos, Vector2i size, IntRect screenrect)
+        {
+            LayoutSprite(sprite, (int)pos.X, (int)pos.Y, (int)size.X, (int)size.Y, screenrect);
+        }
+
+        public static void LayoutSprite(Sprite sprite, Vector2u pos, Vector2u size, IntRect screenrect)
+        {
+            LayoutSprite(sprite, (int)pos.X, (int)pos.Y, (int)size.X, (int)size.Y, screenrect);
+        }
+
+        public static void LayoutSprite(Sprite sprite, int x, int y, Vector2i size, IntRect screenrect)
+        {
+            LayoutSprite(sprite, x, y, (int)size.X, (int)size.Y, screenrect);
+        }
+
+        public static void LayoutSprite(Sprite sprite, int x, int y, Vector2u size, IntRect screenrect)
+        {
+            LayoutSprite(sprite, x, y, (int)size.X, (int)size.Y, screenrect);
+        }
+
+        public static void LayoutSprite(Sprite sprite, Vector2i pos, int width, int height, IntRect screenrect)
+        {
+            LayoutSprite(sprite, (int)pos.X, (int)pos.Y, width, height, screenrect);
+        }
+
+        public static void LayoutSprite(Sprite sprite, Vector2u pos, int width, int height, IntRect screenrect)
+        {
+            LayoutSprite(sprite, (int)pos.X, (int)pos.Y, width, height, screenrect);
+        }
+
+        #endregion
 
         public static string LocateFTLPath()
         {

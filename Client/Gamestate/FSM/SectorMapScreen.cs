@@ -7,17 +7,10 @@ using FTLOverdrive.Client.UI;
 using SFML.Window;
 using FTLOverdrive.Client.Map;
 
-namespace FTLOverdrive.Client.Gamestate
+namespace FTLOverdrive.Client.Gamestate.FSM
 {
-    class SectorMapScreen : IState, IRenderable
+    class SectorMapScreen : ModalWindow<NewGame>
     {
-        private RenderWindow window;
-        private IntRect rctScreen;
-
-        private Panel pnObscure;
-        private ImagePanel pnWindow;
-        private bool finishnow;
-
         public SectorMap Map { get; set; }
 
         private class SectorMapPanel : Control
@@ -68,30 +61,10 @@ namespace FTLOverdrive.Client.Gamestate
             }
         }
 
-        public void OnActivate()
+        public override void OnActivate()
         {
-            // Store window
-            window = Root.Singleton.Window;
-            rctScreen = Util.ScreenRect(window.Size.X, window.Size.Y, 1.7778f);
-            finishnow = false;
-            window.KeyPressed += window_KeyPressed;
-
-            // Create UI
-            pnObscure = new Panel();
-            pnObscure.Colour = new Color(0, 0, 0, 192);
-            Util.LayoutControl(pnObscure, 0, 0, 1280, 720, rctScreen);
-            pnObscure.Parent = Root.Singleton.Canvas;
-            pnObscure.Init();
-
-            pnWindow = new ImagePanel();
-            pnWindow.Image = Root.Singleton.Material("img/box_text_sectors.png");
-            Util.LayoutControl(pnWindow, (int)(1280 - pnWindow.Image.Size.X) / 2,
-                                         (int)(720 - pnWindow.Image.Size.Y) / 2,
-                                         (int)pnWindow.Image.Size.X,
-                                         (int)pnWindow.Image.Size.Y,
-                                         rctScreen);
-            pnWindow.Parent = Root.Singleton.Canvas;
-            pnWindow.Init();
+            BackgroundImage = Root.Singleton.Material("img/box_text_sectors.png");
+            base.OnActivate();
 
             var lblTitle = new Label();
             lblTitle.X = 25;
@@ -100,7 +73,7 @@ namespace FTLOverdrive.Client.Gamestate
             lblTitle.Font = Root.Singleton.Font("fonts/JustinFont12Bold.ttf");
             lblTitle.AutoScale = false;
             lblTitle.Scale = 0.475f;
-            lblTitle.Parent = pnWindow;
+            lblTitle.Parent = Window;
             lblTitle.Init();
 
             var nodes = Map.CurrentNode.NextNodes;
@@ -110,12 +83,9 @@ namespace FTLOverdrive.Client.Gamestate
             }
 
             var map = new SectorMapPanel(Map);
-            Util.LayoutControl(map, 28, 210, 558, 148, rctScreen);
-            map.Parent = pnWindow;
+            Util.LayoutControl(map, 28, 210, 558, 148, ScreenRectangle);
+            map.Parent = Window;
             map.Init();
-
-            // Modal screen
-            Root.Singleton.Canvas.ModalFocus = pnWindow;
         }
 
         private TextButton AddButton(int y, string text)
@@ -126,42 +96,9 @@ namespace FTLOverdrive.Client.Gamestate
             btn.X = 25;
             btn.Y = y;
             btn.Text = text;
-            btn.Parent = pnWindow;
+            btn.Parent = Window;
             btn.Init();
             return btn;
-        }
-
-        public void Think(float delta)
-        {
-            // Check for escape
-            if (finishnow)
-            {
-                // Close state
-                Root.Singleton.mgrState.Deactivate<SectorMapScreen>();
-
-                // Reopen hangar
-                Root.Singleton.mgrState.FSMTransist<NewGame>();
-            }
-        }
-
-        private void window_KeyPressed(object sender, KeyEventArgs e)
-        {
-            // Finish if escape
-            if (e.Code == Keyboard.Key.Escape) finishnow = true;
-        }
-
-        public void OnDeactivate()
-        {
-            // Unmodal our window
-            Root.Singleton.Canvas.ModalFocus = null;
-
-            // Remove our controls
-            pnObscure.Remove();
-            pnWindow.Remove();
-        }
-
-        public void Render(RenderStage stage)
-        {
         }
     }
 }
