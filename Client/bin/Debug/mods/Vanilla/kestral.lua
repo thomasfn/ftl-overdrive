@@ -130,7 +130,7 @@ end
 local function generateKestralB()
 	local s = Ship()
 	-- Basic settings
-	s.Name = "The Kestrel"
+	s.Name = "Red-Tail"
 	-- Graphics
 	s.BaseGraphic = "img/ship/kestral_2_base.png"
 	s.CloakedGraphic = "img/ship/kestral_2_cloak.png"
