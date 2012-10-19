@@ -25,6 +25,9 @@ namespace FTLOverdrive.Client.Gamestate.FSM
 
         private TextEntry tbShipName;
 
+        private ImageToggleButton btnLayoutA;
+        private ImageToggleButton btnLayoutB;
+
         private List<ImageButton> lstSystems;
 
         private bool easymode;
@@ -41,7 +44,7 @@ namespace FTLOverdrive.Client.Gamestate.FSM
             InitListShipsButton();
 			InitShipsArrowButtons();
 
-            InitDifficulty();
+            InitDifficultyButtons();
             InitStartButton();
 
             InitLayoutButtons();
@@ -181,7 +184,7 @@ namespace FTLOverdrive.Client.Gamestate.FSM
             btnShipRight.Init();
         }
 
-        void InitDifficulty()
+        void InitDifficultyButtons()
         {
             ImageToggleButton btnNormal = null;
             ImageToggleButton btnEasy = null;
@@ -249,16 +252,14 @@ namespace FTLOverdrive.Client.Gamestate.FSM
 
         void InitLayoutButtons()
         {
-            ImageToggleButton btnLayoutA = null;
-            ImageToggleButton btnLayoutB = null;
+            btnLayoutA = null;
+            btnLayoutB = null;
 
             btnLayoutA = new ImageToggleButton();
             btnLayoutA.Image = Root.Singleton.Material("img/customizeUI/button_typea_on.png");
             btnLayoutA.HoveredImage = Root.Singleton.Material("img/customizeUI/button_typea_select2.png");
             btnLayoutA.ToggledImage = Root.Singleton.Material("img/customizeUI/button_typea_select2.png");
             btnLayoutA.DisabledImage = Root.Singleton.Material("img/customizeUI/button_typea_off.png");
-            btnLayoutA.Enabled = true;
-            btnLayoutA.Toggled = true;
             btnLayoutA.HoverSound = Root.Singleton.Sound("audio/waves/ui/select_light1.wav");
             btnLayoutA.OnClick += sender =>
             {
@@ -266,6 +267,7 @@ namespace FTLOverdrive.Client.Gamestate.FSM
                 btnLayoutA.UpdateImage();
                 btnLayoutB.Toggled = false;
                 btnLayoutB.UpdateImage();
+                SetShipGenerator(currentShipGen, 0);
             };
             Util.LayoutControl(btnLayoutA, 18, 260, btnLayoutA.Image.Size, rctScreen);
             btnLayoutA.Parent = Root.Singleton.Canvas;
@@ -276,7 +278,6 @@ namespace FTLOverdrive.Client.Gamestate.FSM
             btnLayoutB.HoveredImage = Root.Singleton.Material("img/customizeUI/button_typeb_select2.png");
             btnLayoutB.ToggledImage = Root.Singleton.Material("img/customizeUI/button_typeb_select2.png");
             btnLayoutB.DisabledImage = Root.Singleton.Material("img/customizeUI/button_typeb_off.png");
-            btnLayoutB.Enabled = false;
             btnLayoutB.HoverSound = Root.Singleton.Sound("audio/waves/ui/select_light1.wav");
             btnLayoutB.OnClick += sender =>
             {
@@ -284,6 +285,7 @@ namespace FTLOverdrive.Client.Gamestate.FSM
                 btnLayoutA.UpdateImage();
                 btnLayoutB.Toggled = true;
                 btnLayoutB.UpdateImage();
+                SetShipGenerator(currentShipGen, 1);
             };
             Util.LayoutControl(btnLayoutB, 100, 260, btnLayoutB.Image.Size, rctScreen);
             btnLayoutB.Parent = Root.Singleton.Canvas;
@@ -336,7 +338,7 @@ namespace FTLOverdrive.Client.Gamestate.FSM
             throw new Exception("No default ship generator!");
         }
 
-        public void SetShipGenerator(Library.ShipGenerator gen)
+        public void SetShipGenerator(Library.ShipGenerator gen, int layout = 0)
         {
             if (lstSystems != null)
             {
@@ -348,10 +350,18 @@ namespace FTLOverdrive.Client.Gamestate.FSM
 
             // Set current ship
             currentShipGen = gen;
-            currentShip = gen.Generate();
+            currentShip = gen.Generate(layout);
 
             // Update ship renderer
             shipRenderer.Ship = currentShip;
+
+            // Update layout buttons
+            btnLayoutA.Enabled = (currentShipGen.NumberOfLayouts >= 1);
+            btnLayoutA.Toggled = (layout == 0);
+            btnLayoutA.UpdateImage();
+            btnLayoutB.Enabled = (currentShipGen.NumberOfLayouts >= 2);
+            btnLayoutB.Toggled = (layout == 1);
+            btnLayoutB.UpdateImage();
 
             // Create new UI
             tbShipName.Text = currentShip.Name;

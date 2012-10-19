@@ -115,6 +115,8 @@ namespace FTLOverdrive.Client.Gamestate
             public bool Unlocked { get; set; }
             public bool Default { get; set; }
 
+            public int NumberOfLayouts { get; set; }
+
             // whether it's a player ship or NPC ship
             public bool IsNPC { get; set; }
 

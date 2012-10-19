@@ -50,6 +50,7 @@ namespace FTLOverdrive.Client.Gamestate.FSM
         {
             BackgroundImage = getBackgroundTexture();
             base.OnActivate();
+            Util.LayoutControl(Window, (1280 - 540) / 2, (720 - 420) / 2, Window.Image.Size, ScreenRectangle);
 
             foreach (var b in Sector.Beacons)
             {

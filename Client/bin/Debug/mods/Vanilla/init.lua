@@ -122,6 +122,7 @@ local function LoadLibrary()
 		sg.Description = "This class of ship was decommissioned\nfrom Federation service years ago.\nAfter a number of refits and updating\nthis classic ship is ready for battle."
 		sg.Unlocked = true
 		sg.Default = true
+		sg.NumberOfLayouts = 2;
 		sg.IsNPC = false
 		sg.MiniGraphic = "img/customizeUI/miniship_kestral.png"
 	end
