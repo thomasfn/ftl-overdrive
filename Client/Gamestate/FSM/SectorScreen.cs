@@ -7,16 +7,10 @@ using FTLOverdrive.Client.UI;
 using SFML.Window;
 using FTLOverdrive.Client.Map;
 
-namespace FTLOverdrive.Client.Gamestate
+namespace FTLOverdrive.Client.Gamestate.FSM
 {
-    public class SectorScreen : IState, IRenderable
+    public class SectorScreen : ModalWindow<NewGame>
     {
-        private RenderWindow window;
-        private IntRect rctScreen;
-
-        private Panel pnObscure;
-        private ImagePanel pnWindow;
-        private bool finishnow;
 
         public Sector Sector { get; set; }
 
@@ -52,38 +46,19 @@ namespace FTLOverdrive.Client.Gamestate
             }
         }
 
-        public void OnActivate()
+        public override void OnActivate()
         {
-            // Store window
-            window = Root.Singleton.Window;
-            rctScreen = Util.ScreenRect(window.Size.X, window.Size.Y, 1.7778f);
-            finishnow = false;
-            window.KeyPressed += window_KeyPressed;
-
-            // Create UI
-            pnObscure = new Panel();
-            pnObscure.Colour = new Color(0, 0, 0, 192);
-            Util.LayoutControl(pnObscure, 0, 0, 1280, 720, rctScreen);
-            pnObscure.Parent = Root.Singleton.Canvas;
-            pnObscure.Init();
-
-            pnWindow = new ImagePanel();
-            pnWindow.Image = getBackgroundTexture();
-            Util.LayoutControl(pnWindow, (1280 - 540) / 2,
-                                         (720 - 420) / 2,
-                                         (int)pnWindow.Image.Size.X,
-                                         (int)pnWindow.Image.Size.Y,
-                                         rctScreen);
-            pnWindow.Parent = Root.Singleton.Canvas;
-            pnWindow.Init();
+            BackgroundImage = getBackgroundTexture();
+            base.OnActivate();
+            Util.LayoutControl(Window, (1280 - 540) / 2, (720 - 420) / 2, Window.Image.Size, ScreenRectangle);
 
             foreach (var b in Sector.Beacons)
             {
                 var btn = new BeaconIcon();
                 btn.Image = Root.Singleton.Material(b.Icon);
                 btn.ShadowImage = Root.Singleton.Material(b.IconShadow);
-                Util.LayoutControl(btn, b.X - 16, b.Y - 16, 32, 32, rctScreen);
-                btn.Parent = pnWindow;
+                Util.LayoutControl(btn, b.X - 16, b.Y - 16, 32, 32, ScreenRectangle);
+                btn.Parent = Window;
                 btn.Init();
             }
 
@@ -94,14 +69,11 @@ namespace FTLOverdrive.Client.Gamestate
             btnClose.HoverSound = Root.Singleton.Sound("audio/waves/ui/select_light1.wav");
             btnClose.OnClick += (sender) =>
             {
-                finishnow = true;
+                Finish = true;
             };
-            Util.LayoutControl(btnClose, 504, 0, 64, 64, rctScreen);
-            btnClose.Parent = pnWindow;
+            Util.LayoutControl(btnClose, 504, 0, 64, 64, ScreenRectangle);
+            btnClose.Parent = Window;
             btnClose.Init();
-
-            // Modal screen
-            Root.Singleton.Canvas.ModalFocus = pnWindow;
         }
 
         private Texture getBackgroundTexture()
@@ -125,39 +97,6 @@ namespace FTLOverdrive.Client.Gamestate
 
             rt.Display();
             return new Texture(rt.Texture);
-        }
-
-        public void Think(float delta)
-        {
-            // Check for escape
-            if (finishnow)
-            {
-                // Close state
-                Root.Singleton.mgrState.Deactivate<SectorScreen>();
-
-                // Reopen hangar
-                Root.Singleton.mgrState.FSMTransist<NewGame>();
-            }
-        }
-
-        private void window_KeyPressed(object sender, KeyEventArgs e)
-        {
-            // Finish if escape
-            if (e.Code == Keyboard.Key.Escape) finishnow = true;
-        }
-
-        public void OnDeactivate()
-        {
-            // Unmodal our window
-            Root.Singleton.Canvas.ModalFocus = null;
-
-            // Remove our controls
-            pnObscure.Remove();
-            pnWindow.Remove();
-        }
-
-        public void Render(RenderStage stage)
-        {
         }
     }
 }

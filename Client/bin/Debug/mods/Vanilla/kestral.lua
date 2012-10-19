@@ -9,7 +9,7 @@
 local Ships = CLRPackage("FTLOverdriveClient", "FTLOverdrive.Client.Ships")
 local Ship = Ships.Ship
 
-function generateKestral()
+local function generateKestralA()
 	local s = Ship()
 	-- Basic settings
 	s.Name = "The Kestrel"
@@ -18,12 +18,12 @@ function generateKestral()
 	s.CloakedGraphic = "img/ship/kestral_cloak.png"
 	s.ShieldGraphic = "img/ship/kestral_shields.png"
 	s.FloorGraphic = "img/ship/kestral_floor.png"
-	s.GibGraphics:Add( "img/ship/kestral_gib1.png" )
-	s.GibGraphics:Add( "img/ship/kestral_gib2.png" )
-	s.GibGraphics:Add( "img/ship/kestral_gib3.png" )
-	s.GibGraphics:Add( "img/ship/kestral_gib4.png" )
-	s.GibGraphics:Add( "img/ship/kestral_gib5.png" )
-	s.GibGraphics:Add( "img/ship/kestral_gib6.png" )
+	s.GibGraphics:Add("img/ship/kestral_gib1.png")
+	s.GibGraphics:Add("img/ship/kestral_gib2.png")
+	s.GibGraphics:Add("img/ship/kestral_gib3.png")
+	s.GibGraphics:Add("img/ship/kestral_gib4.png")
+	s.GibGraphics:Add("img/ship/kestral_gib5.png")
+	s.GibGraphics:Add("img/ship/kestral_gib6.png")
 	
 	-- Floor settings
 	s.TileHeight = 35
@@ -125,4 +125,55 @@ function generateKestral()
 	test:SetAnimation( "walk.down" )
 	-- Return
 	return s
+end
+
+local function generateKestralB()
+	local s = Ship()
+	-- Basic settings
+	s.Name = "Red-Tail"
+	-- Graphics
+	s.BaseGraphic = "img/ship/kestral_2_base.png"
+	s.CloakedGraphic = "img/ship/kestral_2_cloak.png"
+	s.ShieldGraphic = "img/ship/kestral_2_shields.png"
+	s.FloorGraphic = "img/ship/kestral_2_floor.png"
+	s.GibGraphics:Add("img/ship/kestral_2_gib1.png")
+	s.GibGraphics:Add("img/ship/kestral_2_gib2.png")
+	s.GibGraphics:Add("img/ship/kestral_2_gib3.png")
+	s.GibGraphics:Add("img/ship/kestral_2_gib4.png")
+	s.GibGraphics:Add("img/ship/kestral_2_gib5.png")
+	s.GibGraphics:Add("img/ship/kestral_2_gib6.png")
+	
+	-- Floor settings
+	s.TileHeight = 35
+	s.TileWidth = 35
+    s.FloorOffsetX = 106
+    s.FloorOffsetY = 100
+	
+	-- Rooms
+	s:AddRectRoom(0, 3, 0, 2, 2)
+	s:AddRectRoom(1, 5, 0, 2, 1)
+	s:AddRectRoom(2, 1, 1, 2, 2)
+	s:AddRectRoom(3, 6, 1, 2, 2)
+	s:AddRectRoom(4, 4, 2, 2, 1)
+	s:AddRectRoom(5, 0, 3, 2, 1)
+	s:AddRectRoom(6, 6, 3, 2, 1)
+	s:AddRectRoom(7, 8, 3, 2, 1)
+	s:AddRectRoom(8, 10, 3, 2, 1)
+	s:AddRectRoom(9, 12, 3, 2, 1)
+	s:AddRectRoom(10, 1, 4, 2, 2)
+	s:AddRectRoom(11, 4, 4, 2, 1)
+	s:AddRectRoom(12, 6, 4, 2, 2)
+	s:AddRectRoom(13, 3, 5, 2, 2)
+	s:AddRectRoom(14, 5, 6, 2, 1)
+	
+	-- Return
+	return s
+end
+
+function generateKestral(layout)
+	if (layout == 0) then
+		return generateKestralA()
+	else
+		return generateKestralB()
+	end
 end

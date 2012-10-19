@@ -9,16 +9,47 @@ using SFML.Audio;
 
 using FTLOverdrive.Client.UI;
 
-namespace FTLOverdrive.Client.Gamestate
+namespace FTLOverdrive.Client.Gamestate.FSM
 {
-    class ShipSelection : IState, IRenderable
+    class ShipSelection : ModalWindow<NewGame>
     {
-        private RenderWindow window;
-        private IntRect rctScreen;
+        private ImagePanel pnDescription;
+        private Label lbName;
+        private Label lbDescription;
 
-        private Panel pnObscure;
-        private ImagePanel pnWindow;
-        private bool finishnow;
+        private ShipButton[] btnShips = new ShipButton[9];
+
+        private int page;
+        public int Page
+        {
+            get { return page; }
+            set
+            {
+                foreach (var btn in btnShips)
+                {
+                    if (btn != null) btn.Remove();
+                }
+                page = value;
+
+                var gens = Root.Singleton.mgrState.Get<Library>().GetPlayerShipGenerators();
+
+                if (page < 0) page = gens.Count / 9;
+                if (page > gens.Count / 9) page = 0;
+
+                for (int i = 0; i < 9; i++)
+                {
+                    try
+                    {
+                        var gen = gens[page * 9 + i];
+                        btnShips[i] = new ShipButton(this, gen);
+                        Util.LayoutControl(btnShips[i], 24 + 205 * (i % 3), 52 + 135 * (i / 3), btnShips[i].Image.Size, ScreenRectangle);
+                        btnShips[i].Parent = Window;
+                        btnShips[i].Init();
+                    }
+                    catch (ArgumentOutOfRangeException) { }
+                }
+            }
+        }
 
         private class ShipButton : ImageButton
         {
@@ -34,11 +65,9 @@ namespace FTLOverdrive.Client.Gamestate
             private Sprite sprShip;
             private Sprite sprLock;
 
-            public ShipButton()
-            {
-            }
+            private ShipSelection parent;
 
-            public ShipButton(Library.ShipGenerator gen)
+            public ShipButton(ShipSelection parent, Library.ShipGenerator gen)
             {
                 Image = Root.Singleton.Material("img/customizeUI/ship_list_button_on.png");
                 HoveredImage = Root.Singleton.Material("img/customizeUI/ship_list_button_select2.png");
@@ -47,7 +76,9 @@ namespace FTLOverdrive.Client.Gamestate
                 HoveredLockImage = Root.Singleton.Material("img/customizeUI/box_lock_selected.png");
                 DisabledLockImage = Root.Singleton.Material("img/customizeUI/box_lock_off.png");
 
-                this.HoverSound = Root.Singleton.Sound("audio/waves/ui/select_light1.wav");
+                HoverSound = Root.Singleton.Sound("audio/waves/ui/select_light1.wav");
+
+                this.parent = parent;
 
                 GeneratorName = gen.Name;
                 ShipImage = Root.Singleton.Material(gen.MiniGraphic);
@@ -67,7 +98,7 @@ namespace FTLOverdrive.Client.Gamestate
                     {
                         //Console.WriteLine("Selecting unlocked ship: " + ShipName);
                         Root.Singleton.mgrState.Get<NewGame>().SetShipGenerator(gen);
-                        Root.Singleton.mgrState.Get<ShipSelection>().finishnow = true;
+                        Root.Singleton.mgrState.Get<ShipSelection>().Finish = true;
                     }
                     else
                     {
@@ -123,6 +154,22 @@ namespace FTLOverdrive.Client.Gamestate
                 base.UpdateImage();
             }
 
+            public override void SetHovered(bool hovered)
+            {
+                base.SetHovered(hovered);
+                if (hovered)
+                {
+                    parent.pnDescription.Visible = true;
+                    var gen = Root.Singleton.mgrState.Get<Library>().GetShipGenerator(GeneratorName);
+                    parent.lbName.Text = gen.DisplayName;
+                    parent.lbDescription.Text = gen.Description;
+                }
+                else
+                {
+                    parent.pnDescription.Visible = false;
+                }
+            }
+
             protected override void Draw(RenderWindow window)
             {
                 base.Draw(window);
@@ -134,79 +181,77 @@ namespace FTLOverdrive.Client.Gamestate
             }
         }
 
-        public void OnActivate()
+        public override void OnActivate()
         {
-            // Store window
-            window = Root.Singleton.Window;
-            rctScreen = Util.ScreenRect(window.Size.X, window.Size.Y, 1.7778f);
-            finishnow = false;
-            window.KeyPressed += window_KeyPressed;
+            BackgroundImage = Root.Singleton.Material("img/customizeUI/ship_list_main.png");
+            base.OnActivate();
 
-            // Create UI
-            pnObscure = new Panel();
-            pnObscure.Colour = new Color(0, 0, 0, 192);
-            Util.LayoutControl(pnObscure, 0, 0, 1280, 720, rctScreen);
-            pnObscure.Parent = Root.Singleton.Canvas;
-            pnObscure.Init();
+            Window.X -= 65;
 
-            pnWindow = new ImagePanel();
-            pnWindow.Image = Root.Singleton.Material("img/customizeUI/ship_list_main.png");
-            Util.LayoutControl(pnWindow, (1280 / 2) - (647 / 2), (720 / 2) - (465 / 2), 647, 465, rctScreen);
-            pnWindow.Parent = Root.Singleton.Canvas;
-            pnWindow.Init();
+            Page = 0;
 
-            int shipX = 0;
-            int shipY = 0;
-            foreach (var gen in Root.Singleton.mgrState.Get<Library>().GetPlayerShipGenerators())
+            if (Root.Singleton.mgrState.Get<Library>().GetPlayerShipGenerators().Count > 9)
             {
-                var btnShip = new ShipButton(gen);
-                Util.LayoutControl(btnShip, 24 + 205 * shipX, 52 + 135 * shipY, 191, 121, rctScreen);
-                btnShip.Parent = pnWindow;
-                btnShip.Init();
-
-                shipX++;
-                if (shipX >= 3)
-                {
-                    shipX = 0;
-                    shipY++;
-                }
+                initPageButtons();
             }
-
-            // Modal screen
-            Root.Singleton.Canvas.ModalFocus = pnWindow;
+            initShipDescription();
         }
 
-        private void window_KeyPressed(object sender, KeyEventArgs e)
+        private void initShipDescription()
         {
-            // Finish if escape
-            if (e.Code == Keyboard.Key.Escape) finishnow = true;
+            pnDescription = new ImagePanel();
+            // this is wrong image, but I can't find the correct one
+            pnDescription.Image = Root.Singleton.Material("img/customizeUI/box_text_crewdrones.png");
+            Util.LayoutControl(pnDescription, 925, 150, pnDescription.Image.Size, ScreenRectangle);
+            pnDescription.Visible = false;
+            pnDescription.Parent = Root.Singleton.Canvas;
+            pnDescription.Init();
+
+            lbName = new Label();
+            lbName.Font = Root.Singleton.Font("fonts/JustinFont10.ttf");
+            lbName.Scale = 0.8F;
+            Util.LayoutControl(lbName, 15, 15, 0, 0, ScreenRectangle);
+            lbName.Parent = pnDescription;
+            lbName.Init();
+
+            lbDescription = new Label();
+            lbDescription.Font = Root.Singleton.Font("fonts/JustinFont7.ttf");
+            lbDescription.Scale = 0.8F;
+            Util.LayoutControl(lbDescription, 15, 35, 0, 0, ScreenRectangle);
+            lbDescription.Parent = pnDescription;
+            lbDescription.Init();
         }
 
-        public void Think(float delta)
+        private void initPageButtons()
         {
-            // Check for escape
-            if (finishnow)
+            var btnLeft = new ImageButton();
+            btnLeft.Image = Root.Singleton.Material("img/customizeUI/button_arrow_on.png");
+            btnLeft.HoveredImage = Root.Singleton.Material("img/customizeUI/button_arrow_select2.png");
+            btnLeft.DisabledImage = Root.Singleton.Material("img/customizeUI/button_arrow_off.png");
+            btnLeft.Enabled = true;
+            btnLeft.HoverSound = Root.Singleton.Sound("audio/waves/ui/select_light1.wav");
+            btnLeft.OnClick += (sender) =>
             {
-                // Close state
-                Root.Singleton.mgrState.Deactivate<ShipSelection>();
+                Page--;
+            };
+            Util.LayoutControl(btnLeft, 125, 12, 32, 28, ScreenRectangle);
+            btnLeft.Parent = Window;
+            btnLeft.Init();
 
-                // Reopen hangar
-                Root.Singleton.mgrState.FSMTransist<NewGame>();
-            }
-        }
-
-        public void OnDeactivate()
-        {
-            // Unmodal our window
-            Root.Singleton.Canvas.ModalFocus = null;
-
-            // Remove our controls
-            pnObscure.Remove();
-            pnWindow.Remove();
-        }
-
-        public void Render(RenderStage stage)
-        {
+            var btnRight = new ImageButton();
+            btnRight.Image = Root.Singleton.Material("img/customizeUI/button_arrow_on.png");
+            btnRight.HoveredImage = Root.Singleton.Material("img/customizeUI/button_arrow_select2.png");
+            btnRight.DisabledImage = Root.Singleton.Material("img/customizeUI/button_arrow_off.png");
+            btnRight.Enabled = true;
+            btnRight.FlipH = true;
+            btnRight.HoverSound = Root.Singleton.Sound("audio/waves/ui/select_light1.wav");
+            btnRight.OnClick += (sender) =>
+            {
+                Page++;
+            };
+            Util.LayoutControl(btnRight, 463, 12, 32, 28, ScreenRectangle);
+            btnRight.Parent = Window;
+            btnRight.Init();
         }
     }
 }
