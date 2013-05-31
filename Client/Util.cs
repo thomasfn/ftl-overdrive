@@ -148,11 +148,6 @@ namespace FTLOverdrive.Client
                 return progfiles + "/FTL/";
             }
 
-            //return (string)(Microsoft.Win32.RegistryKey.OpenBaseKey(Microsoft.Win32.RegistryHive.CurrentUser, Microsoft.Win32.RegistryView.Default).OpenSubKey("Software").OpenSubKey("Valve").OpenSubKey("Steam").GetValue("SteamExe"));
-
-
-
-
             // Next, locate steam
             string steampath = (string)(Microsoft.Win32.RegistryKey.OpenBaseKey(Microsoft.Win32.RegistryHive.CurrentUser, Microsoft.Win32.RegistryView.Default).OpenSubKey("Software").OpenSubKey("Valve").OpenSubKey("Steam").GetValue("SteamPath"));
             
